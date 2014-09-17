@@ -1,0 +1,17 @@
+
+div.n_entity_control_container {
+    float: left;
+    margin: 0.5em;
+}
+
+div.n_entity_control > div.n_entity_control {
+    background: #5B8BC3;
+    float: left;
+    border: none;
+}
+
+form.n_entity_control {
+    background: #5B8BC3;
+    float: left;
+    border: none;
+}

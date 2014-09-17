@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nimbodata.core.rest_server &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nimbodata.core.rest_server</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;Module implements a dynamic REST API for Nimbodata using Flask.&quot;&quot;&quot;</span>
+<span class="c"># Copyright (C) 2014  Bradley Alan Smith</span>
+
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">partial</span>
+
+<span class="kn">import</span> <span class="nn">jsonpickle</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">abort</span>
+<span class="kn">from</span> <span class="nn">flask.views</span> <span class="kn">import</span> <span class="n">MethodView</span>
+<span class="kn">from</span> <span class="nn">flask.ext</span> <span class="kn">import</span> <span class="n">login</span>
+<span class="kn">from</span> <span class="nn">flask.ext.cors</span> <span class="kn">import</span> <span class="n">CORS</span><span class="p">,</span> <span class="n">cross_origin</span>
+
+<span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39;../&#39;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">common</span>
+<span class="kn">import</span> <span class="nn">common.errors</span> <span class="kn">as</span> <span class="nn">errors</span>
+<span class="kn">import</span> <span class="nn">common.datatypes.fallback_json</span> <span class="kn">as</span> <span class="nn">fb</span>
+
+<span class="n">load</span><span class="p">,</span><span class="n">dump</span><span class="p">,</span><span class="n">pretty_dump</span> <span class="o">=</span> <span class="n">fb</span><span class="o">.</span><span class="n">load</span><span class="p">,</span> <span class="n">fb</span><span class="o">.</span><span class="n">dump</span><span class="p">,</span> <span class="n">fb</span><span class="o">.</span><span class="n">pretty_dump</span>
+
+<span class="kn">import</span> <span class="nn">pg.entities</span>
+<span class="kn">import</span> <span class="nn">pg.select</span>
+
+<span class="kn">from</span> <span class="nn">cloud</span> <span class="kn">import</span> <span class="n">get_api</span>
+
+<span class="n">api</span> <span class="o">=</span> <span class="n">get_api</span><span class="p">()</span>
+<span class="n">api</span><span class="o">.</span><span class="n">login</span> <span class="o">=</span> <span class="n">login</span>
+<span class="n">pg</span><span class="o">.</span><span class="n">select</span><span class="o">.</span><span class="n">api</span> <span class="o">=</span> <span class="n">api</span>
+
+<span class="kn">import</span> <span class="nn">auth</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+<span class="n">cors</span> <span class="o">=</span> <span class="n">CORS</span><span class="p">(</span>
+    <span class="n">app</span><span class="p">,</span>
+    <span class="n">headers</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;Content-Type&#39;</span><span class="p">,</span><span class="s">&#39;Accept&#39;</span><span class="p">,</span><span class="s">&#39;Cookie&#39;</span><span class="p">],</span>
+    <span class="n">origins</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;http://ubupgbeta:8000&#39;</span><span class="p">,</span><span class="s">&#39;http://andydev:8000&#39;</span><span class="p">,</span><span class="s">&#39;http://localhost:8000&#39;</span><span class="p">],</span>
+    <span class="n">supports_credentials</span><span class="o">=</span><span class="bp">True</span>
+<span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/api/&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="apiresponder"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.apiresponder">[docs]</a><span class="k">def</span> <span class="nf">apiresponder</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">api</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="responder"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.responder">[docs]</a><span class="k">def</span> <span class="nf">responder</span><span class="p">(</span><span class="n">method</span><span class="p">,</span><span class="n">rfunc</span><span class="p">,</span><span class="n">objid</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle I/O and Error translation between API and REST.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">objid</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">rfunc</span><span class="p">(</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
+        <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">RelationExists</span><span class="p">:</span>
+            <span class="n">abort</span><span class="p">(</span><span class="mi">409</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">NotAuthorized</span><span class="p">:</span>
+            <span class="n">abort</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;POST&#39;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">rfunc</span><span class="p">(</span><span class="n">objid</span><span class="o">=</span><span class="n">objid</span><span class="p">,</span><span class="n">params</span><span class="o">=</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
+        <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">IntegrityError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">strerror</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">NotAuthorized</span><span class="p">:</span>
+            <span class="n">abort</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;PUT&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">rfunc</span><span class="p">(</span><span class="n">objid</span><span class="o">=</span><span class="n">objid</span><span class="p">,</span><span class="n">params</span><span class="o">=</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">rfunc</span><span class="p">(</span><span class="n">objid</span><span class="o">=</span><span class="n">objid</span><span class="p">))</span>
+    <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">NotAuthorized</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">RelationExists</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">409</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">RelationDoesNotExist</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">410</span><span class="p">)</span>
+        
+<span class="c"># Parse the API and add the URL routes attached to the API endpoints.</span></div>
+<span class="k">for</span> <span class="n">urlspec</span><span class="p">,</span><span class="n">rfunc</span> <span class="ow">in</span> <span class="n">api</span><span class="o">.</span><span class="n">urls</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">verb</span><span class="p">,</span><span class="n">path</span> <span class="o">=</span> <span class="n">urlspec</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span>
+        <span class="n">path</span><span class="p">,</span>
+        <span class="n">view_func</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">responder</span><span class="p">,</span><span class="n">verb</span><span class="p">,</span><span class="n">rfunc</span><span class="p">),</span>
+        <span class="n">endpoint</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">urlspec</span><span class="p">),</span>
+        <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="n">verb</span><span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/tree/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="tree"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.tree">[docs]</a><span class="k">def</span> <span class="nf">tree</span><span class="p">():</span>
+    <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="s">&#39;Database&#39;</span><span class="p">)()</span><span class="o">.</span><span class="n">tree</span><span class="p">())</span>
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/select/&lt;objid&gt;/&lt;rowid&gt;/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="getbyrowid"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.getbyrowid">[docs]</a><span class="k">def</span> <span class="nf">getbyrowid</span><span class="p">(</span><span class="n">objid</span><span class="p">,</span><span class="n">rowid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle get select.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="s">&#39;Select&#39;</span><span class="p">)()</span><span class="o">.</span><span class="n">get_byrowid</span><span class="p">(</span><span class="n">objid</span><span class="p">,</span><span class="n">rowid</span><span class="p">,</span><span class="bp">True</span><span class="p">))</span>
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/select/&lt;objid&gt;/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="get_select_processor"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.get_select_processor">[docs]</a><span class="k">def</span> <span class="nf">get_select_processor</span><span class="p">(</span><span class="n">objid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle get select.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>        
+        <span class="n">argspec</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_args</span><span class="p">(</span><span class="s">&#39;Select&#39;</span><span class="p">,</span><span class="s">&#39;select&#39;</span><span class="p">)</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;viewid&#39;</span><span class="p">:</span><span class="n">objid</span><span class="p">,</span>
+            <span class="s">&#39;limit&#39;</span><span class="p">:</span><span class="mi">50</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="s">&#39;Select&#39;</span><span class="p">)()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+    <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">RelationDoesNotExist</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">objid</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">410</span><span class="p">)</span>
+        </div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/tables/&lt;objid&gt;/tile_rowids/&lt;x&gt;/&lt;y&gt;/&lt;z&gt;/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/Table/&lt;objid&gt;/tile_rowids/&lt;x&gt;/&lt;y&gt;/&lt;z&gt;/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="table_rowids_handler"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.table_rowids_handler">[docs]</a><span class="k">def</span> <span class="nf">table_rowids_handler</span><span class="p">(</span><span class="n">objid</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle get select.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="s">&#39;Table&#39;</span><span class="p">)(</span><span class="n">objid</span><span class="p">)</span><span class="o">.</span><span class="n">tile_rowids</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">))</span>
+    </div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/tables/&lt;objid&gt;/tile/&lt;x&gt;/&lt;y&gt;/&lt;z&gt;/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/Table/&lt;objid&gt;/tile/&lt;x&gt;/&lt;y&gt;/&lt;z&gt;/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="table_tile_handler"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.table_tile_handler">[docs]</a><span class="k">def</span> <span class="nf">table_tile_handler</span><span class="p">(</span><span class="n">objid</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle get select.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="s">&#39;Table&#39;</span><span class="p">)(</span><span class="n">objid</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">))</span>
+    </div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/tables/&lt;objid&gt;/features/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/Table/&lt;objid&gt;/features/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="table_features_handler"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.table_features_handler">[docs]</a><span class="k">def</span> <span class="nf">table_features_handler</span><span class="p">(</span><span class="n">objid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle get select.&quot;&quot;&quot;</span>
+    <span class="n">rdat</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">print</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">rdat</span><span class="p">[</span><span class="s">&#39;rowids&#39;</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="s">&#39;Table&#39;</span><span class="p">)(</span><span class="n">objid</span><span class="p">)</span><span class="o">.</span><span class="n">features</span><span class="p">(</span><span class="n">rdat</span><span class="p">[</span><span class="s">&#39;rowids&#39;</span><span class="p">]))</span>
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/views/&lt;objid&gt;/tile_rowids/&lt;x&gt;/&lt;y&gt;/&lt;z&gt;/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/View/&lt;objid&gt;/tile_rowids/&lt;x&gt;/&lt;y&gt;/&lt;z&gt;/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="view_rowids_handler"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.view_rowids_handler">[docs]</a><span class="k">def</span> <span class="nf">view_rowids_handler</span><span class="p">(</span><span class="n">objid</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle get select.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="s">&#39;View&#39;</span><span class="p">)(</span><span class="n">objid</span><span class="p">)</span><span class="o">.</span><span class="n">tile_rowids</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">))</span>
+    </div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/views/&lt;objid&gt;/tile/&lt;x&gt;/&lt;y&gt;/&lt;z&gt;/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/View/&lt;objid&gt;/tile/&lt;x&gt;/&lt;y&gt;/&lt;z&gt;/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="view_tile_handler"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.view_tile_handler">[docs]</a><span class="k">def</span> <span class="nf">view_tile_handler</span><span class="p">(</span><span class="n">objid</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle get select.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="s">&#39;View&#39;</span><span class="p">)(</span><span class="n">objid</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">))</span>
+    </div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/views/&lt;objid&gt;/features/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/View/&lt;objid&gt;/features/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="view_features_handler"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.view_features_handler">[docs]</a><span class="k">def</span> <span class="nf">view_features_handler</span><span class="p">(</span><span class="n">objid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle get select.&quot;&quot;&quot;</span>
+    <span class="n">rdat</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">print</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">rdat</span><span class="p">[</span><span class="s">&#39;rowids&#39;</span><span class="p">]]</span>
+    <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="s">&#39;View&#39;</span><span class="p">)(</span><span class="n">objid</span><span class="p">)</span><span class="o">.</span><span class="n">features</span><span class="p">(</span><span class="n">rdat</span><span class="p">[</span><span class="s">&#39;rowids&#39;</span><span class="p">]))</span>
+
+
+
+</div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/select/&#39;</span><span class="p">,</span><span class="n">defaults</span><span class="o">=</span><span class="p">{</span><span class="s">&#39;objid&#39;</span><span class="p">:</span><span class="bp">None</span><span class="p">},</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/select/&lt;objid&gt;/&#39;</span><span class="p">,</span><span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="post_select_processor"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.post_select_processor">[docs]</a><span class="k">def</span> <span class="nf">post_select_processor</span><span class="p">(</span><span class="n">objid</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Handle post select.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">kwargs</span> <span class="o">=</span> <span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s">&#39;limit&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s">&#39;limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">50</span>
+        <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="s">&#39;Select&#39;</span><span class="p">)()</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+    <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">RelationDoesNotExist</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">print</span> <span class="n">objid</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">410</span><span class="p">)</span>
+
+<span class="c">#@app.route(&#39;/&#39;, defaults={&quot;path&quot;:&quot;&quot;}, methods=[&#39;GET&#39;])</span></div>
+<span class="nd">@app.route</span><span class="p">(</span><span class="s">&#39;/&lt;path:path&gt;&#39;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s">&#39;GET&#39;</span><span class="p">,</span><span class="s">&#39;POST&#39;</span><span class="p">,</span><span class="s">&#39;PUT&#39;</span><span class="p">,</span><span class="s">&#39;DELETE&#39;</span><span class="p">,</span><span class="s">&#39;OPTIONS&#39;</span><span class="p">])</span>
+<div class="viewcode-block" id="respond"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.respond">[docs]</a><span class="k">def</span> <span class="nf">respond</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generic path responder, on its way out.&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">path</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;/&#39;</span><span class="p">:</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">path</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;/&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;get_byrowid&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="s">&#39;Select&#39;</span><span class="p">)()</span><span class="o">.</span><span class="n">get_byrowid</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">:]))</span>
+    <span class="k">elif</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;get_array&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="s">&#39;Select&#39;</span><span class="p">)()</span><span class="o">.</span><span class="n">get_array</span><span class="p">(</span><span class="o">**</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">process_entity_identified</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">RelationDoesNotExist</span><span class="p">:</span>
+        <span class="n">abort</span><span class="p">(</span><span class="mi">410</span><span class="p">)</span>
+    <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="process_entity_identified"><a class="viewcode-back" href="../../../apidoc/nimbodata.core.html#nimbodata.core.rest_server.process_entity_identified">[docs]</a><span class="k">def</span> <span class="nf">process_entity_identified</span><span class="p">(</span><span class="n">entityname</span><span class="p">,</span><span class="n">objid</span><span class="p">,</span><span class="n">method</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">child</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">last</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Remnants.&quot;&quot;&quot;</span>    
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">&#39;GET&#39;</span> <span class="ow">and</span> <span class="p">(</span><span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">child</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">last</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="n">ent</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">entityname</span><span class="p">)(</span><span class="n">objid</span><span class="p">)</span>
+        <span class="n">meth</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ent</span><span class="p">,</span><span class="n">method</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dump</span><span class="p">(</span>
+            <span class="n">meth</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+    <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">&#39;GET&#39;</span> <span class="ow">and</span> <span class="nb">all</span><span class="p">(</span><span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="n">method</span><span class="p">,</span><span class="n">child</span><span class="p">,</span><span class="n">last</span><span class="p">)):</span>
+        <span class="n">outer</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">entityname</span><span class="p">)(</span><span class="n">objid</span><span class="p">)</span>
+        <span class="n">outer</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">outer</span><span class="p">,</span><span class="n">method</span><span class="p">)</span>
+        <span class="k">print</span> <span class="n">outer</span>
+        <span class="k">return</span> <span class="n">dump</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">outer</span><span class="p">,</span><span class="n">last</span><span class="p">)()</span>
+        <span class="p">)</span>
+            
+    <span class="k">elif</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;modify&#39;</span><span class="p">,</span><span class="s">&#39;rename&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">&#39;OPTIONS&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;&#39;</span>
+        <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;PUT&#39;</span><span class="p">,</span><span class="s">&#39;POST&#39;</span><span class="p">):</span>
+            <span class="n">abort</span><span class="p">(</span><span class="mi">405</span><span class="p">)</span>
+        <span class="n">entity</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">entityname</span><span class="p">)(</span><span class="n">objid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;modify&#39;</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">modify</span><span class="p">(</span><span class="o">**</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
+                <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">DataError</span><span class="p">:</span>
+                    <span class="n">abort</span><span class="p">(</span><span class="mi">409</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;rename&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="o">**</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
+        <span class="k">except</span> <span class="n">errors</span><span class="o">.</span><span class="n">NotAuthorized</span><span class="p">:</span>
+            <span class="n">abort</span><span class="p">(</span><span class="mi">401</span><span class="p">)</span>
+        
+    <span class="k">elif</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s">&#39;POST&#39;</span> <span class="ow">and</span> <span class="n">method</span> <span class="o">==</span> <span class="s">&#39;add_columns&#39;</span><span class="p">:</span>
+        <span class="n">entity</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">entityname</span><span class="p">)(</span><span class="n">objid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">add_columns</span><span class="p">(</span><span class="o">**</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
+    
+    <span class="k">elif</span> <span class="n">method</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">method</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;create_&#39;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">!=</span> <span class="s">&#39;POST&#39;</span><span class="p">:</span>
+            <span class="n">abort</span><span class="p">(</span><span class="mi">405</span><span class="p">)</span>
+        <span class="n">ent</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">entityname</span><span class="p">)(</span><span class="n">objid</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ent</span><span class="p">,</span><span class="n">method</span><span class="p">)(</span><span class="o">**</span><span class="n">load</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">data</span><span class="p">)))</span>
+    
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">!=</span> <span class="s">&#39;GET&#39;</span><span class="p">:</span>
+            <span class="n">abort</span><span class="p">(</span><span class="mi">405</span><span class="p">)</span>
+        <span class="n">ent</span> <span class="o">=</span> <span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">entityname</span><span class="p">)(</span><span class="n">objid</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">dump</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">ent</span><span class="p">,</span><span class="n">method</span><span class="p">)())</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+        
+    <span class="n">abort</span><span class="p">(</span><span class="mi">404</span><span class="p">)</span>
+
+</div>
+<span class="n">login_view</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">LoginAPI</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s">&#39;login&#39;</span><span class="p">)</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">add_url_rule</span><span class="p">(</span>
+    <span class="s">&#39;/login/&#39;</span><span class="p">,</span>
+    <span class="n">view_func</span> <span class="o">=</span> <span class="n">login_view</span><span class="p">,</span>
+    <span class="n">methods</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;POST&#39;</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">login_view</span> <span class="o">=</span> <span class="n">auth</span><span class="o">.</span><span class="n">LoginAPI</span><span class="o">.</span><span class="n">as_view</span><span class="p">(</span><span class="s">&#39;login&#39;</span><span class="p">)</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">secret_key</span> <span class="o">=</span> <span class="s">&quot;GeorgeJetson&quot;</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">from_object</span><span class="p">(</span><span class="n">__name__</span><span class="p">)</span>
+    
+    <span class="n">login_manager</span> <span class="o">=</span> <span class="n">login</span><span class="o">.</span><span class="n">LoginManager</span><span class="p">()</span>
+    <span class="nd">@login_manager.user_loader</span>
+    <span class="k">def</span> <span class="nf">load_user</span><span class="p">(</span><span class="n">user_id</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">auth</span><span class="o">.</span><span class="n">User</span><span class="p">(</span><span class="n">user_id</span><span class="p">)</span>
+    
+    <span class="n">login_manager</span><span class="o">.</span><span class="n">setup_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    <span class="n">login_manager</span><span class="o">.</span><span class="n">init_app</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+    
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s">&#39;0.0.0.0&#39;</span><span class="p">,</span><span class="n">debug</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

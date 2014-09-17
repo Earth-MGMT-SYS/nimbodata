@@ -1,0 +1,28 @@
+rect:hover {
+  fill: red;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+circle {
+  fill: steelblue;
+  opacity: 0;
+}
+
+circle:hover {
+  fill: red;
+  stroke: none;
+  stroke-width: 10px;
+  opacity: .5;
+}

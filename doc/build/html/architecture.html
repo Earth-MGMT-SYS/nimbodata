@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Architecture &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="index.html" />
+    <link rel="next" title="Entities" href="entities.html" />
+    <link rel="prev" title="Introduction" href="intro.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="entities.html" title="Entities"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="architecture">
+<span id="id1"></span><h1>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h1>
+<p>The core of the platform is the data persistence engine.  It is written in
+Python and exposes a REST interface.  This Python application interacts with
+PostgreSQL via unix sockets on the localhost.  The application mediates all
+access to the database.  It is expected that <cite>SELECT</cite> functionality will be
+granted via direct driver access in the future, but all DDL and DML actions
+will be mediated by the application for the foreseeable future.</p>
+<div class="section" id="nimbodata-server">
+<h2>Nimbodata Server<a class="headerlink" href="#nimbodata-server" title="Permalink to this headline">¶</a></h2>
+<p>Currently targeting Python 2.7.  Numerous dependencies, see the install
+documentation for more detail.</p>
+<p>The Nimbodata server uses psycopg2, a syntax engine, a metadata catalog
+and some hidden columns to provide extra capabilities beyond a traditional SQL
+database.  Current functionality is aimed to provide a feature complete
+relational (i.e. not SQL compliant) database, with geospatial and object store
+support.</p>
+<p>The server logic and the client access patterns are both oriented around the
+API.</p>
+</div>
+<div class="section" id="nimbodata-clients">
+<h2>Nimbodata Clients<a class="headerlink" href="#nimbodata-clients" title="Permalink to this headline">¶</a></h2>
+<p>The Nimbodata platform targets Python 2.7, NodeJS and modern HTML5/Javascript.
+Clients are provided for Python and Javascript (same client runs in browser and
+Node).</p>
+<p>The clients each serve different purposes.  The Python client is intended
+to be the primary application development environment, and provides a rich
+set of features for querying the database using Python operators in a style
+similar to SQLAlchemy.  The NodeJS client is primarily for testing
+purposes, and to enable client-side apps to be developed in NodeJS for
+those who prefer Javascript (Python is strongly encouraged, however).  Finally,
+the browser client provides the MVC environment for application development,
+and the same core driver functionality as the NodeJS client.</p>
+</div>
+<div class="section" id="nimbodata-apps">
+<h2>Nimbodata Apps<a class="headerlink" href="#nimbodata-apps" title="Permalink to this headline">¶</a></h2>
+<p>At the core, a Nimbodata app is just data in the database.  The app platform
+is built on the rudiments provided only by the relational datastore and entity-
+model, with more creature comforts planned.  Nimbodata apps can be developed to
+run in either a pure Python environment, as an api-only toolkit or as a full
+platform app, with an adaptive UI and advanced cloud-driven capabilities.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Architecture</a><ul>
+<li><a class="reference internal" href="#nimbodata-server">Nimbodata Server</a></li>
+<li><a class="reference internal" href="#nimbodata-clients">Nimbodata Clients</a></li>
+<li><a class="reference internal" href="#nimbodata-apps">Nimbodata Apps</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="entities.html"
+                        title="next chapter">Entities</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/architecture.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="entities.html" title="Entities"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             >previous</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

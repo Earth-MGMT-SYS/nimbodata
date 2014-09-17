@@ -1,0 +1,205 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>core.util.tilecalc &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for core.util.tilecalc</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Copyright Oliver White 2007 - released &quot;public domain&quot;</span>
+
+<span class="sd">http://wiki.openstreetmap.org/index.php/Slippy_map_tilenames</span>
+
+<span class="sd">Module implements the PostgreSQL syntax as methods which accept parameters</span>
+<span class="sd">and return parameterized SQL and the input values processed for use as</span>
+<span class="sd">substitution parameters by the cursor.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c">#!/usr/bin/env python</span>
+<span class="c">#-------------------------------------------------------</span>
+<span class="c"># Translates between lat/long and the slippy-map tile</span>
+<span class="c"># numbering scheme</span>
+<span class="c"># </span>
+<span class="c"># http://wiki.openstreetmap.org/index.php/Slippy_map_tilenames</span>
+<span class="c"># </span>
+<span class="c"># Written by Oliver White, 2007</span>
+<span class="c"># This file is public-domain</span>
+<span class="c">#-------------------------------------------------------</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="numTiles"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.numTiles">[docs]</a><span class="k">def</span> <span class="nf">numTiles</span><span class="p">(</span><span class="n">z</span><span class="p">):</span>
+  <span class="k">return</span><span class="p">(</span><span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="n">z</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="sec"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.sec">[docs]</a><span class="k">def</span> <span class="nf">sec</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+  <span class="k">return</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="latlon2relativeXY"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.latlon2relativeXY">[docs]</a><span class="k">def</span> <span class="nf">latlon2relativeXY</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="p">(</span><span class="n">lon</span> <span class="o">+</span> <span class="mi">180</span><span class="p">)</span> <span class="o">/</span> <span class="mi">360</span>
+  <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">log</span><span class="p">(</span><span class="n">tan</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="n">lat</span><span class="p">))</span> <span class="o">+</span> <span class="n">sec</span><span class="p">(</span><span class="n">radians</span><span class="p">(</span><span class="n">lat</span><span class="p">)))</span> <span class="o">/</span> <span class="n">pi</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+  <span class="k">return</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="latlon2xy"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.latlon2xy">[docs]</a><span class="k">def</span> <span class="nf">latlon2xy</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="n">numTiles</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+  <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">latlon2relativeXY</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">)</span>
+  <span class="k">return</span><span class="p">(</span><span class="n">n</span><span class="o">*</span><span class="n">x</span><span class="p">,</span> <span class="n">n</span><span class="o">*</span><span class="n">y</span><span class="p">)</span>
+  </div>
+<div class="viewcode-block" id="tileXY"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.tileXY">[docs]</a><span class="k">def</span> <span class="nf">tileXY</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">,</span> <span class="n">z</span><span class="p">):</span>
+  <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">latlon2xy</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+  <span class="k">return</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="xy2latlon"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.xy2latlon">[docs]</a><span class="k">def</span> <span class="nf">xy2latlon</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="n">numTiles</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+  <span class="n">relY</span> <span class="o">=</span> <span class="n">y</span> <span class="o">/</span> <span class="n">n</span>
+  <span class="n">lat</span> <span class="o">=</span> <span class="n">mercatorToLat</span><span class="p">(</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">relY</span><span class="p">))</span>
+  <span class="n">lon</span> <span class="o">=</span> <span class="o">-</span><span class="mf">180.0</span> <span class="o">+</span> <span class="mf">360.0</span> <span class="o">*</span> <span class="n">x</span> <span class="o">/</span> <span class="n">n</span>
+  <span class="k">return</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">)</span>
+  </div>
+<div class="viewcode-block" id="latEdges"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.latEdges">[docs]</a><span class="k">def</span> <span class="nf">latEdges</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="n">numTiles</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+  <span class="n">unit</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">n</span>
+  <span class="n">relY1</span> <span class="o">=</span> <span class="n">y</span> <span class="o">*</span> <span class="n">unit</span>
+  <span class="n">relY2</span> <span class="o">=</span> <span class="n">relY1</span> <span class="o">+</span> <span class="n">unit</span>
+  <span class="n">lat1</span> <span class="o">=</span> <span class="n">mercatorToLat</span><span class="p">(</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">relY1</span><span class="p">))</span>
+  <span class="n">lat2</span> <span class="o">=</span> <span class="n">mercatorToLat</span><span class="p">(</span><span class="n">pi</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">relY2</span><span class="p">))</span>
+  <span class="k">return</span><span class="p">(</span><span class="n">lat1</span><span class="p">,</span><span class="n">lat2</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="lonEdges"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.lonEdges">[docs]</a><span class="k">def</span> <span class="nf">lonEdges</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+  <span class="n">n</span> <span class="o">=</span> <span class="n">numTiles</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+  <span class="n">unit</span> <span class="o">=</span> <span class="mi">360</span> <span class="o">/</span> <span class="n">n</span>
+  <span class="n">lon1</span> <span class="o">=</span> <span class="o">-</span><span class="mi">180</span> <span class="o">+</span> <span class="n">x</span> <span class="o">*</span> <span class="n">unit</span>
+  <span class="n">lon2</span> <span class="o">=</span> <span class="n">lon1</span> <span class="o">+</span> <span class="n">unit</span>
+  <span class="k">return</span><span class="p">(</span><span class="n">lon1</span><span class="p">,</span><span class="n">lon2</span><span class="p">)</span>
+  </div>
+<div class="viewcode-block" id="tileEdges"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.tileEdges">[docs]</a><span class="k">def</span> <span class="nf">tileEdges</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+  <span class="n">lat1</span><span class="p">,</span><span class="n">lat2</span> <span class="o">=</span> <span class="n">latEdges</span><span class="p">(</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+  <span class="n">lon1</span><span class="p">,</span><span class="n">lon2</span> <span class="o">=</span> <span class="n">lonEdges</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+  <span class="k">return</span><span class="p">((</span><span class="n">lat2</span><span class="p">,</span> <span class="n">lon1</span><span class="p">,</span> <span class="n">lat1</span><span class="p">,</span> <span class="n">lon2</span><span class="p">))</span> <span class="c"># S,W,N,E</span>
+</div>
+<span class="k">def</span> <span class="nf">_get_corner</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">):</span>
+  <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">lon</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">lat</span><span class="p">)</span>
+
+<div class="viewcode-block" id="tileBB"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.tileBB">[docs]</a><span class="k">def</span> <span class="nf">tileBB</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+  <span class="n">edges</span> <span class="o">=</span> <span class="n">tileEdges</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+  <span class="n">sw</span> <span class="o">=</span> <span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+  <span class="n">se</span> <span class="o">=</span> <span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">edges</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+  <span class="n">ne</span> <span class="o">=</span> <span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">edges</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+  <span class="n">nw</span> <span class="o">=</span> <span class="p">(</span><span class="n">edges</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">edges</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+  <span class="n">corners</span> <span class="o">=</span> <span class="p">[</span><span class="n">_get_corner</span><span class="p">(</span><span class="n">lat</span><span class="p">,</span><span class="n">lon</span><span class="p">)</span> <span class="k">for</span> <span class="n">lat</span><span class="p">,</span><span class="n">lon</span> <span class="ow">in</span> <span class="p">(</span><span class="n">sw</span><span class="p">,</span><span class="n">se</span><span class="p">,</span><span class="n">ne</span><span class="p">,</span><span class="n">nw</span><span class="p">,</span><span class="n">sw</span><span class="p">)]</span>
+  <span class="k">return</span> <span class="s">&quot;&#39;POLYGON ((</span><span class="si">%s</span><span class="s">))&#39;::geometry&quot;</span> <span class="o">%</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">corners</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="mercatorToLat"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.mercatorToLat">[docs]</a><span class="k">def</span> <span class="nf">mercatorToLat</span><span class="p">(</span><span class="n">mercatorY</span><span class="p">):</span>
+  <span class="k">return</span><span class="p">(</span><span class="n">degrees</span><span class="p">(</span><span class="n">atan</span><span class="p">(</span><span class="n">sinh</span><span class="p">(</span><span class="n">mercatorY</span><span class="p">))))</span>
+</div>
+<div class="viewcode-block" id="tileSizePixels"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.tileSizePixels">[docs]</a><span class="k">def</span> <span class="nf">tileSizePixels</span><span class="p">():</span>
+  <span class="k">return</span><span class="p">(</span><span class="mi">256</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="tileLayerExt"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.tileLayerExt">[docs]</a><span class="k">def</span> <span class="nf">tileLayerExt</span><span class="p">(</span><span class="n">layer</span><span class="p">):</span>
+  <span class="k">if</span><span class="p">(</span><span class="n">layer</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;oam&#39;</span><span class="p">)):</span>
+    <span class="k">return</span><span class="p">(</span><span class="s">&#39;jpg&#39;</span><span class="p">)</span>
+  <span class="k">return</span><span class="p">(</span><span class="s">&#39;png&#39;</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="tileLayerBase"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.tileLayerBase">[docs]</a><span class="k">def</span> <span class="nf">tileLayerBase</span><span class="p">(</span><span class="n">layer</span><span class="p">):</span>
+  <span class="n">layers</span> <span class="o">=</span> <span class="p">{</span> \
+    <span class="s">&quot;tah&quot;</span><span class="p">:</span> <span class="s">&quot;http://cassini.toolserver.org:8080/http://a.tile.openstreetmap.org/+http://toolserver.org/~cmarqu/hill/&quot;</span><span class="p">,</span>
+	<span class="c">#&quot;tah&quot;: &quot;http://tah.openstreetmap.org/Tiles/tile/&quot;,</span>
+    <span class="s">&quot;oam&quot;</span><span class="p">:</span> <span class="s">&quot;http://oam1.hypercube.telascience.org/tiles/1.0.0/openaerialmap-900913/&quot;</span><span class="p">,</span>
+    <span class="s">&quot;mapnik&quot;</span><span class="p">:</span> <span class="s">&quot;http://tile.openstreetmap.org/mapnik/&quot;</span>
+    <span class="p">}</span>
+  <span class="k">return</span><span class="p">(</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">])</span>
+  </div>
+<div class="viewcode-block" id="tileURL"><a class="viewcode-back" href="../../../apidoc/core.util.tilecalc.html#core.util.tilecalc.tileURL">[docs]</a><span class="k">def</span> <span class="nf">tileURL</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">,</span><span class="n">layer</span><span class="p">):</span>
+  <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s%d</span><span class="s">/</span><span class="si">%d</span><span class="s">/</span><span class="si">%d</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tileLayerBase</span><span class="p">(</span><span class="n">layer</span><span class="p">),</span><span class="n">z</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">tileLayerExt</span><span class="p">(</span><span class="n">layer</span><span class="p">))</span>
+</div>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
+  <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">17</span><span class="p">):</span>
+    <span class="n">x</span><span class="p">,</span><span class="n">y</span> <span class="o">=</span> <span class="n">tileXY</span><span class="p">(</span><span class="mf">51.50610</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.119888</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+    
+    <span class="n">s</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">e</span> <span class="o">=</span> <span class="n">tileEdges</span><span class="p">(</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">)</span>
+    <span class="k">print</span> <span class="s">&quot;</span><span class="si">%d</span><span class="s">: </span><span class="si">%d</span><span class="s">,</span><span class="si">%d</span><span class="s"> --&gt; </span><span class="si">%1.3f</span><span class="s"> :: </span><span class="si">%1.3f</span><span class="s">, </span><span class="si">%1.3f</span><span class="s"> :: </span><span class="si">%1.3f</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">z</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">s</span><span class="p">,</span><span class="n">n</span><span class="p">,</span><span class="n">w</span><span class="p">,</span><span class="n">e</span><span class="p">)</span>
+    <span class="c">#print &quot;&lt;img src=&#39;%s&#39;&gt;&lt;br&gt;&quot; % tileURL(x,y,z)</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

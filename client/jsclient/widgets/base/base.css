@@ -1,0 +1,31 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  margin-right: 1em;
+}
+
+.Overbox {
+  color: white;
+  position: absolute;
+  background-color:rgba(0,0,0,0.5);
+  padding: 20px;
+  border-radius: 5px;
+  z-index: 5;
+  -webkit-padding-start: 20px;
+}
+
+.Overbox:hover {
+  background-color:rgba(0,0,0,0.7);
+}
+
+.Container {
+  float: left;
+}
+
+
+body {
+    background-color: #ffffff;
+}
+
+

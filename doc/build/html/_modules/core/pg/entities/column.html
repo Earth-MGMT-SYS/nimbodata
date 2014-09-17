@@ -1,0 +1,217 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>core.pg.entities.column &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../../../../index.html" />
+    <link rel="up" title="core.pg.entities" href="../entities.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../entities.html" accesskey="U">core.pg.entities</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for core.pg.entities.column</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Copyright (C) 2014  Bradley Alan Smith</span>
+
+<span class="sd">Module implements the PostgreSQL column.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">syntax</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">datatypes</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="Column"><a class="viewcode-back" href="../../../../apidoc/core.pg.entities.html#core.pg.entities.column.Column">[docs]</a><span class="k">class</span> <span class="nc">Column</span><span class="p">(</span><span class="n">Entity</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Column in a table, referenced by views &quot;&quot;&quot;</span>
+    
+    <span class="n">objid_prefix</span> <span class="o">=</span> <span class="s">&#39;col&#39;</span>
+    
+    <span class="k">def</span> <span class="nf">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s">&#39;lt&#39;</span><span class="p">,</span><span class="n">other</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_start_colindex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tblid</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Given a tblid, finds the next column index, which may be zero</span>
+<span class="sd">        if there are no existing columns.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">stmt</span><span class="p">,</span><span class="n">params</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+            <span class="s">&quot;_adm-registries&quot;</span><span class="p">,</span>
+            <span class="s">&quot;_adm-maxcolindex&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s">&quot;maxindex&quot;</span><span class="p">,),(</span><span class="s">&#39;tblid&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="n">tblid</span><span class="p">)</span>
+        <span class="p">)</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">_get_scalar</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">startIndex</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">startIndex</span>
+    
+<div class="viewcode-block" id="Column.create"><a class="viewcode-back" href="../../../../apidoc/core.pg.entities.html#core.pg.entities.column.Column.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">datatype</span><span class="p">,</span><span class="n">alias</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">primary_key</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">tblinfo</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        
+        <span class="k">if</span> <span class="n">tblinfo</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">tblinfo</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">info</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">objid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        
+                <span class="n">stmt</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span>
+                                             <span class="bp">self</span><span class="o">.</span><span class="n">ent_info</span><span class="p">,</span>
+                                             <span class="n">where</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;objid&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="n">objid</span><span class="p">))</span>
+                
+                <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+                <span class="n">tblinfo</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">_get_first</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
+                
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_colindex</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        
+        <span class="n">dbid</span><span class="p">,</span><span class="n">tblname</span> <span class="o">=</span> <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">],</span><span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">tblowner</span> <span class="o">=</span> <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;owner&#39;</span><span class="p">]</span>
+        
+        <span class="n">colid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_id</span><span class="p">()</span>
+                
+        <span class="n">regVals</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;parent&#39;</span><span class="p">:</span><span class="n">parent</span><span class="p">,</span>
+            <span class="s">&#39;weight&#39;</span><span class="p">:</span><span class="n">index</span><span class="p">,</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="n">name</span><span class="p">,</span>
+            <span class="s">&#39;alias&#39;</span><span class="p">:</span><span class="n">alias</span><span class="p">,</span>
+            <span class="s">&#39;datatype&#39;</span><span class="p">:</span><span class="nb">type</span><span class="p">(</span><span class="n">datatype</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+            <span class="s">&#39;owner&#39;</span><span class="p">:</span><span class="n">tblowner</span><span class="p">,</span>
+            <span class="s">&#39;objid&#39;</span><span class="p">:</span><span class="n">colid</span>
+        <span class="p">}</span>
+        
+        <span class="n">Entity</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">regVals</span><span class="p">)</span>
+        <span class="n">regVals</span><span class="p">[</span><span class="s">&#39;qtn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dbid</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;&quot;.&quot;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">datatype</span><span class="p">,</span><span class="n">datatypes</span><span class="o">.</span><span class="n">Datatype</span><span class="p">):</span>
+            <span class="n">datatype</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">datatypes</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="n">datatype</span><span class="p">)[</span><span class="mi">9</span><span class="p">:])</span>
+                
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span>
+            <span class="n">dbid</span><span class="p">,</span>
+            <span class="n">parent</span><span class="p">,</span>
+            <span class="n">colid</span><span class="p">,</span>
+            <span class="n">datatype</span><span class="o">.</span><span class="n">sql_create</span><span class="p">(),</span>
+            <span class="n">primary_key</span>
+        <span class="p">)</span>
+        
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">objid</span> <span class="o">=</span> <span class="n">colid</span>
+        
+        <span class="k">return</span> <span class="bp">self</span>
+        </div>
+<div class="viewcode-block" id="Column.modify"><a class="viewcode-back" href="../../../../apidoc/core.pg.entities.html#core.pg.entities.column.Column.modify">[docs]</a>    <span class="k">def</span> <span class="nf">modify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newtype</span><span class="p">):</span>
+        <span class="n">colinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
+        <span class="n">tblinfo</span> <span class="o">=</span> <span class="n">ent_map</span><span class="p">[</span><span class="s">&#39;Table&#39;</span><span class="p">](</span><span class="n">objid</span><span class="o">=</span><span class="n">colinfo</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">])</span>
+        
+        <span class="n">colinfo</span><span class="p">[</span><span class="s">&#39;datatype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">newtype</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry_insert</span><span class="p">(</span><span class="n">colinfo</span><span class="p">)</span>
+        
+        <span class="n">mod_stmt</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">alter_column_type</span><span class="p">(</span>
+            <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">],</span>
+            <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">],</span>
+            <span class="n">colinfo</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">],</span>
+            <span class="n">newtype</span>
+        <span class="p">)</span>
+        
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">mod_stmt</span><span class="p">)</span>
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">objid</span>
+    </div>
+<div class="viewcode-block" id="Column.drop"><a class="viewcode-back" href="../../../../apidoc/core.pg.entities.html#core.pg.entities.column.Column.drop">[docs]</a>    <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">colinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
+        <span class="n">tblinfo</span> <span class="o">=</span> <span class="n">ent_map</span><span class="p">[</span><span class="s">&#39;Table&#39;</span><span class="p">](</span><span class="n">objid</span><span class="o">=</span><span class="n">colinfo</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">])</span>
+        
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">drop_column</span><span class="p">(</span>
+            <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">],</span>
+            <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span>
+        <span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">ProgrammingError</span><span class="p">:</span>
+            <span class="k">pass</span>
+        
+        <span class="k">return</span> <span class="n">Entity</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../entities.html" >core.pg.entities</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

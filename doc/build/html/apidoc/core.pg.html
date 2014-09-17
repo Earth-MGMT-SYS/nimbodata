@@ -1,0 +1,574 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>core.pg package &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../index.html" />
+    <link rel="up" title="core package" href="core.html" />
+    <link rel="next" title="core.pg.datatypes package" href="core.pg.datatypes.html" />
+    <link rel="prev" title="core package" href="core.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.pg.datatypes.html" title="core.pg.datatypes package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="core package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="core.html" accesskey="U">core package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="core-pg-package">
+<h1>core.pg package<a class="headerlink" href="#core-pg-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core.pg.datatypes.html">core.pg.datatypes package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.datatypes.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.datatypes.html#module-core.pg.datatypes.function">core.pg.datatypes.function module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.datatypes.html#module-core.pg.datatypes.geographic">core.pg.datatypes.geographic module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.datatypes.html#module-core.pg.datatypes.numeric">core.pg.datatypes.numeric module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.datatypes.html#module-core.pg.datatypes.prototype">core.pg.datatypes.prototype module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.datatypes.html#module-core.pg.datatypes.text">core.pg.datatypes.text module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.datatypes.html#module-core.pg.datatypes.time">core.pg.datatypes.time module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.datatypes.html#module-core.pg.datatypes">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="core.pg.entities.html">core.pg.entities package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.html#subpackages">Subpackages</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="core.pg.entities.relations.html">core.pg.entities.relations package</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="core.pg.entities.relations.html#submodules">Submodules</a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.pg.entities.relations.html#module-core.pg.entities.relations.geo">core.pg.entities.relations.geo module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.pg.entities.relations.html#module-core.pg.entities.relations.table">core.pg.entities.relations.table module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.pg.entities.relations.html#module-core.pg.entities.relations.tree">core.pg.entities.relations.tree module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.pg.entities.relations.html#module-core.pg.entities.relations.view">core.pg.entities.relations.view module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="core.pg.entities.relations.html#module-core.pg.entities.relations">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.html#module-core.pg.entities.column">core.pg.entities.column module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.html#module-core.pg.entities.constraint">core.pg.entities.constraint module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.html#module-core.pg.entities.database">core.pg.entities.database module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.html#module-core.pg.entities.prototype">core.pg.entities.prototype module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.html#module-core.pg.entities">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-core.pg.engine">
+<span id="core-pg-engine-module"></span><h2>core.pg.engine module<a class="headerlink" href="#module-core.pg.engine" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements access methods which allow entities to access the database
+at a particular permission level.</p>
+<dl class="class">
+<dt id="core.pg.engine.Engine">
+<em class="property">class </em><tt class="descclassname">core.pg.engine.</tt><tt class="descname">Engine</tt><big>(</big><em>user=None</em>, <em>drc=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/engine.html#Engine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.engine.Engine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Engine for PostgreSQL database</p>
+<dl class="method">
+<dt id="core.pg.engine.Engine.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/engine.html#Engine.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.engine.Engine.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.engine.Engine.conn_string">
+<tt class="descname">conn_string</tt><a class="reference internal" href="../_modules/core/pg/engine.html#Engine.conn_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.engine.Engine.conn_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.engine.Engine.execute">
+<tt class="descname">execute</tt><big>(</big><em>stmt</em>, <em>params=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/engine.html#Engine.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.engine.Engine.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the SQL statement, optionally providing substitution
+parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.engine.Engine.execute_many">
+<tt class="descname">execute_many</tt><big>(</big><em>stmts</em>, <em>return_cursors=False</em><big>)</big><a class="reference internal" href="../_modules/core/pg/engine.html#Engine.execute_many"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.engine.Engine.execute_many" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.engine.Engine.mogrify">
+<tt class="descname">mogrify</tt><big>(</big><em>stmt</em>, <em>params</em><big>)</big><a class="reference internal" href="../_modules/core/pg/engine.html#Engine.mogrify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.engine.Engine.mogrify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.errors">
+<span id="core-pg-errors-module"></span><h2>core.pg.errors module<a class="headerlink" href="#module-core.pg.errors" title="Permalink to this headline">¶</a></h2>
+<p>Module implements Exceptions required by various aspects in the core.</p>
+<dl class="exception">
+<dt id="core.pg.errors.BadData">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">BadData</tt><a class="reference internal" href="../_modules/core/pg/errors.html#BadData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.BadData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Bad data.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.DatabaseDoesNotExist">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">DatabaseDoesNotExist</tt><a class="reference internal" href="../_modules/core/pg/errors.html#DatabaseDoesNotExist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.DatabaseDoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Database does not exist.</p>
+<dl class="attribute">
+<dt id="core.pg.errors.DatabaseDoesNotExist.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 004: Sorry, the database does not exist'</em><a class="headerlink" href="#core.pg.errors.DatabaseDoesNotExist.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.IntegrityError">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">IntegrityError</tt><a class="reference internal" href="../_modules/core/pg/errors.html#IntegrityError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.IntegrityError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Operation would violate constraint</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.InvalidFunction">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">InvalidFunction</tt><a class="reference internal" href="../_modules/core/pg/errors.html#InvalidFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.InvalidFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Attempted to call SQL function not identified in allowed_funcs</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.InvalidMethod">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">InvalidMethod</tt><a class="reference internal" href="../_modules/core/pg/errors.html#InvalidMethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.InvalidMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Raised when an illegal method name is called</p>
+<dl class="attribute">
+<dt id="core.pg.errors.InvalidMethod.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 000: Sorry, you requested an illegal method name.'</em><a class="headerlink" href="#core.pg.errors.InvalidMethod.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.NoFromTable">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">NoFromTable</tt><a class="reference internal" href="../_modules/core/pg/errors.html#NoFromTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.NoFromTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Query did not specify a table to query from.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.NoResults">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">NoResults</tt><a class="reference internal" href="../_modules/core/pg/errors.html#NoResults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.NoResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>There&#8217;s no results for this query</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.PermissionDenied">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">PermissionDenied</tt><a class="reference internal" href="../_modules/core/pg/errors.html#PermissionDenied"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.PermissionDenied" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>User does not have permission.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.PrimaryKeyError">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">PrimaryKeyError</tt><a class="reference internal" href="../_modules/core/pg/errors.html#PrimaryKeyError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.PrimaryKeyError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>The insert violates a primary key condition.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.RelationDoesNotExist">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">RelationDoesNotExist</tt><a class="reference internal" href="../_modules/core/pg/errors.html#RelationDoesNotExist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.RelationDoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Relation does not exist</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.RelationExists">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">RelationExists</tt><a class="reference internal" href="../_modules/core/pg/errors.html#RelationExists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.RelationExists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Database already exists in the registry.</p>
+<dl class="attribute">
+<dt id="core.pg.errors.RelationExists.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 001: Sorry, the relation already exists'</em><a class="headerlink" href="#core.pg.errors.RelationExists.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.TableDoesNotExist">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">TableDoesNotExist</tt><a class="reference internal" href="../_modules/core/pg/errors.html#TableDoesNotExist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.TableDoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Table does not exist in the database.</p>
+<dl class="attribute">
+<dt id="core.pg.errors.TableDoesNotExist.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 003: Sorry, the table does not exist'</em><a class="headerlink" href="#core.pg.errors.TableDoesNotExist.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.TableExists">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">TableExists</tt><a class="reference internal" href="../_modules/core/pg/errors.html#TableExists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.TableExists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Table/user combo already exists in the database.</p>
+<dl class="attribute">
+<dt id="core.pg.errors.TableExists.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 002: Sorry, the table already exists'</em><a class="headerlink" href="#core.pg.errors.TableExists.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.ValueRequired">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">ValueRequired</tt><a class="reference internal" href="../_modules/core/pg/errors.html#ValueRequired"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.ValueRequired" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Null value where not null required.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="core.pg.errors.ViewDoesNotExist">
+<em class="property">exception </em><tt class="descclassname">core.pg.errors.</tt><tt class="descname">ViewDoesNotExist</tt><a class="reference internal" href="../_modules/core/pg/errors.html#ViewDoesNotExist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.errors.ViewDoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Table does not exist in the database.</p>
+<dl class="attribute">
+<dt id="core.pg.errors.ViewDoesNotExist.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 003: Sorry, the table does not exist'</em><a class="headerlink" href="#core.pg.errors.ViewDoesNotExist.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.results">
+<span id="core-pg-results-module"></span><h2>core.pg.results module<a class="headerlink" href="#module-core.pg.results" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the container objects for select results and the rows
+contained within.</p>
+<dl class="class">
+<dt id="core.pg.results.Results">
+<em class="property">class </em><tt class="descclassname">core.pg.results.</tt><tt class="descname">Results</tt><big>(</big><em>colinfo</em>, <em>rows</em><big>)</big><a class="reference internal" href="../_modules/core/pg/results.html#Results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.results.Results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Simple wrapper with some special methods to hold results</p>
+<dl class="method">
+<dt id="core.pg.results.Results.toJSON">
+<tt class="descname">toJSON</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/results.html#Results.toJSON"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.results.Results.toJSON" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.pg.results.Row">
+<em class="property">class </em><tt class="descclassname">core.pg.results.</tt><tt class="descname">Row</tt><big>(</big><em>header</em>, <em>decoder</em>, <em>items</em><big>)</big><a class="reference internal" href="../_modules/core/pg/results.html#Row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.results.Row" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Simple wrapper with some special methods for a row</p>
+<dl class="attribute">
+<dt id="core.pg.results.Row.row_dict">
+<tt class="descname">row_dict</tt><a class="reference internal" href="../_modules/core/pg/results.html#Row.row_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.results.Row.row_dict" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.select">
+<span id="core-pg-select-module"></span><h2>core.pg.select module<a class="headerlink" href="#module-core.pg.select" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements Select, which allows read-only query functionality.</p>
+<dl class="class">
+<dt id="core.pg.select.Select">
+<em class="property">class </em><tt class="descclassname">core.pg.select.</tt><tt class="descname">Select</tt><a class="reference internal" href="../_modules/core/pg/select.html#Select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.select.Select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.engine.Engine" title="core.pg.engine.Engine"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.engine.Engine</span></tt></a></p>
+<dl class="attribute">
+<dt id="core.pg.select.Select.allowed_funcs">
+<tt class="descname">allowed_funcs</tt><em class="property"> = ['max', 'min', 'avg']</em><a class="headerlink" href="#core.pg.select.Select.allowed_funcs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.select.Select.execute">
+<tt class="descname">execute</tt><big>(</big><em>stmt</em>, <em>params</em><big>)</big><a class="reference internal" href="../_modules/core/pg/select.html#Select.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.select.Select.execute" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.select.Select.get_array">
+<tt class="descname">get_array</tt><big>(</big><em>viewid=None</em>, <em>col=None</em>, <em>join=None</em>, <em>where=None</em>, <em>group_by=None</em>, <em>order_by=None</em>, <em>limit=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/select.html#Select.get_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.select.Select.get_array" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.select.Select.get_byrowid">
+<tt class="descname">get_byrowid</tt><big>(</big><em>viewid</em>, <em>ids</em>, <em>alias=False</em><big>)</big><a class="reference internal" href="../_modules/core/pg/select.html#Select.get_byrowid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.select.Select.get_byrowid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.select.Select.select">
+<tt class="descname">select</tt><big>(</big><em>viewid=None</em>, <em>cols=None</em>, <em>join=None</em>, <em>where=None</em>, <em>group_by=None</em>, <em>order_by=None</em>, <em>limit=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/select.html#Select.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.select.Select.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given, optionally:</p>
+<ul class="simple">
+<li>&#8216;tblid`</li>
+<li><cite>cols=[]</cite></li>
+<li><cite>join=(tblid,joinStmt)</cite></li>
+<li><cite>where=whereStmt</cite></li>
+<li><cite>order_by=colname</cite></li>
+<li><cite>limit=int</cite></li>
+</ul>
+<p>selects and returns the <cite>[results]</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="core.pg.select.subid">
+<tt class="descclassname">core.pg.select.</tt><tt class="descname">subid</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/select.html#subid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.select.subid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.syntax">
+<span id="core-pg-syntax-module"></span><h2>core.pg.syntax module<a class="headerlink" href="#module-core.pg.syntax" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the PostgreSQL syntax as methods which accept parameters
+and return parameterized SQL and the input values processed for use as
+substitution parameters by the cursor.</p>
+<dl class="function">
+<dt id="core.pg.syntax.add_column">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">add_column</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em>, <em>dtype</em>, <em>pk=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#add_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.add_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.add_constraint_check">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">add_constraint_check</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>conid</em>, <em>const_stmt</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#add_constraint_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.add_constraint_check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.add_constraint_notnull">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">add_constraint_notnull</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#add_constraint_notnull"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.add_constraint_notnull" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.add_constraint_unique">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">add_constraint_unique</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>conid</em>, <em>colid</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#add_constraint_unique"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.add_constraint_unique" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.alter_column_type">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">alter_column_type</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em>, <em>newtype</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#alter_column_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.alter_column_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.alter_default">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">alter_default</tt><big>(</big><em>schemaid</em>, <em>uname</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#alter_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.alter_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.create_db">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">create_db</tt><big>(</big><em>schemaid</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#create_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.create_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.create_managed_table">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">create_managed_table</tt><big>(</big><em>schemaid</em>, <em>tblid</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#create_managed_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.create_managed_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.create_table">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">create_table</tt><big>(</big><em>schemaid</em>, <em>tblid</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#create_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.create_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.create_view">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">create_view</tt><big>(</big><em>schemaid</em>, <em>viewid</em>, <em>select</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#create_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.create_view" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.delete_row">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">delete_row</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>where</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#delete_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.delete_row" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.drop_column">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">drop_column</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#drop_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.drop_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.drop_constraint">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">drop_constraint</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>conid</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#drop_constraint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.drop_constraint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.drop_constraint_notnull">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">drop_constraint_notnull</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#drop_constraint_notnull"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.drop_constraint_notnull" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.drop_db">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">drop_db</tt><big>(</big><em>schemaid</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#drop_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.drop_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.drop_table">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">drop_table</tt><big>(</big><em>schemaid</em>, <em>tblid</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#drop_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.drop_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.get_tqn">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">get_tqn</tt><big>(</big><em>schemaid</em>, <em>tblid</em><big>)</big><a class="headerlink" href="#core.pg.syntax.get_tqn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.grant_usage">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">grant_usage</tt><big>(</big><em>schemaid</em>, <em>uname</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#grant_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.grant_usage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.insert">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">insert</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>values=None</em>, <em>colnames=False</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.insert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.process_where">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">process_where</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>clause</em>, <em>i=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#process_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.process_where" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.select">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">select</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>cols=None</em>, <em>where=None</em>, <em>join=None</em>, <em>group_by=None</em>, <em>order_by=None</em>, <em>limit=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.select" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.select_features_byrowid">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">select_features_byrowid</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em>, <em>colname</em>, <em>rowids</em>, <em>z=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#select_features_byrowid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.select_features_byrowid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.select_geography">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">select_geography</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em>, <em>colname</em>, <em>bb=None</em>, <em>geotype=None</em>, <em>z=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#select_geography"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.select_geography" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.select_geography_rowids">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">select_geography_rowids</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em>, <em>bb</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#select_geography_rowids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.select_geography_rowids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="core.pg.syntax.update">
+<tt class="descclassname">core.pg.syntax.</tt><tt class="descname">update</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>values</em>, <em>colnames=False</em><big>)</big><a class="reference internal" href="../_modules/core/pg/syntax.html#update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.syntax.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-core.pg">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-core.pg" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements all of the functionality to interact with the PostgreSQL
+database.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">core.pg package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-core.pg.engine">core.pg.engine module</a></li>
+<li><a class="reference internal" href="#module-core.pg.errors">core.pg.errors module</a></li>
+<li><a class="reference internal" href="#module-core.pg.results">core.pg.results module</a></li>
+<li><a class="reference internal" href="#module-core.pg.select">core.pg.select module</a></li>
+<li><a class="reference internal" href="#module-core.pg.syntax">core.pg.syntax module</a></li>
+<li><a class="reference internal" href="#module-core.pg">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="core.html"
+                        title="previous chapter">core package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="core.pg.datatypes.html"
+                        title="next chapter">core.pg.datatypes package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/apidoc/core.pg.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.pg.datatypes.html" title="core.pg.datatypes package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="core.html" title="core package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="core.html" >core package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

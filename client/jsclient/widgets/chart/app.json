@@ -1,0 +1,16 @@
+[
+    {
+        "id":"chart",
+        "widget":"Chart",
+        "resize_control":true,
+        "width":500,
+        "height":500,
+        "title":"The Chart",
+        "subtitle":"2014 Water Year Stream Flow (CFS)",
+        "chart_type":"bar",
+        "type_control":true,
+        "draw_y_axis":true,
+        "draw_x_axis":true,
+        "datasource":"./examples/dense_obs.json"
+    }
+]

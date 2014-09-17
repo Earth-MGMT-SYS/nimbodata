@@ -1,0 +1,352 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nimbodata.core.pg.entities.prototype &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nimbodata.core.pg.entities.prototype</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;Module implements the PostgreSQL Entity base class.&quot;&quot;&quot;</span>
+<span class="c"># Copyright (C) 2014  Bradley Alan Smith</span>
+
+<span class="kn">from</span> <span class="nn">uuid</span> <span class="kn">import</span> <span class="n">uuid4</span> <span class="k">as</span> <span class="n">uuid</span>
+
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+
+<span class="kn">import</span> <span class="nn">common.errors</span> <span class="kn">as</span> <span class="nn">errors</span>
+<span class="kn">import</span> <span class="nn">common.entities.prototype</span> <span class="kn">as</span> <span class="nn">base_ent</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">syntax</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="o">*</span>
+    
+<div class="viewcode-block" id="Entity"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.prototype.Entity">[docs]</a><span class="k">class</span> <span class="nc">Entity</span><span class="p">(</span><span class="n">base_ent</span><span class="o">.</span><span class="n">Entity</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for an entity in a PostgreSQL database (in PG terms).&quot;&quot;&quot;</span>
+    <span class="n">schema</span> <span class="o">=</span> <span class="s">&#39;_adm-registries&#39;</span>
+    <span class="n">ent_reg</span> <span class="o">=</span> <span class="s">&#39;_adm-entityregistry&#39;</span>
+    <span class="n">ent_info</span> <span class="o">=</span> <span class="s">&#39;_adm-entityinfo&#39;</span>
+        
+    <span class="k">def</span> <span class="nf">_by_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assigns `self.objid` by a registry query for the name.&quot;&quot;&quot;</span>
+        <span class="n">where</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="n">name</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;entitytype&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+        <span class="p">]</span>
+        
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span> <span class="o">!=</span> <span class="s">&#39;Database&#39;</span><span class="p">:</span>
+            <span class="n">where</span> <span class="o">+=</span> <span class="p">[(</span><span class="s">&#39;parent_objid&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">))]</span>
+        
+        <span class="n">stmt</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ent_info</span><span class="p">,</span>
+            <span class="n">where</span> <span class="o">=</span> <span class="n">where</span>
+        <span class="p">)</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;drc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">_get_scalar</span><span class="p">(</span><span class="s">&#39;objid&#39;</span><span class="p">,</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">IndexError</span><span class="p">,</span><span class="ne">TypeError</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">RelationDoesNotExist</span>
+    
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Entity.info"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.prototype.Entity.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;So that we always have accurate metadata.&quot;&quot;&quot;</span>
+        <span class="n">objid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">)</span>
+        
+        <span class="n">stmt</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span>
+                                     <span class="bp">self</span><span class="o">.</span><span class="n">ent_info</span><span class="p">,</span>
+                                     <span class="n">where</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;objid&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="n">objid</span><span class="p">))</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">retVal</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">controllers</span><span class="p">[</span><span class="s">&#39;drc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">_get_first</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span> <span class="n">params</span><span class="p">))</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">RelationDoesNotExist</span>
+        <span class="k">return</span> <span class="n">retVal</span>
+    </div>
+<div class="viewcode-block" id="Entity.select"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.prototype.Entity.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all children of this entity.&quot;&quot;&quot;</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attr_cols</span>
+        <span class="n">coltype</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="s">&#39;dbid&#39;</span> <span class="k">else</span> <span class="s">&#39;text&#39;</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">,</span><span class="s">&#39;datatype&#39;</span><span class="p">:</span> <span class="n">coltype</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="s">&#39;weight&#39;</span><span class="p">:</span><span class="n">i</span><span class="p">}</span>
+                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cols</span><span class="p">)]</span>
+        
+        <span class="n">where</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;parent&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="bp">self</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">])]</span>
+        
+        <span class="n">stmt</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ent_info</span><span class="p">,</span>
+            <span class="n">where</span><span class="o">=</span><span class="n">where</span><span class="p">,</span>
+            <span class="n">order_by</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;weight&#39;</span><span class="p">,)</span>
+        <span class="p">)</span>
+        
+        <span class="n">infos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">controllers</span><span class="p">[</span><span class="s">&#39;drc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">))</span>
+        <span class="n">retVal</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">infos</span><span class="p">:</span>
+            <span class="n">retVal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ent_map</span><span class="p">[</span><span class="n">i</span><span class="p">[</span><span class="s">&#39;entitytype&#39;</span><span class="p">]](</span><span class="n">objid</span><span class="o">=</span><span class="n">i</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">]))</span>
+            
+        <span class="k">return</span> <span class="n">retVal</span>
+    </div>
+<div class="viewcode-block" id="Entity.tree"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.prototype.Entity.tree">[docs]</a>    <span class="k">def</span> <span class="nf">tree</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all children of this entity.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">objid</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">where</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;owner&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">])]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">where</span> <span class="o">=</span> <span class="p">[(</span><span class="s">&#39;parent_objid&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="bp">self</span><span class="p">)]</span>
+        <span class="n">where</span> <span class="o">+=</span> <span class="p">[</span>
+            <span class="p">(</span><span class="s">&#39;entitytype&#39;</span><span class="p">,</span> <span class="s">&#39;!=&#39;</span><span class="p">,</span> <span class="s">&#39;Constraint&#39;</span><span class="p">),</span>
+            <span class="p">(</span><span class="s">&#39;entitytype&#39;</span><span class="p">,</span> <span class="s">&#39;!=&#39;</span><span class="p">,</span> <span class="s">&#39;Column&#39;</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attr_cols</span>
+        <span class="n">coltype</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="s">&#39;dbid&#39;</span> <span class="k">else</span> <span class="s">&#39;text&#39;</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">,</span><span class="s">&#39;datatype&#39;</span><span class="p">:</span> <span class="n">coltype</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="s">&#39;weight&#39;</span><span class="p">:</span><span class="n">i</span><span class="p">}</span>
+                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cols</span><span class="p">)]</span>
+        
+        <span class="n">stmt</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ent_info</span><span class="p">,</span>
+            <span class="n">where</span><span class="o">=</span><span class="n">where</span>
+        <span class="p">)</span>
+        
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            ORDER BY</span>
+<span class="s">            CASE</span>
+<span class="s">                WHEN entitytype=&#39;Database&#39; THEN 1</span>
+<span class="s">                WHEN entitytype=&#39;Table&#39; THEN 2</span>
+<span class="s">                WHEN entitytype=&#39;View&#39; THEN 3</span>
+<span class="s">                WHEN entitytype=&#39;Column&#39; THEN 4</span>
+<span class="s">                WHEN entitytype=&#39;Constraint&#39; THEN 5</span>
+<span class="s">            END</span>
+<span class="s">        &quot;&quot;&quot;</span>
+        
+        <span class="n">infos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">controllers</span><span class="p">[</span><span class="s">&#39;drc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">))</span>
+        <span class="n">retVal</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">infos</span><span class="p">:</span>
+            <span class="n">retVal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="n">i</span><span class="p">))</span>
+        
+        <span class="k">return</span> <span class="n">retVal</span>
+    </div>
+<div class="viewcode-block" id="Entity.listing"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.prototype.Entity.listing">[docs]</a>    <span class="k">def</span> <span class="nf">listing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">child_type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all peers or children of the entity.</span>
+<span class="sd">        </span>
+<span class="sd">        Called directly, it provides a list of same-type siblings.</span>
+<span class="sd">        </span>
+<span class="sd">        The method also serves a `__getattr__` for the lowercase plural of any</span>
+<span class="sd">        entity type (i.e. `Database().tables()` or `Table().columns()`).  When</span>
+<span class="sd">        called via `__getattr__`, it will be called with the `child_type` </span>
+<span class="sd">        converted from the `attr` argument.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attr_cols</span>
+        <span class="n">coltype</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span> <span class="k">if</span> <span class="n">x</span> <span class="o">==</span> <span class="s">&#39;dbid&#39;</span> <span class="k">else</span> <span class="s">&#39;text&#39;</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">,</span><span class="s">&#39;datatype&#39;</span><span class="p">:</span> <span class="n">coltype</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="s">&#39;weight&#39;</span><span class="p">:</span><span class="n">i</span><span class="p">}</span>
+                  <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cols</span><span class="p">)]</span>
+        
+        <span class="k">if</span> <span class="n">child_type</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">where</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;entitytype&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">objid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">where</span><span class="o">+=</span><span class="p">[(</span><span class="s">&#39;parent_objid&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">]))]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">where</span><span class="o">=</span><span class="p">[(</span><span class="s">&#39;entitytype&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="n">child_type</span><span class="p">)]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">objid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">where</span><span class="o">+=</span><span class="p">[(</span><span class="s">&#39;parent_objid&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">))]</span>
+                
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;Column&#39;</span><span class="p">:</span>
+            <span class="n">where</span> <span class="o">+=</span> <span class="p">[(</span><span class="s">&#39;objid&#39;</span><span class="p">,</span><span class="s">&#39;!=&#39;</span><span class="p">,</span><span class="s">&#39;_adm-rowid&#39;</span><span class="p">)]</span>
+        
+        <span class="n">stmt</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ent_info</span><span class="p">,</span>
+            <span class="n">where</span><span class="o">=</span><span class="n">where</span><span class="p">,</span>
+            <span class="n">order_by</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;weight&#39;</span><span class="p">,)</span>
+        <span class="p">)</span>
+        
+        <span class="n">infos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">controllers</span><span class="p">[</span><span class="s">&#39;drc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">))</span>
+        <span class="n">retVal</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">infos</span><span class="p">:</span>
+            <span class="n">retVal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s">&#39;entitytype&#39;</span><span class="p">])(</span><span class="n">objid</span><span class="o">=</span><span class="n">i</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">]))</span>
+            
+        <span class="k">return</span> <span class="n">retVal</span>
+    </div>
+<div class="viewcode-block" id="Entity.create"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.prototype.Entity.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vals</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Register an entity in the metadata registry.</span>
+<span class="sd">        </span>
+<span class="sd">        Default create method for an entity - only used in conjunction with</span>
+<span class="sd">        an actual implementation of an Entity - because this only registers</span>
+<span class="sd">        the entity in the registry - it does not execute the entity SQL</span>
+<span class="sd">        itself.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">vals</span><span class="p">[</span><span class="s">&#39;parent_objid&#39;</span><span class="p">]</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_by_name</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">RelationExists</span>
+        <span class="n">vals</span><span class="p">[</span><span class="s">&#39;entitytype&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="s">&#39;parent_objid&#39;</span><span class="p">],</span><span class="n">Entity</span><span class="p">):</span>
+            <span class="n">vals</span><span class="p">[</span><span class="s">&#39;parent_objid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="s">&#39;parent_objid&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">objid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">vals</span><span class="p">[</span><span class="s">&#39;entitytype&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&#39;Database&#39;</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_byid</span><span class="p">(</span><span class="n">vals</span><span class="p">[</span><span class="s">&#39;parent_objid&#39;</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">parent</span><span class="p">[</span><span class="s">&#39;owner&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">]:</span>
+                <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">NotAuthorized</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">vals</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">registry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ent_reg</span>
+        
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span><span class="n">registry</span><span class="p">,</span><span class="n">colnames</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">vals</span><span class="p">)</span>
+            <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">IntegrityError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">pgcode</span> <span class="o">==</span> <span class="s">&#39;23502&#39;</span><span class="p">:</span>
+                <span class="c"># Integrity Error null value in column ...</span>
+                <span class="k">raise</span> <span class="n">ValueRequired</span>
+            <span class="k">elif</span> <span class="n">e</span><span class="o">.</span><span class="n">pgcode</span> <span class="o">==</span> <span class="s">&#39;23505&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">RelationExists</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span><span class="n">e</span><span class="o">.</span><span class="n">pgcode</span>
+                <span class="k">print</span> <span class="n">e</span><span class="o">.</span><span class="n">pgerror</span><span class="p">,</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+                <span class="k">raise</span> <span class="n">e</span>
+    </div>
+    <span class="k">def</span> <span class="nf">_registry_insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">vals</span><span class="p">,</span><span class="n">registry</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Prepares and executes an insert into a registry.&quot;&quot;&quot;</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">vals</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="o">!=</span> <span class="s">&#39;methods&#39;</span><span class="p">)</span>
+        <span class="n">registry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ent_reg</span> <span class="k">if</span> <span class="n">registry</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">registry</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span><span class="n">registry</span><span class="p">,</span><span class="n">colnames</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">vals</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">IntegrityError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">pgcode</span> <span class="o">==</span> <span class="s">&#39;23502&#39;</span><span class="p">:</span>
+                <span class="c"># Integrity Error null value in column ...</span>
+                <span class="k">raise</span> <span class="n">ValueRequired</span>
+            <span class="k">elif</span> <span class="n">e</span><span class="o">.</span><span class="n">pgcode</span> <span class="o">==</span> <span class="s">&#39;23505&#39;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">RelationExists</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">print</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span><span class="p">,</span><span class="n">e</span><span class="o">.</span><span class="n">pgcode</span>
+                <span class="k">print</span> <span class="n">e</span><span class="o">.</span><span class="n">pgerror</span><span class="p">,</span><span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+                <span class="k">raise</span> <span class="n">e</span>
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+    
+<div class="viewcode-block" id="Entity.rename"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.prototype.Entity.rename">[docs]</a>    <span class="k">def</span> <span class="nf">rename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">newname</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Rename the entity.</span>
+<span class="sd">        </span>
+<span class="sd">        Should work for all implementations that use Entity.create()</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">info</span><span class="p">[</span><span class="s">&#39;owner&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">NotAuthorized</span>
+        <span class="n">info</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">newname</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_registry_insert</span><span class="p">(</span><span class="n">info</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">objid</span>
+    </div>
+<div class="viewcode-block" id="Entity.drop"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.prototype.Entity.drop">[docs]</a>    <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Drop the entity.</span>
+<span class="sd">        </span>
+<span class="sd">        Does not execute the actual SQL required to drop the object - just </span>
+<span class="sd">        drops the entity from the registry.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">info</span><span class="p">[</span><span class="s">&#39;owner&#39;</span><span class="p">]:</span>
+            <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">NotAuthorized</span>
+        
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">delete_row</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ent_reg</span><span class="p">,</span>
+            <span class="p">(</span><span class="s">&#39;objid&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">))</span>
+        <span class="p">)</span>
+        
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+        
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">delete_row</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ent_reg</span><span class="p">,</span>
+            <span class="p">(</span><span class="s">&#39;parent_objid&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">))</span>
+        <span class="p">)</span>
+        
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">True</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

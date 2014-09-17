@@ -1,0 +1,200 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Overview &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="overview">
+<span id="id1"></span><h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="purpose">
+<span id="id2"></span><h2>Purpose<a class="headerlink" href="#purpose" title="Permalink to this headline">¶</a></h2>
+<p>Nimbodata is a platform for the collection, management and analysis of
+structured data.  At its core, it is simply an interface to PostgreSQL,
+including support for PostGIS (other goodies to come).</p>
+<p>Beyond the backend, Nimbodata will provide workflows and the capability to
+implement applications, including a Javascript framework similar in concept
+to Angular, but coupled to the Nimbodata architecture.</p>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>This is the primary documentation for the Nimbodata platform.  The core api
+represents the functionality of the data persistence engine.  Upon this core
+API many applications can be built.  In the spirit of Python, Nimbodata will
+come &#8220;batteries included&#8221;.  For now, you&#8217;ll have to implement the batteries.</p>
+</div>
+<div class="section" id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h2>
+<p>Nimbodata represents a data platform composed of a relational (and soon object)
+database which is available directly via a REST interface, Python Client or
+Javascript (to come).</p>
+<p>Superficially Nimbodata has similarities to SQLAlchemy Core - they both provide
+ways to manipulate SQL databases using a Pythonic syntax.  There are syntactic
+differences - where SQLAlchemy tends to require that everything be individually
+identified as an object, Nimbodata strives for terseness in two respects.
+Objects can be described as nested literals (i.e. dictionaries) and entities
+can be represented and instantiated directly via JSON.</p>
+<p>More importantly, Nimbodata implements a separate metadata catalog on top of
+PostgreSQL&#8217;s built-in tracking.  While the metadata manager is a separate layer,
+it also enables untrusted users to execute ad hoc queries, to implement a custom
+permissions system, to implement a temporal database, to implement smart renaming,
+to facilitate distributed queries, and for a variety of other reasons.  The key
+issue is that PostgreSQL defines entities using an OID, which cannot be unique
+over a distributed ecosystem.  For the most part, this additional metadata
+management is transparent to the user.  However, this does mean that Nimbodata
+is not really to be considered a driver or adapter for PostgreSQL, but instead
+its own unique platform.</p>
+<div class="section" id="server">
+<h3>Server<a class="headerlink" href="#server" title="Permalink to this headline">¶</a></h3>
+<p>The client, whether it be a Python interactive session or a web application
+user, connects to Nimbodata through a REST interface.  The REST interface
+implements the Nimbodata API in a manner that is consistent with REST
+principles with a few key exceptions (i.e. the select object accepts JSON
+request body on GET and also accepts POST despite the fact that a query does not
+change state).  The server provides access to the underlying PostgreSQL
+database.</p>
+</div>
+<div class="section" id="client">
+<h3>Client<a class="headerlink" href="#client" title="Permalink to this headline">¶</a></h3>
+<p>The client interacts with the server and presents proxy objects which
+encapsulate the identity, capabilities and contents of any entity.  Currently
+the client maintains no state locally, all actions are performed synchronously.</p>
+</div>
+</div>
+<div class="section" id="what-s-unique">
+<h2>What&#8217;s Unique<a class="headerlink" href="#what-s-unique" title="Permalink to this headline">¶</a></h2>
+<p>While similar concepts exist (such as SQLAlchemy and Flask-Restless), Nimbodata
+strives to develop a full-stack platform inspired by Zope and infuriated by
+SharePoint.</p>
+<p>Currently the key unique concepts implemented in Nimbodata are:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Append-only modification of all aspects of database data and metadata (not including structure currently)</li>
+<li>Metadata-mediated queries which reduce the risk of allowing ad hoc queries to untrusted users</li>
+<li>Full functionality via REST/JSON.</li>
+<li>Tiling GeoJSON query functionality.</li>
+<li>All relationships are by ID not name</li>
+</ul>
+</div></blockquote>
+<p>Ongoing development is aimed at the following unique capabilities:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Micro-versioning (temporal database) for all non-structural changes (inserts/updates/deletes/renames/create_*)</li>
+<li>Macro-versioning to reproduce state for each database structurural change not encapsulated by microversioning</li>
+<li>Ability to control versioning behavior on a default and per-table basis</li>
+<li>Platform applications self-hosted from database - versioning covers apps</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="what-s-the-same">
+<h2>What&#8217;s The Same<a class="headerlink" href="#what-s-the-same" title="Permalink to this headline">¶</a></h2>
+<p>Nimbodata is inspired by the power of the relational database.  While Nimbodata
+is currently implemented on a SQL database and is closely based on the
+functionality of PostgreSQL, we do not strive to be SQL-compliant or to limit
+Nimbodata to the implementation decisions of SQL.  Most PostgreSQL types are
+reused with the same names.  Most PostGIS types have been simplified and
+condensed (i.e. LineString and MultiLineString are now just Line).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Overview</a><ul>
+<li><a class="reference internal" href="#purpose">Purpose</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#architecture">Architecture</a><ul>
+<li><a class="reference internal" href="#server">Server</a></li>
+<li><a class="reference internal" href="#client">Client</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#what-s-unique">What&#8217;s Unique</a></li>
+<li><a class="reference internal" href="#what-s-the-same">What&#8217;s The Same</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/overview.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

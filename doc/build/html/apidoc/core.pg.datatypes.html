@@ -1,0 +1,430 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>core.pg.datatypes package &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../index.html" />
+    <link rel="up" title="core.pg package" href="core.pg.html" />
+    <link rel="next" title="core.pg.entities package" href="core.pg.entities.html" />
+    <link rel="prev" title="core.pg package" href="core.pg.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.pg.entities.html" title="core.pg.entities package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="core.pg.html" title="core.pg package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="core.html" >core package</a> &raquo;</li>
+          <li><a href="core.pg.html" accesskey="U">core.pg package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="core-pg-datatypes-package">
+<h1>core.pg.datatypes package<a class="headerlink" href="#core-pg-datatypes-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-core.pg.datatypes.function">
+<span id="core-pg-datatypes-function-module"></span><h2>core.pg.datatypes.function module<a class="headerlink" href="#module-core.pg.datatypes.function" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements column-functions in PostgreSQL.</p>
+<dl class="class">
+<dt id="core.pg.datatypes.function.Function">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.function.</tt><tt class="descname">Function</tt><a class="reference internal" href="../_modules/core/pg/datatypes/function.html#Function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.function.Function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.datatypes.prototype.Datatype" title="core.pg.datatypes.prototype.Datatype"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.datatypes.prototype.Datatype</span></tt></a></p>
+<dl class="method">
+<dt id="core.pg.datatypes.function.Function.sql_target">
+<tt class="descname">sql_target</tt><big>(</big><em>colid</em>, <em>funcname</em><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/function.html#Function.sql_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.function.Function.sql_target" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.datatypes.geographic">
+<span id="core-pg-datatypes-geographic-module"></span><h2>core.pg.datatypes.geographic module<a class="headerlink" href="#module-core.pg.datatypes.geographic" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the geographic datatypes, which are built on PostGIS and
+Shapely.</p>
+<dl class="class">
+<dt id="core.pg.datatypes.geographic.Geographic">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.geographic.</tt><tt class="descname">Geographic</tt><a class="reference internal" href="../_modules/core/pg/datatypes/geographic.html#Geographic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.geographic.Geographic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.datatypes.prototype.Datatype" title="core.pg.datatypes.prototype.Datatype"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.datatypes.prototype.Datatype</span></tt></a></p>
+<p>Generic geographic type</p>
+<dl class="method">
+<dt id="core.pg.datatypes.geographic.Geographic.sql_target">
+<tt class="descname">sql_target</tt><big>(</big><em>colid</em>, <em>colname</em><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/geographic.html#Geographic.sql_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.geographic.Geographic.sql_target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the column results as GeoJSON string</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.pg.datatypes.geographic.Line">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.geographic.</tt><tt class="descname">Line</tt><a class="reference internal" href="../_modules/core/pg/datatypes/geographic.html#Line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.geographic.Line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.datatypes.geographic.Geographic" title="core.pg.datatypes.geographic.Geographic"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.datatypes.geographic.Geographic</span></tt></a></p>
+<dl class="method">
+<dt id="core.pg.datatypes.geographic.Line.from_literal">
+<tt class="descname">from_literal</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/geographic.html#Line.from_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.geographic.Line.from_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate the Shapely Point</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.datatypes.geographic.Line.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/geographic.html#Line.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.geographic.Line.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.pg.datatypes.geographic.Point">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.geographic.</tt><tt class="descname">Point</tt><a class="reference internal" href="../_modules/core/pg/datatypes/geographic.html#Point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.geographic.Point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.datatypes.geographic.Geographic" title="core.pg.datatypes.geographic.Geographic"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.datatypes.geographic.Geographic</span></tt></a></p>
+<p>Simple X,Y point.  Extends PostGIS <cite>POINT</cite> and Shapely <cite>Point</cite></p>
+<dl class="method">
+<dt id="core.pg.datatypes.geographic.Point.from_literal">
+<tt class="descname">from_literal</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/geographic.html#Point.from_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.geographic.Point.from_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiate the Shapely Point</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.datatypes.geographic.Point.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/geographic.html#Point.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.geographic.Point.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.pg.datatypes.geographic.PointAdapter">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.geographic.</tt><tt class="descname">PointAdapter</tt><big>(</big><em>f</em><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/geographic.html#PointAdapter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.geographic.PointAdapter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="staticmethod">
+<dt id="core.pg.datatypes.geographic.PointAdapter.cast">
+<em class="property">static </em><tt class="descname">cast</tt><big>(</big><em>s</em>, <em>cur</em><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/geographic.html#PointAdapter.cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.geographic.PointAdapter.cast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.datatypes.geographic.PointAdapter.getquoted">
+<tt class="descname">getquoted</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/geographic.html#PointAdapter.getquoted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.geographic.PointAdapter.getquoted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.datatypes.numeric">
+<span id="core-pg-datatypes-numeric-module"></span><h2>core.pg.datatypes.numeric module<a class="headerlink" href="#module-core.pg.datatypes.numeric" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements numeric types, extending both Python and PostgreSQL built-in
+types.</p>
+<dl class="class">
+<dt id="core.pg.datatypes.numeric.Boolean">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.numeric.</tt><tt class="descname">Boolean</tt><a class="reference internal" href="../_modules/core/pg/datatypes/numeric.html#Boolean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.numeric.Boolean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.datatypes.prototype.Datatype" title="core.pg.datatypes.prototype.Datatype"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.datatypes.prototype.Datatype</span></tt></a></p>
+<dl class="attribute">
+<dt id="core.pg.datatypes.numeric.Boolean.from_literal">
+<tt class="descname">from_literal</tt><a class="headerlink" href="#core.pg.datatypes.numeric.Boolean.from_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">bool</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.datatypes.numeric.Boolean.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/numeric.html#Boolean.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.numeric.Boolean.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.pg.datatypes.numeric.Float">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.numeric.</tt><tt class="descname">Float</tt><a class="reference internal" href="../_modules/core/pg/datatypes/numeric.html#Float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.numeric.Float" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.datatypes.prototype.Datatype" title="core.pg.datatypes.prototype.Datatype"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.datatypes.prototype.Datatype</span></tt></a></p>
+<dl class="attribute">
+<dt id="core.pg.datatypes.numeric.Float.from_literal">
+<tt class="descname">from_literal</tt><a class="headerlink" href="#core.pg.datatypes.numeric.Float.from_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">float</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.datatypes.numeric.Float.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/numeric.html#Float.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.numeric.Float.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.pg.datatypes.numeric.Integer">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.numeric.</tt><tt class="descname">Integer</tt><a class="reference internal" href="../_modules/core/pg/datatypes/numeric.html#Integer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.numeric.Integer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.datatypes.prototype.Datatype" title="core.pg.datatypes.prototype.Datatype"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.datatypes.prototype.Datatype</span></tt></a></p>
+<dl class="attribute">
+<dt id="core.pg.datatypes.numeric.Integer.from_literal">
+<tt class="descname">from_literal</tt><a class="headerlink" href="#core.pg.datatypes.numeric.Integer.from_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">int</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.datatypes.numeric.Integer.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/numeric.html#Integer.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.numeric.Integer.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.datatypes.prototype">
+<span id="core-pg-datatypes-prototype-module"></span><h2>core.pg.datatypes.prototype module<a class="headerlink" href="#module-core.pg.datatypes.prototype" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the prototype of a Datatype, which encapsulates how to handle
+a specific datatype on the platform.</p>
+<dl class="class">
+<dt id="core.pg.datatypes.prototype.Datatype">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.prototype.</tt><tt class="descname">Datatype</tt><a class="reference internal" href="../_modules/core/pg/datatypes/prototype.html#Datatype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.prototype.Datatype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A datatype represents a datatype that can be stored in the database and 
+used on the platform.  Encapsulates the SQL for creating, the SQL for
+selecting a column of the type as a target, as well as functions for
+converting to/from JSON, as well as instantiation of complex platform types
+(such as geographic via Shapely).</p>
+<dl class="method">
+<dt id="core.pg.datatypes.prototype.Datatype.from_literal">
+<tt class="descname">from_literal</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/prototype.html#Datatype.from_literal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.prototype.Datatype.from_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates the value from parameters provided</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.datatypes.prototype.Datatype.objid">
+<tt class="descname">objid</tt><a class="reference internal" href="../_modules/core/pg/datatypes/prototype.html#Datatype.objid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.prototype.Datatype.objid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.datatypes.prototype.Datatype.sql_create">
+<tt class="descname">sql_create</tt><em class="property"> = None</em><a class="headerlink" href="#core.pg.datatypes.prototype.Datatype.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.datatypes.prototype.Datatype.sql_target">
+<tt class="descname">sql_target</tt><big>(</big><em>colid</em>, <em>colname</em><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/prototype.html#Datatype.sql_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.prototype.Datatype.sql_target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a column objid and column name, returns the SQL text to
+properly format and alias the query results for the column.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.datatypes.text">
+<span id="core-pg-datatypes-text-module"></span><h2>core.pg.datatypes.text module<a class="headerlink" href="#module-core.pg.datatypes.text" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements text types, extending both Python and PostgreSQL built-in
+types.</p>
+<dl class="class">
+<dt id="core.pg.datatypes.text.Json">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.text.</tt><tt class="descname">Json</tt><a class="reference internal" href="../_modules/core/pg/datatypes/text.html#Json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.text.Json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.datatypes.prototype.Datatype" title="core.pg.datatypes.prototype.Datatype"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.datatypes.prototype.Datatype</span></tt></a></p>
+<dl class="method">
+<dt id="core.pg.datatypes.text.Json.from_literal">
+<tt class="descname">from_literal</tt><big>(</big><em>x</em><big>)</big><a class="headerlink" href="#core.pg.datatypes.text.Json.from_literal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.datatypes.text.Json.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/text.html#Json.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.text.Json.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.pg.datatypes.text.Text">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.text.</tt><tt class="descname">Text</tt><a class="reference internal" href="../_modules/core/pg/datatypes/text.html#Text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.text.Text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.datatypes.prototype.Datatype" title="core.pg.datatypes.prototype.Datatype"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.datatypes.prototype.Datatype</span></tt></a></p>
+<dl class="attribute">
+<dt id="core.pg.datatypes.text.Text.from_literal">
+<tt class="descname">from_literal</tt><a class="headerlink" href="#core.pg.datatypes.text.Text.from_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">str</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.datatypes.text.Text.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/text.html#Text.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.text.Text.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="core.pg.datatypes.text.fallback_json">
+<tt class="descclassname">core.pg.datatypes.text.</tt><tt class="descname">fallback_json</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/text.html#fallback_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.text.fallback_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.datatypes.time">
+<span id="core-pg-datatypes-time-module"></span><h2>core.pg.datatypes.time module<a class="headerlink" href="#module-core.pg.datatypes.time" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements datetime types, extending both Python and PostgreSQL built-in
+types.</p>
+<dl class="class">
+<dt id="core.pg.datatypes.time.Date">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.time.</tt><tt class="descname">Date</tt><a class="reference internal" href="../_modules/core/pg/datatypes/time.html#Date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.time.Date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.datatypes.prototype.Datatype" title="core.pg.datatypes.prototype.Datatype"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.datatypes.prototype.Datatype</span></tt></a></p>
+<dl class="attribute">
+<dt id="core.pg.datatypes.time.Date.from_literal">
+<tt class="descname">from_literal</tt><a class="headerlink" href="#core.pg.datatypes.time.Date.from_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">date</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.datatypes.time.Date.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/time.html#Date.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.time.Date.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.pg.datatypes.time.Time">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.time.</tt><tt class="descname">Time</tt><a class="reference internal" href="../_modules/core/pg/datatypes/time.html#Time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.time.Time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.datatypes.prototype.Datatype" title="core.pg.datatypes.prototype.Datatype"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.datatypes.prototype.Datatype</span></tt></a></p>
+<dl class="attribute">
+<dt id="core.pg.datatypes.time.Time.from_literal">
+<tt class="descname">from_literal</tt><a class="headerlink" href="#core.pg.datatypes.time.Time.from_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">time</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.datatypes.time.Time.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/time.html#Time.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.time.Time.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.pg.datatypes.time.Timestamp">
+<em class="property">class </em><tt class="descclassname">core.pg.datatypes.time.</tt><tt class="descname">Timestamp</tt><a class="reference internal" href="../_modules/core/pg/datatypes/time.html#Timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.time.Timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.datatypes.prototype.Datatype" title="core.pg.datatypes.prototype.Datatype"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.datatypes.prototype.Datatype</span></tt></a></p>
+<dl class="attribute">
+<dt id="core.pg.datatypes.time.Timestamp.from_literal">
+<tt class="descname">from_literal</tt><a class="headerlink" href="#core.pg.datatypes.time.Timestamp.from_literal" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">datetime</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.datatypes.time.Timestamp.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/datatypes/time.html#Timestamp.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.datatypes.time.Timestamp.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.datatypes">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-core.pg.datatypes" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements datatypes for the platform - handles serialization and
+database interaction (encapsulates SQL for creating, formatting and aliasing
+the datatypes).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">core.pg.datatypes package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-core.pg.datatypes.function">core.pg.datatypes.function module</a></li>
+<li><a class="reference internal" href="#module-core.pg.datatypes.geographic">core.pg.datatypes.geographic module</a></li>
+<li><a class="reference internal" href="#module-core.pg.datatypes.numeric">core.pg.datatypes.numeric module</a></li>
+<li><a class="reference internal" href="#module-core.pg.datatypes.prototype">core.pg.datatypes.prototype module</a></li>
+<li><a class="reference internal" href="#module-core.pg.datatypes.text">core.pg.datatypes.text module</a></li>
+<li><a class="reference internal" href="#module-core.pg.datatypes.time">core.pg.datatypes.time module</a></li>
+<li><a class="reference internal" href="#module-core.pg.datatypes">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="core.pg.html"
+                        title="previous chapter">core.pg package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="core.pg.entities.html"
+                        title="next chapter">core.pg.entities package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/apidoc/core.pg.datatypes.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.pg.entities.html" title="core.pg.entities package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="core.pg.html" title="core.pg package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="core.html" >core package</a> &raquo;</li>
+          <li><a href="core.pg.html" >core.pg package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

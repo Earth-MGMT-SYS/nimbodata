@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nimbodata.core.pg.engine &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nimbodata.core.pg.engine</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;Module encapsulates PG access at a certain permission level.&quot;&quot;&quot;</span>
+<span class="c"># Copyright (C) 2014  Bradley Alan Smith</span>
+
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+<span class="kn">import</span> <span class="nn">psycopg2.extras</span>
+
+<span class="kn">import</span> <span class="nn">common.errors</span> <span class="kn">as</span> <span class="nn">errors</span>
+<span class="kn">import</span> <span class="nn">datatypes</span>
+
+<span class="n">_mode</span> <span class="o">=</span> <span class="s">&#39;debug&#39;</span>        
+
+
+<div class="viewcode-block" id="Engine"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.engine.Engine">[docs]</a><span class="k">class</span> <span class="nc">Engine</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Engine for PostgreSQL database.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">drc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Connect to the database and store the registries.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">user</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="s">&#39;cloud_admin&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">user</span> <span class="o">=</span> <span class="n">user</span>
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conn_string</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">schema</span> <span class="o">=</span> <span class="s">&#39;_adm-registries&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ent_reg</span> <span class="o">=</span> <span class="s">&#39;_adm-entityregistry&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ent_info</span> <span class="o">=</span> <span class="s">&#39;_adm-entityinfo&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">usr_reg</span> <span class="o">=</span> <span class="s">&#39;_adm-userregistry&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">view_col_info</span> <span class="o">=</span> <span class="s">&#39;_adm-viewcolinfo&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">mog_cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Engine.conn_string"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.engine.Engine.conn_string">[docs]</a>    <span class="k">def</span> <span class="nf">conn_string</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;dbname=cloud_admin user=</span><span class="si">%(user)s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">{</span>
+            <span class="s">&#39;user&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">user</span>
+        <span class="p">}</span>
+</div>
+<div class="viewcode-block" id="Engine.close"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.engine.Engine.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</div>
+<div class="viewcode-block" id="Engine.execute"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.engine.Engine.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute the statement in a transaction, parameters optional.&quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">(</span><span class="n">cursor_factory</span><span class="o">=</span><span class="n">psycopg2</span><span class="o">.</span><span class="n">extras</span><span class="o">.</span><span class="n">DictCursor</span><span class="p">)</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">stmt</span><span class="p">,)</span> <span class="k">if</span> <span class="n">params</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+                <span class="c">#print self.mogrify(*args)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">IntegrityError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">IntegrityError</span>
+                <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">DataError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">DataError</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">cur</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">ProgrammingError</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="Engine.execute_many"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.engine.Engine.execute_many">[docs]</a>    <span class="k">def</span> <span class="nf">execute_many</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">stmts</span><span class="p">,</span><span class="n">return_cursors</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Execute multiple statements within a transaction.</span>
+<span class="sd">        </span>
+<span class="sd">        Optionally return the cursors resulting from each.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">return_cursors</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">stmts</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">stmts</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    </div>
+<div class="viewcode-block" id="Engine.mogrify"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.engine.Engine.mogrify">[docs]</a>    <span class="k">def</span> <span class="nf">mogrify</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Combines statement and params to string for human use.&quot;&quot;&quot;</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">cur</span><span class="o">.</span><span class="n">mogrify</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+    </div>
+    <span class="k">def</span> <span class="nf">_get_first</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the first row from a result.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">ProgrammingError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">stmt</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">next</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+    <span class="k">def</span> <span class="nf">_get_scalar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">col</span><span class="p">,</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the first value from the first row of a result.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_first</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">)[</span><span class="n">col</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

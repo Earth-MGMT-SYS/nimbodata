@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nimbodata.core.auth package &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../index.html" />
+    <link rel="up" title="nimbodata.core package" href="nimbodata.core.html" />
+    <link rel="next" title="nimbodata.core.pg package" href="nimbodata.core.pg.html" />
+    <link rel="prev" title="nimbodata.core package" href="nimbodata.core.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.pg.html" title="nimbodata.core.pg package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.html" title="nimbodata.core package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="nimbodata.html" >nimbodata package</a> &raquo;</li>
+          <li><a href="nimbodata.core.html" accesskey="U">nimbodata.core package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nimbodata-core-auth-package">
+<h1>nimbodata.core.auth package<a class="headerlink" href="#nimbodata-core-auth-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-nimbodata.core.auth">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-nimbodata.core.auth" title="Permalink to this headline">¶</a></h2>
+<p>Implements rudimentary login components for use with Flask-Login.</p>
+<dl class="class">
+<dt id="nimbodata.core.auth.LoginAPI">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.auth.</tt><tt class="descname">LoginAPI</tt><a class="reference internal" href="../_modules/nimbodata/core/auth.html#LoginAPI"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.auth.LoginAPI" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">flask.views.MethodView</span></tt></p>
+<p>Flask view for logging in.</p>
+<dl class="attribute">
+<dt id="nimbodata.core.auth.LoginAPI.methods">
+<tt class="descname">methods</tt><em class="property"> = ['POST']</em><a class="headerlink" href="#nimbodata.core.auth.LoginAPI.methods" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.auth.LoginAPI.post">
+<tt class="descname">post</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/auth.html#LoginAPI.post"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.auth.LoginAPI.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>User provides credentials in POST payload.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.auth.User">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.auth.</tt><tt class="descname">User</tt><big>(</big><em>user</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/auth.html#User"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.auth.User" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Stub object representing an authenticated user.</p>
+<dl class="method">
+<dt id="nimbodata.core.auth.User.get_id">
+<tt class="descname">get_id</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/auth.html#User.get_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.auth.User.get_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.auth.User.is_active">
+<tt class="descname">is_active</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/auth.html#User.is_active"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.auth.User.is_active" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.auth.User.is_anonymous">
+<tt class="descname">is_anonymous</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/auth.html#User.is_anonymous"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.auth.User.is_anonymous" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.auth.User.is_authenticated">
+<tt class="descname">is_authenticated</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/auth.html#User.is_authenticated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.auth.User.is_authenticated" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">nimbodata.core.auth package</a><ul>
+<li><a class="reference internal" href="#module-nimbodata.core.auth">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="nimbodata.core.html"
+                        title="previous chapter">nimbodata.core package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="nimbodata.core.pg.html"
+                        title="next chapter">nimbodata.core.pg package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/apidoc/nimbodata.core.auth.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.pg.html" title="nimbodata.core.pg package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.html" title="nimbodata.core package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="nimbodata.html" >nimbodata package</a> &raquo;</li>
+          <li><a href="nimbodata.core.html" >nimbodata.core package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

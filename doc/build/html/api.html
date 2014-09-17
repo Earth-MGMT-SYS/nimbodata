@@ -1,0 +1,214 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>API Reference &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="index.html" />
+    <link rel="next" title="Apps" href="apps.html" />
+    <link rel="prev" title="Architecture" href="architecture.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="apps.html" title="Apps"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="architecture.html" title="Architecture"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="major-components">
+<h2>Major Components<a class="headerlink" href="#major-components" title="Permalink to this headline">¶</a></h2>
+<p>The API consists of two concepts - Entities and Controllers.  Entities
+encapsulate much of the functionality of the objects in Nimbodata.  All actions
+available via entities are also available via controllers, which are stateless,
+functional API calls.  Any query beyond a Table/View scope, and any directory
+query will be handled by a Controller (because of their transcendental scope).</p>
+</div>
+<div class="section" id="entities">
+<h2>Entities<a class="headerlink" href="#entities" title="Permalink to this headline">¶</a></h2>
+<p>Entities make it easy to use the API in a natural way for object-orented
+programming.  An entity encapsulates an identity and methods
+available to act on the particular type.  The entities act as proxy objects -
+they do not store any data other than the <cite>objid</cite> of an entity - they simply
+provide a proxy for the methods provided.</p>
+<blockquote>
+<div><ul class="simple">
+<li>Database - contains related tables, views, datatypes and applications</li>
+<li>Application - provides a logical structure, objects and functions</li>
+<li>Table - primary container for data, all data in the database is stored in a table.</li>
+<li>View - a virtual table which can represent and transform data in tables and other views.</li>
+<li>Column - a column defines a datatype, name and description for entries in a Row</li>
+<li>Results - similar to a View except Results are actual data returned, contains header info and rows</li>
+<li>Row - an individual table record or view item whose data values are described by their respective columns</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="select">
+<h2>Select<a class="headerlink" href="#select" title="Permalink to this headline">¶</a></h2>
+<p>The select engine transcends any particular entity, and allows a user to select
+from and join tables and views with most of the power of SQL.  Aggregation,
+column functions and inner joins are all currently supported.</p>
+</div>
+<div class="section" id="rest-api">
+<h2>REST API<a class="headerlink" href="#rest-api" title="Permalink to this headline">¶</a></h2>
+<p>Example Request URLs by HTTP Verb shown in Python-nimbodata.</p>
+<div class="section" id="get">
+<h3>GET<a class="headerlink" href="#get" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>/entitys/&lt;objid&gt;/ &#8211;&gt; Entity(objid).info</li>
+<li>/databases/ &#8211;&gt; Database().listing()</li>
+<li>/databases/&lt;dbid&gt;/ &#8211;&gt; Database(dbid).info</li>
+<li>/databases/&lt;dbid&gt;/&lt;objid&gt;/ &#8211;&gt;</li>
+<li>/databases/&lt;dbid&gt;/tables/ &#8211;&gt; Datatabase(dbid).tables()</li>
+<li>/databases/&lt;dbid&gt;/views/ &#8211;&gt; Database(dbid).views()</li>
+<li>/tables/&lt;tblid&gt;/ &#8211;&gt; Table(tblid).info</li>
+<li>/views/&lt;tblid&gt;/ &#8211;&gt; View(tblid).info</li>
+<li>/views/&lt;viewid&gt;/columns/ &#8211;&gt; View(tblid).columns()</li>
+<li>/views/&lt;viewid&gt;/select/ &#8211;&gt; View(tblid).select()</li>
+</ul>
+</div>
+<div class="section" id="post">
+<h3>POST<a class="headerlink" href="#post" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>/databases/ &#8211;&gt; Database().create(<a href="#id1"><span class="problematic" id="id2">**</span></a>json_payload)</li>
+<li>/tables/ &#8211;&gt; Table().create(<a href="#id3"><span class="problematic" id="id4">**</span></a>json_payload)</li>
+<li>/tables/&lt;tblid/ &#8211;&gt; Table(tblid).insert(<a href="#id5"><span class="problematic" id="id6">**</span></a>json_payload)</li>
+<li>/tables/&lt;tblid&gt;/column/ &#8211;&gt; Table(tblid).create_column(<a href="#id7"><span class="problematic" id="id8">**</span></a>json_payload)</li>
+<li>/tables/&lt;tblid&gt;/constraint/ &#8211;&gt; Table(tblid).create_constraint(<a href="#id9"><span class="problematic" id="id10">**</span></a>json_payload)</li>
+<li>/views/ &#8211;&gt; View().create(<a href="#id11"><span class="problematic" id="id12">**</span></a>json_payload)</li>
+</ul>
+</div>
+<div class="section" id="put">
+<h3>PUT<a class="headerlink" href="#put" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>/databases/&lt;dbid&gt;/ &#8211;&gt; Database(dbid).rename(<a href="#id13"><span class="problematic" id="id14">**</span></a>json_payload)</li>
+<li>/tables/&lt;tblid&gt;/ &#8211;&gt; Table(tblid).rename(<a href="#id15"><span class="problematic" id="id16">**</span></a>json_payload)</li>
+<li>/columns/&lt;colid&gt;/ &#8211;&gt; Columns(colid).rename(<a href="#id17"><span class="problematic" id="id18">**</span></a>json_payload)</li>
+<li>/columns/&lt;colid&gt;/modify/ &#8211;&gt; Columns(colid).modify(<a href="#id19"><span class="problematic" id="id20">**</span></a>json_payload)</li>
+</ul>
+</div>
+<div class="section" id="delete">
+<h3>DELETE<a class="headerlink" href="#delete" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li>/databases/&lt;dbid&gt;/ &#8211;&gt; Database(dbid).drop(<a href="#id21"><span class="problematic" id="id22">**</span></a>json_payload)</li>
+<li>/tables/&lt;tblid&gt;/ &#8211;&gt; Table(tblid).drop(<a href="#id23"><span class="problematic" id="id24">**</span></a>json_payload)</li>
+<li>/views/&lt;viewid&gt;/ &#8211;&gt; View(viewid).drop(<a href="#id25"><span class="problematic" id="id26">**</span></a>json_payload)</li>
+<li>/columns/&lt;colid&gt;/ &#8211;&gt; Column(colid).drop(<a href="#id27"><span class="problematic" id="id28">**</span></a>json_payload)</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">API Reference</a><ul>
+<li><a class="reference internal" href="#major-components">Major Components</a></li>
+<li><a class="reference internal" href="#entities">Entities</a></li>
+<li><a class="reference internal" href="#select">Select</a></li>
+<li><a class="reference internal" href="#rest-api">REST API</a><ul>
+<li><a class="reference internal" href="#get">GET</a></li>
+<li><a class="reference internal" href="#post">POST</a></li>
+<li><a class="reference internal" href="#put">PUT</a></li>
+<li><a class="reference internal" href="#delete">DELETE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="architecture.html"
+                        title="previous chapter">Architecture</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="apps.html"
+                        title="next chapter">Apps</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/api.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="apps.html" title="Apps"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="architecture.html" title="Architecture"
+             >previous</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

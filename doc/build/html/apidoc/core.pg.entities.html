@@ -1,0 +1,348 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>core.pg.entities package &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../index.html" />
+    <link rel="up" title="core.pg package" href="core.pg.html" />
+    <link rel="next" title="core.pg.entities.relations package" href="core.pg.entities.relations.html" />
+    <link rel="prev" title="core.pg.datatypes package" href="core.pg.datatypes.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.pg.entities.relations.html" title="core.pg.entities.relations package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="core.pg.datatypes.html" title="core.pg.datatypes package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="core.html" >core package</a> &raquo;</li>
+          <li><a href="core.pg.html" accesskey="U">core.pg package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="core-pg-entities-package">
+<h1>core.pg.entities package<a class="headerlink" href="#core-pg-entities-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core.pg.entities.relations.html">core.pg.entities.relations package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.relations.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.relations.html#module-core.pg.entities.relations.geo">core.pg.entities.relations.geo module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.relations.html#module-core.pg.entities.relations.table">core.pg.entities.relations.table module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.relations.html#module-core.pg.entities.relations.tree">core.pg.entities.relations.tree module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.relations.html#module-core.pg.entities.relations.view">core.pg.entities.relations.view module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.pg.entities.relations.html#module-core.pg.entities.relations">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-core.pg.entities.column">
+<span id="core-pg-entities-column-module"></span><h2>core.pg.entities.column module<a class="headerlink" href="#module-core.pg.entities.column" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the PostgreSQL column.</p>
+<dl class="class">
+<dt id="core.pg.entities.column.Column">
+<em class="property">class </em><tt class="descclassname">core.pg.entities.column.</tt><tt class="descname">Column</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/column.html#Column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.column.Column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.entities.prototype.Entity" title="core.pg.entities.prototype.Entity"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.entities.prototype.Entity</span></tt></a></p>
+<p>Column in a table, referenced by views</p>
+<dl class="method">
+<dt id="core.pg.entities.column.Column.create">
+<tt class="descname">create</tt><big>(</big><em>parent</em>, <em>name</em>, <em>datatype</em>, <em>alias=None</em>, <em>primary_key=None</em>, <em>tblinfo=None</em>, <em>index=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/column.html#Column.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.column.Column.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.column.Column.drop">
+<tt class="descname">drop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/column.html#Column.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.column.Column.drop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.column.Column.modify">
+<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/column.html#Column.modify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.column.Column.modify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.column.Column.objid_prefix">
+<tt class="descname">objid_prefix</tt><em class="property"> = 'col'</em><a class="headerlink" href="#core.pg.entities.column.Column.objid_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.entities.constraint">
+<span id="core-pg-entities-constraint-module"></span><h2>core.pg.entities.constraint module<a class="headerlink" href="#module-core.pg.entities.constraint" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements PostgreSQL constraints.</p>
+<dl class="class">
+<dt id="core.pg.entities.constraint.Constraint">
+<em class="property">class </em><tt class="descclassname">core.pg.entities.constraint.</tt><tt class="descname">Constraint</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/constraint.html#Constraint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.constraint.Constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.entities.prototype.Entity" title="core.pg.entities.prototype.Entity"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.entities.prototype.Entity</span></tt></a></p>
+<p>A PostgreSQL constraint</p>
+<dl class="attribute">
+<dt id="core.pg.entities.constraint.Constraint.con_reg">
+<tt class="descname">con_reg</tt><em class="property"> = '_adm-constregistry'</em><a class="headerlink" href="#core.pg.entities.constraint.Constraint.con_reg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.constraint.Constraint.create">
+<tt class="descname">create</tt><big>(</big><em>const</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/constraint.html#Constraint.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.constraint.Constraint.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.constraint.Constraint.drop">
+<tt class="descname">drop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/constraint.html#Constraint.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.constraint.Constraint.drop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.constraint.Constraint.objid_prefix">
+<tt class="descname">objid_prefix</tt><em class="property"> = 'con'</em><a class="headerlink" href="#core.pg.entities.constraint.Constraint.objid_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.entities.database">
+<span id="core-pg-entities-database-module"></span><h2>core.pg.entities.database module<a class="headerlink" href="#module-core.pg.entities.database" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the PostgreSQL schema entity (database in this context).</p>
+<dl class="class">
+<dt id="core.pg.entities.database.Database">
+<em class="property">class </em><tt class="descclassname">core.pg.entities.database.</tt><tt class="descname">Database</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/database.html#Database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.database.Database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.entities.prototype.Entity" title="core.pg.entities.prototype.Entity"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.entities.prototype.Entity</span></tt></a></p>
+<p>PostgreSQL Schema</p>
+<dl class="method">
+<dt id="core.pg.entities.database.Database.create">
+<tt class="descname">create</tt><big>(</big><em>name</em>, <em>owner</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/database.html#Database.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.database.Database.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.database.Database.drop">
+<tt class="descname">drop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/database.html#Database.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.database.Database.drop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.database.Database.objid_prefix">
+<tt class="descname">objid_prefix</tt><em class="property"> = 'dbi'</em><a class="headerlink" href="#core.pg.entities.database.Database.objid_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.entities.prototype">
+<span id="core-pg-entities-prototype-module"></span><h2>core.pg.entities.prototype module<a class="headerlink" href="#module-core.pg.entities.prototype" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the PostgreSQL entities base class.</p>
+<dl class="class">
+<dt id="core.pg.entities.prototype.Entity">
+<em class="property">class </em><tt class="descclassname">core.pg.entities.prototype.</tt><tt class="descname">Entity</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/prototype.html#Entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.prototype.Entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>An object in a PostgreSQL database. Provides many generic
+implementations of core methods for an Entity.</p>
+<dl class="attribute">
+<dt id="core.pg.entities.prototype.Entity.attr_cols">
+<tt class="descname">attr_cols</tt><em class="property"> = ('name', 'owner', 'objid', 'parent', 'entitytype', 'datatype', 'datadetail', 'weight', 'alias', 'cols')</em><a class="headerlink" href="#core.pg.entities.prototype.Entity.attr_cols" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.prototype.Entity.children">
+<tt class="descname">children</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/prototype.html#Entity.children"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.prototype.Entity.children" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all objects whose parent is the current item regardless of
+entitytype.</p>
+<p>Returns a list of <cite>Entity</cite> instances.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.prototype.Entity.create">
+<tt class="descname">create</tt><big>(</big><em>vals</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/prototype.html#Entity.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.prototype.Entity.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default create method for an entity - only used in conjunction with
+an actual implementation of an Entity - because this only registers
+the entity in the registry - it does not execute the entity SQL
+itself.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.prototype.Entity.drop">
+<tt class="descname">drop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/prototype.html#Entity.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.prototype.Entity.drop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop the entity.  Does not execute the actual SQL required to drop
+the object - just drops the entity from the registry.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.prototype.Entity.ent_info">
+<tt class="descname">ent_info</tt><em class="property"> = '_adm-entityinfo'</em><a class="headerlink" href="#core.pg.entities.prototype.Entity.ent_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.prototype.Entity.ent_reg">
+<tt class="descname">ent_reg</tt><em class="property"> = '_adm-entityregistry'</em><a class="headerlink" href="#core.pg.entities.prototype.Entity.ent_reg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.prototype.Entity.info">
+<tt class="descname">info</tt><a class="reference internal" href="../_modules/core/pg/entities/prototype.html#Entity.info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.prototype.Entity.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>So that we always have accurate metadata</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.prototype.Entity.listing">
+<tt class="descname">listing</tt><big>(</big><em>child_type=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/prototype.html#Entity.listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.prototype.Entity.listing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method serves two purposes.</p>
+<p>Called directly, it provides a list of same-type siblings.</p>
+<p>The method also serves a <cite>__getattr__</cite> for the lowercase plural of any
+entity type (i.e. <cite>Database().tables()</cite> or <cite>Table().columns()</cite>).  When
+called via <cite>__getattr__</cite>, it will be called with the <cite>child_type</cite> 
+converted from the <cite>attr</cite> argument.</p>
+<p>Returns a list of <cite>Entity</cite> instances.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.prototype.Entity.objid_prefix">
+<tt class="descname">objid_prefix</tt><em class="property"> = None</em><a class="headerlink" href="#core.pg.entities.prototype.Entity.objid_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.prototype.Entity.rename">
+<tt class="descname">rename</tt><big>(</big><em>newname</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/prototype.html#Entity.rename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.prototype.Entity.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename the entity.  Should work for all implementations that use
+Entity.create()</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.prototype.Entity.row_dict">
+<tt class="descname">row_dict</tt><a class="reference internal" href="../_modules/core/pg/entities/prototype.html#Entity.row_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.prototype.Entity.row_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>For backwards compatability b/t an Entity and a Row</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.prototype.Entity.schema">
+<tt class="descname">schema</tt><em class="property"> = '_adm-registries'</em><a class="headerlink" href="#core.pg.entities.prototype.Entity.schema" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.entities">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-core.pg.entities" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the PostgreSQL entities as Python objects.</p>
+<dl class="function">
+<dt id="core.pg.entities.get_byid">
+<tt class="descclassname">core.pg.entities.</tt><tt class="descname">get_byid</tt><big>(</big><em>objid</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities.html#get_byid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.get_byid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">core.pg.entities package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-core.pg.entities.column">core.pg.entities.column module</a></li>
+<li><a class="reference internal" href="#module-core.pg.entities.constraint">core.pg.entities.constraint module</a></li>
+<li><a class="reference internal" href="#module-core.pg.entities.database">core.pg.entities.database module</a></li>
+<li><a class="reference internal" href="#module-core.pg.entities.prototype">core.pg.entities.prototype module</a></li>
+<li><a class="reference internal" href="#module-core.pg.entities">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="core.pg.datatypes.html"
+                        title="previous chapter">core.pg.datatypes package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="core.pg.entities.relations.html"
+                        title="next chapter">core.pg.entities.relations package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/apidoc/core.pg.entities.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.pg.entities.relations.html" title="core.pg.entities.relations package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="core.pg.datatypes.html" title="core.pg.datatypes package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="core.html" >core package</a> &raquo;</li>
+          <li><a href="core.pg.html" >core.pg package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,13 @@
+#!/bin/bash
+apt-get -y update
+
+apt-get -y install postgresql postgresql-contrib postgresql-9.3-postgis-2.1 \
+    postgresql-9.3-postgis-2.1-scripts postgresql-client libpq-dev python-pip \
+    python-dev python-gdal
+
+pip install flask Flask-Security shapely psycopg2 jsonpickle
+
+sudo -u postgres createdb cloud_admin
+sudo -u postgres createuser --superuser cloud_admin
+
+/etc/init.d/postgresql restart

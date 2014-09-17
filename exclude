@@ -1,0 +1,16 @@
+
+*.pyc
+examples/**
+.coverage/**
+.csv
+*.txt
+*.bak
+
+log/**
+client/jsclient/lib/**
+test/htmlcov/**
+node_modules/**
+client/jsclient/node_modules/**
+webui/**
+
+.hg/**

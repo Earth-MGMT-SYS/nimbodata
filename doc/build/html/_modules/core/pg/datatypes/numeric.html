@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>core.pg.datatypes.numeric &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for core.pg.datatypes.numeric</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Copyright (C) 2014  Bradley Alan Smith</span>
+
+<span class="sd">Module implements numeric types, extending both Python and PostgreSQL built-in</span>
+<span class="sd">types.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="o">*</span>
+
+<div class="viewcode-block" id="Boolean"><a class="viewcode-back" href="../../../../apidoc/core.pg.datatypes.html#core.pg.datatypes.numeric.Boolean">[docs]</a><span class="k">class</span> <span class="nc">Boolean</span><span class="p">(</span><span class="n">Datatype</span><span class="p">):</span>
+    
+    <span class="n">from_literal</span> <span class="o">=</span> <span class="nb">bool</span>
+    
+<div class="viewcode-block" id="Boolean.sql_create"><a class="viewcode-back" href="../../../../apidoc/core.pg.datatypes.html#core.pg.datatypes.numeric.Boolean.sql_create">[docs]</a>    <span class="k">def</span> <span class="nf">sql_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;boolean&#39;</span>
+</div></div>
+<div class="viewcode-block" id="Integer"><a class="viewcode-back" href="../../../../apidoc/core.pg.datatypes.html#core.pg.datatypes.numeric.Integer">[docs]</a><span class="k">class</span> <span class="nc">Integer</span><span class="p">(</span><span class="n">Datatype</span><span class="p">):</span>
+    
+    <span class="n">from_literal</span> <span class="o">=</span> <span class="nb">int</span>
+    
+<div class="viewcode-block" id="Integer.sql_create"><a class="viewcode-back" href="../../../../apidoc/core.pg.datatypes.html#core.pg.datatypes.numeric.Integer.sql_create">[docs]</a>    <span class="k">def</span> <span class="nf">sql_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;integer&#39;</span>
+</div></div>
+<div class="viewcode-block" id="Float"><a class="viewcode-back" href="../../../../apidoc/core.pg.datatypes.html#core.pg.datatypes.numeric.Float">[docs]</a><span class="k">class</span> <span class="nc">Float</span><span class="p">(</span><span class="n">Datatype</span><span class="p">):</span>
+    
+    <span class="n">from_literal</span> <span class="o">=</span> <span class="nb">float</span>
+    
+<div class="viewcode-block" id="Float.sql_create"><a class="viewcode-back" href="../../../../apidoc/core.pg.datatypes.html#core.pg.datatypes.numeric.Float.sql_create">[docs]</a>    <span class="k">def</span> <span class="nf">sql_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;float&#39;</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

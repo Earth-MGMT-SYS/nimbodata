@@ -1,0 +1,172 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nimbodata.core.pg.datatypes.geographic &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nimbodata.core.pg.datatypes.geographic</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;Module implements PostGIS datatypes in Nimbodata, also using shapely.&quot;&quot;&quot;</span>
+<span class="c"># Copyright (C) 2014  Bradley Alan Smith</span>
+
+<span class="kn">import</span> <span class="nn">shapely.geometry</span> <span class="kn">as</span> <span class="nn">shp</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">PG_Datatype</span> <span class="k">as</span> <span class="n">Datatype</span>
+<span class="kn">import</span> <span class="nn">common.datatypes.geographic</span> <span class="kn">as</span> <span class="nn">geo</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">comparable</span>
+
+<div class="viewcode-block" id="Geographic"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.Geographic">[docs]</a><span class="k">class</span> <span class="nc">Geographic</span><span class="p">(</span><span class="n">Datatype</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generic geographic type.&quot;&quot;&quot;</span>
+        
+<div class="viewcode-block" id="Geographic.sql_target"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.Geographic.sql_target">[docs]</a>    <span class="k">def</span> <span class="nf">sql_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">colid</span><span class="p">,</span><span class="n">colname</span><span class="p">,</span><span class="n">alias</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the column results as GeoJSON string&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">alias</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;&#39;&#39; ST_AsGeoJSON(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;) AS &quot;</span><span class="si">%(colname)s</span><span class="s">&quot; &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">{</span>
+                <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span><span class="p">,</span>
+                <span class="s">&#39;colname&#39;</span><span class="p">:</span><span class="n">colname</span>
+            <span class="p">}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;&#39;&#39; ST_AsGeoJSON(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;) &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">{</span>
+                <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span>
+            <span class="p">}</span>    
+</div></div>
+<div class="viewcode-block" id="Point"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.Point">[docs]</a><span class="k">class</span> <span class="nc">Point</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">Point</span><span class="p">,</span><span class="n">Geographic</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple X,Y point.  Extends PostGIS `POINT` and Shapely `Point`.&quot;&quot;&quot;</span>
+        
+<div class="viewcode-block" id="Point.sql_create"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.Point.sql_create">[docs]</a>    <span class="k">def</span> <span class="nf">sql_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;geometry(POINT,4326)&#39;</span>
+
+</div></div>
+<div class="viewcode-block" id="MultiPoint"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.MultiPoint">[docs]</a><span class="k">class</span> <span class="nc">MultiPoint</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">MultiPoint</span><span class="p">,</span><span class="n">Geographic</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Simple X,Y point.  Extends PostGIS `POINT` and Shapely `Point`.&quot;&quot;&quot;</span>
+        
+<div class="viewcode-block" id="MultiPoint.sql_create"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.MultiPoint.sql_create">[docs]</a>    <span class="k">def</span> <span class="nf">sql_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;geometry(MULTIPOINT,4326)&#39;</span>
+
+</div></div>
+<div class="viewcode-block" id="Line"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.Line">[docs]</a><span class="k">class</span> <span class="nc">Line</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">Line</span><span class="p">,</span><span class="n">Geographic</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Linestring extends PostGIS `LINESTRING` and shapely `Linestring`.&quot;&quot;&quot;</span>
+        
+<div class="viewcode-block" id="Line.sql_create"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.Line.sql_create">[docs]</a>    <span class="k">def</span> <span class="nf">sql_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;geometry(LINESTRING,4326)&#39;</span>
+
+        </div></div>
+<div class="viewcode-block" id="MultiLine"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.MultiLine">[docs]</a><span class="k">class</span> <span class="nc">MultiLine</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">MultiLine</span><span class="p">,</span><span class="n">Geographic</span><span class="p">):</span>
+    
+<div class="viewcode-block" id="MultiLine.sql_create"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.MultiLine.sql_create">[docs]</a>    <span class="k">def</span> <span class="nf">sql_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;geometry(MULTILINESTRING,4326)&#39;</span>
+
+        </div></div>
+<div class="viewcode-block" id="Polygon"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.Polygon">[docs]</a><span class="k">class</span> <span class="nc">Polygon</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">Polygon</span><span class="p">,</span><span class="n">Geographic</span><span class="p">):</span>
+    
+<div class="viewcode-block" id="Polygon.sql_create"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.Polygon.sql_create">[docs]</a>    <span class="k">def</span> <span class="nf">sql_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;geometry(POLYGON,4326)&#39;</span>
+
+</div></div>
+<div class="viewcode-block" id="MultiPolygon"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.MultiPolygon">[docs]</a><span class="k">class</span> <span class="nc">MultiPolygon</span><span class="p">(</span><span class="n">geo</span><span class="o">.</span><span class="n">MultiPolygon</span><span class="p">,</span><span class="n">Geographic</span><span class="p">):</span>
+    
+<div class="viewcode-block" id="MultiPolygon.sql_create"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.MultiPolygon.sql_create">[docs]</a>    <span class="k">def</span> <span class="nf">sql_create</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;geometry(MULTIPOLYGON,4326)&#39;</span>
+
+</div></div>
+<div class="viewcode-block" id="GeoAdapter"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.GeoAdapter">[docs]</a><span class="k">class</span> <span class="nc">GeoAdapter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Adapt shapely.geography for psycopg2.&quot;&quot;&quot;</span>
+    
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">f</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_f</span> <span class="o">=</span> <span class="n">f</span>
+    
+<div class="viewcode-block" id="GeoAdapter.getquoted"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.GeoAdapter.getquoted">[docs]</a>    <span class="k">def</span> <span class="nf">getquoted</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&#39;SRID=4326;</span><span class="si">%s</span><span class="s">&#39;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_f</span><span class="o">.</span><span class="n">wkt</span>
+
+    </div>
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="GeoAdapter.cast"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.GeoAdapter.cast">[docs]</a>    <span class="k">def</span> <span class="nf">cast</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">cur</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">s</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">s</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

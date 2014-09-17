@@ -1,0 +1,111 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+        
+        <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base.css'>
+        <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
+        <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure.css'>
+        
+        <link rel="stylesheet" href="controls.css"></link>
+        <script src="http://d3js.org/d3.v3.js"></script>
+        <script type="text/javascript" src="controls.js"></script>
+        <style>
+            body, html {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+            }
+            #main {
+                width: 98%;
+                height: 98%;
+            }
+            #first_container {
+                border: 3px solid green;
+                padding: 1em;
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            }
+            
+            #dropdown_container {
+                border: 3px solid orange;
+                padding: 1em;
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            }
+            
+            #button_container {
+                border: 3px solid purple;
+                padding: 1em;
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            }
+            
+            #complex_container {
+                border: 3px solid blue;
+                padding: 1em;
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            }
+            
+            #multi_container {
+                border: 3px solid green;
+                padding: 1em;
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="main"></div>
+        <script type="text/javascript">
+            
+            d3.select("#main")
+                .append("div")
+                .attr("id","first_container")
+            
+            controls.menu("first_container",{
+                'label':"uuookie",
+                "id":"uuookie",
+                "items":[
+                    "gfy","ead","smc"
+                ]
+            })
+            
+            controls.menu("first_container",{
+                'label':"pooko",
+                "id":"pooko",
+                "items":[
+                    {
+                        'label':'gfy',
+                        'icon':'play',
+                        'on':{'click':function (d) { alert(d) } }
+                    },
+                    {
+                        'label':'ead',
+                        'icon':'plus',
+                        'on':{'click':function (d) { alert(d) } }
+                    },
+                    {
+                        'label':'smc',
+                        'icon':'random',
+                        'on':{'click':function (d) { alert(d) } }
+                    }
+                ]
+            })
+
+            
+            d3.select("#main")
+                .append("div")
+                .attr("id","dropdown_container")
+                
+            
+            
+        </script>
+    </body>
+</html>

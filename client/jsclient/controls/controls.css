@@ -1,0 +1,147 @@
+div.argo {
+  background: #CFE5FF;
+  border: 1px;
+  border-color: gray;
+  border-style: solid;
+  padding: 1em;
+  text-align: center;
+  font-size: medium;
+  font-weight: bold;
+  overflow: hidden;
+  max-width: 70%;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 0.15em;
+}
+
+span.argo {
+  background: #CFE5FF;
+  margin-top: .5%;
+  border: 1px;
+  border-color: gray;
+  border-style: solid;
+  padding: 1em;
+  text-align: center;
+  font-size: medium;
+  font-weight: bold;
+  overflow: hidden;
+  max-width: 70%;
+  margin-right: auto;
+  margin-left: auto;
+  border-radius: 0.15em;
+}
+
+label.argo {
+  margin-left: 1em;
+}
+
+.argo.argo_check_label {
+  border: 1px solid black;
+}
+
+label.argo.vertical {
+  display: block;
+  padding: 0.2em;
+}
+
+input.argo {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+select.argo {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.argo_float {
+  float: left;
+}
+
+.argo_float_left {
+  float: left;
+}
+
+.argo_float_right {
+  float: right;
+}
+
+.argo_feedback {
+  background: #C2C2C2;
+  margin: 1em;
+  float: left;
+}
+
+.argo_feedback_label {
+  margin: 1em;
+  float: left;
+}
+
+.argo_feedback_container {
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 0;
+  margin-bottom: 0.5em;
+  padding: 1em;
+}
+
+.argo_menu {
+  margin-right: 0.1em;
+  margin-left: 0.1em;
+  padding: 0;
+  background: #CFE5FF;
+  margin-top: .5%;
+  border: 1px;
+  border-color: gray;
+  border-style: solid;
+  padding: 1em;
+  text-align: center;
+  font-size: medium;
+  font-weight: bold;
+  overflow: hidden;
+  max-width: 70%;
+  border-radius: 0.15em;
+}
+
+.argo_button {
+  border: 2px solid black;
+  padding: 0.5em;
+  background: #BDBDBD;
+  text-align: center;
+  font-size: medium;
+  cursor: pointer;
+  margin-top:auto;
+  margin-bottom:auto;
+  display: inline;
+  font-size: medium;
+  font-weight: bold;
+  margin: 0.1em;
+}
+
+.pure-form input {
+    margin: 0.3em;
+}
+
+.pure-form label {
+    margin-right: 0.3em;
+}
+
+.n_button {
+    margin: 0.3em;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.n_menu_label {
+    padding: 0.3em;
+}
+
+.n_menu_button {
+    margin: 0.1em;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.n_button_icon_label {
+    margin-left: 0.3em;
+}

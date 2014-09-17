@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>core.pg.entities.relations.geo &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../../../../../index.html" />
+    <link rel="up" title="core.pg.entities" href="../../entities.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../entities.html" accesskey="U">core.pg.entities</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for core.pg.entities.relations.geo</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Copyright (C) 2014  Bradley Alan Smith</span>
+
+<span class="sd">Module implements the PostgreSQL entities that are database members, such</span>
+<span class="sd">as tables, views, etc...</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">...</span> <span class="kn">import</span> <span class="n">syntax</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">util</span> <span class="kn">import</span> <span class="n">tilecalc</span>
+
+
+<div class="viewcode-block" id="GeoView"><a class="viewcode-back" href="../../../../../apidoc/core.pg.entities.relations.html#core.pg.entities.relations.geo.GeoView">[docs]</a><span class="k">class</span> <span class="nc">GeoView</span><span class="p">(</span><span class="n">View</span><span class="p">):</span>
+    
+    
+    
+<div class="viewcode-block" id="GeoView.listing"><a class="viewcode-back" href="../../../../../apidoc/core.pg.entities.relations.html#core.pg.entities.relations.geo.GeoView.listing">[docs]</a>    <span class="k">def</span> <span class="nf">listing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">geoviews</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">_list_db</span><span class="p">(</span><span class="n">db</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">view</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">views</span><span class="p">():</span>
+                <span class="n">geo_view</span> <span class="o">=</span> <span class="n">ent_map</span><span class="p">[</span><span class="s">&#39;GeoView&#39;</span><span class="p">](</span><span class="n">objid</span><span class="o">=</span><span class="n">view</span><span class="o">.</span><span class="n">objid</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">geo_view</span><span class="o">.</span><span class="n">geo_columns</span><span class="p">():</span>
+                    <span class="n">geoviews</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">view</span><span class="o">.</span><span class="n">objid</span><span class="p">,</span><span class="n">view</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">objid</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">db</span> <span class="ow">in</span> <span class="n">ent_map</span><span class="p">[</span><span class="s">&#39;Database&#39;</span><span class="p">]()</span><span class="o">.</span><span class="n">listing</span><span class="p">():</span>
+                <span class="n">_list_db</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_list_db</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">geoviews</span><span class="p">)</span>
+        
+    
+        </div>
+<div class="viewcode-block" id="GeoView.features"><a class="viewcode-back" href="../../../../../apidoc/core.pg.entities.relations.html#core.pg.entities.relations.geo.GeoView.features">[docs]</a>    <span class="k">def</span> <span class="nf">features</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">rowids</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>        
+        <span class="n">geocols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geo_columns</span><span class="p">()</span>
+        <span class="n">tblinfo</span> <span class="o">=</span> <span class="n">Entity</span><span class="p">(</span><span class="n">objid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">))</span>
+        <span class="n">geocolid</span> <span class="o">=</span> <span class="n">geocols</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;objid&#39;</span><span class="p">]</span>
+        <span class="n">geocolname</span> <span class="o">=</span> <span class="n">geocols</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="n">dbid</span> <span class="o">=</span> <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">]</span>
+        <span class="n">tblid</span> <span class="o">=</span> <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">]</span>
+        
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">select_features_byrowid</span><span class="p">(</span>
+            <span class="n">dbid</span><span class="p">,</span>
+            <span class="n">tblid</span><span class="p">,</span>
+            <span class="n">geocolid</span><span class="p">,</span>
+            <span class="n">geocolname</span><span class="p">,</span>
+            <span class="n">rowids</span><span class="p">,</span>
+            <span class="n">z</span>
+        <span class="p">)</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dql&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;Feature&#39;</span><span class="p">,</span>
+                <span class="s">&#39;geometry&#39;</span><span class="p">:</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                <span class="s">&#39;properties&#39;</span><span class="p">:{</span>
+                    <span class="s">&#39;rowid&#39;</span><span class="p">:</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">})</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;FeatureCollection&#39;</span><span class="p">,</span>
+            <span class="s">&#39;features&#39;</span><span class="p">:</span><span class="n">features</span>
+        <span class="p">}</span>
+        </div>
+<div class="viewcode-block" id="GeoView.tile_rowids"><a class="viewcode-back" href="../../../../../apidoc/core.pg.entities.relations.html#core.pg.entities.relations.geo.GeoView.tile_rowids">[docs]</a>    <span class="k">def</span> <span class="nf">tile_rowids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+        <span class="n">geocols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geo_columns</span><span class="p">()</span>
+        <span class="n">tblinfo</span> <span class="o">=</span> <span class="n">Entity</span><span class="p">(</span><span class="n">objid</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">))</span>
+        <span class="n">geocolid</span> <span class="o">=</span> <span class="n">geocols</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;objid&#39;</span><span class="p">]</span>
+        <span class="n">geocolname</span> <span class="o">=</span> <span class="n">geocols</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">corners</span> <span class="o">=</span> <span class="n">tilecalc</span><span class="o">.</span><span class="n">tileBB</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+        
+        <span class="n">dbid</span> <span class="o">=</span> <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">]</span>
+        <span class="n">tblid</span> <span class="o">=</span> <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">]</span>
+        
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">select_geography_rowids</span><span class="p">(</span>
+            <span class="n">dbid</span><span class="p">,</span>
+            <span class="n">tblid</span><span class="p">,</span>
+            <span class="n">geocolid</span><span class="p">,</span>
+            <span class="n">corners</span><span class="p">,</span>
+            <span class="n">z</span>
+        <span class="p">)</span>
+                
+        <span class="n">r</span> <span class="o">=</span> <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dql&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
+    </div>
+<div class="viewcode-block" id="GeoView.tile"><a class="viewcode-back" href="../../../../../apidoc/core.pg.entities.relations.html#core.pg.entities.relations.geo.GeoView.tile">[docs]</a>    <span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">x</span><span class="p">,</span><span class="n">y</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+        <span class="n">geocols</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geo_columns</span><span class="p">()</span>
+        <span class="n">tblinfo</span> <span class="o">=</span> <span class="n">Entity</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">))</span>
+        <span class="n">geocolid</span> <span class="o">=</span> <span class="n">geocols</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;objid&#39;</span><span class="p">]</span>
+        <span class="n">geocolname</span> <span class="o">=</span> <span class="n">geocols</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">features</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">corners</span> <span class="o">=</span> <span class="n">tilecalc</span><span class="o">.</span><span class="n">tileBB</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">y</span><span class="p">),</span><span class="nb">int</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">corners</span> <span class="o">=</span> <span class="bp">None</span>
+        
+        <span class="n">dbid</span> <span class="o">=</span> <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">]</span>
+        <span class="n">tblid</span> <span class="o">=</span> <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">]</span>
+        
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">select_geography</span><span class="p">(</span>
+            <span class="n">dbid</span><span class="p">,</span>
+            <span class="n">tblid</span><span class="p">,</span>
+            <span class="n">geocolid</span><span class="p">,</span>
+            <span class="n">geocolname</span><span class="p">,</span>
+            <span class="n">corners</span><span class="p">,</span>
+            <span class="n">z</span><span class="o">=</span><span class="n">z</span>
+        <span class="p">)</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dql&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">r</span><span class="p">:</span>
+            <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;Feature&#39;</span><span class="p">,</span>
+                <span class="s">&#39;geometry&#39;</span><span class="p">:</span><span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span>
+                <span class="s">&#39;properties&#39;</span><span class="p">:{</span>
+                    <span class="s">&#39;rowid&#39;</span><span class="p">:</span><span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">})</span>
+        
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s">&#39;type&#39;</span><span class="p">:</span><span class="s">&#39;FeatureCollection&#39;</span><span class="p">,</span>
+            <span class="s">&#39;features&#39;</span><span class="p">:</span><span class="n">features</span>
+        <span class="p">}</span>
+        </div></div>
+<div class="viewcode-block" id="GeoTable"><a class="viewcode-back" href="../../../../../apidoc/core.pg.entities.relations.html#core.pg.entities.relations.geo.GeoTable">[docs]</a><span class="k">class</span> <span class="nc">GeoTable</span><span class="p">(</span><span class="n">GeoView</span><span class="p">,</span><span class="n">Table</span><span class="p">):</span>
+    
+<div class="viewcode-block" id="GeoTable.listing"><a class="viewcode-back" href="../../../../../apidoc/core.pg.entities.relations.html#core.pg.entities.relations.geo.GeoTable.listing">[docs]</a>    <span class="k">def</span> <span class="nf">listing</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">geotables</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">def</span> <span class="nf">_list_db</span><span class="p">(</span><span class="n">db</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">tbl</span> <span class="ow">in</span> <span class="n">db</span><span class="o">.</span><span class="n">tables</span><span class="p">():</span>
+                <span class="n">geo_tbl</span> <span class="o">=</span> <span class="n">ent_map</span><span class="p">[</span><span class="s">&#39;GeoTable&#39;</span><span class="p">](</span><span class="n">objid</span><span class="o">=</span><span class="n">tbl</span><span class="o">.</span><span class="n">objid</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">geo_tbl</span><span class="o">.</span><span class="n">geo_columns</span><span class="p">():</span>
+                    <span class="n">geotables</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">tbl</span><span class="o">.</span><span class="n">objid</span><span class="p">,</span><span class="n">tbl</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">objid</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">db</span> <span class="ow">in</span> <span class="n">ent_map</span><span class="p">[</span><span class="s">&#39;Database&#39;</span><span class="p">]()</span><span class="o">.</span><span class="n">listing</span><span class="p">():</span>
+                <span class="n">_list_db</span><span class="p">(</span><span class="n">db</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_list_db</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">geotables</span><span class="p">)</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../entities.html" >core.pg.entities</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

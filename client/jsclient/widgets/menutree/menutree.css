@@ -1,0 +1,28 @@
+
+.Overbox {
+  position: absolute;
+  background-color:rgba(0,0,0,0.5);
+  padding: 20px;
+  border-radius: 5px;
+  z-index: 5;
+  -webkit-padding-start: 20px;
+}
+
+.Overbox:hover {
+  background-color:rgba(0,0,0,0.7);
+}
+
+.menu_category {
+    cursor: pointer;
+    fill: lightgray;
+    font-weight: bold;
+}
+
+.menu_item {
+    fill: lightgray;
+    cursor: pointer;
+}
+
+.menu_item:hover {
+    fill: darkgray;
+}

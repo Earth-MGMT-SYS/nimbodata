@@ -1,0 +1,15 @@
+syntax: glob
+*.pyc
+.csv
+*.txt
+*.bak
+webui/js/us-states.json
+examples/huc/import-data/*
+examples/rivers/rs14fe02/*
+examples/rivers/rv14fe02/*
+.coverage
+test/htmlcov/*
+node_modules/*
+log/*
+client/jsclient/lib/*
+core/test/nimbodata/*

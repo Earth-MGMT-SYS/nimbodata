@@ -1,0 +1,362 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nimbodata.core.pg.entities.table &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../../../../../index.html" />
+    <link rel="up" title="Module code" href="../../../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for nimbodata.core.pg.entities.table</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;Module implements the PostgreSQL table for Nimbodata.&quot;&quot;&quot;</span>
+<span class="c"># Copyright (C) 2014  Bradley Alan Smith</span>
+
+
+<span class="kn">import</span> <span class="nn">StringIO</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="kn">import</span> <span class="nn">shapely.geometry</span> <span class="kn">as</span> <span class="nn">geo</span>
+<span class="kn">import</span> <span class="nn">shapely.wkt</span> <span class="kn">as</span> <span class="nn">wkt</span>
+<span class="kn">import</span> <span class="nn">jsonpickle</span>
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+
+<span class="kn">import</span> <span class="nn">common.entities.table</span> <span class="kn">as</span> <span class="nn">base_table</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">syntax</span><span class="p">,</span> <span class="n">datatypes</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">common</span> <span class="kn">import</span> <span class="n">tilecalc</span>
+
+<div class="viewcode-block" id="Table"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.table.Table">[docs]</a><span class="k">class</span> <span class="nc">Table</span><span class="p">(</span><span class="n">base_table</span><span class="o">.</span><span class="n">Table</span><span class="p">,</span><span class="n">View</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;PostgreSQL table as Nimbodata Entity.&quot;&quot;&quot;</span>
+    
+    <span class="n">tbl_reg</span> <span class="o">=</span> <span class="s">&#39;_adm-tableregistry&#39;</span>
+    <span class="n">_by_name</span> <span class="o">=</span> <span class="n">Entity</span><span class="o">.</span><span class="n">_by_name</span>
+    
+    <span class="k">def</span> <span class="nf">_start_colindex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the next column index for the table.&quot;&quot;&quot;</span>
+        <span class="n">stmt</span><span class="p">,</span><span class="n">params</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+            <span class="s">&quot;_adm-registries&quot;</span><span class="p">,</span>
+            <span class="s">&quot;_adm-maxcolindex&quot;</span><span class="p">,</span>
+            <span class="p">(</span><span class="s">&quot;maxindex&quot;</span><span class="p">,),(</span><span class="s">&#39;parent_objid&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">))</span>
+        <span class="p">)</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;drc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">_get_scalar</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">startIndex</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">r</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">startIndex</span>
+        
+<div class="viewcode-block" id="Table.create"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.table.Table.create">[docs]</a>    <span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">parent_objid</span><span class="p">,</span><span class="n">name</span><span class="p">,</span><span class="n">cols</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create the table in SQL then register it.&quot;&quot;&quot;</span>
+        <span class="n">tblid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_id</span><span class="p">()</span>
+        
+        <span class="n">ent_args</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;parent_objid&#39;</span><span class="p">:</span><span class="n">parent_objid</span><span class="p">,</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span><span class="n">name</span><span class="p">,</span>
+            <span class="s">&#39;owner&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">session</span><span class="p">[</span><span class="s">&#39;user&#39;</span><span class="p">],</span>
+            <span class="s">&#39;objid&#39;</span><span class="p">:</span><span class="n">tblid</span>
+        <span class="p">}</span>
+        
+        <span class="n">Entity</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">ent_args</span><span class="p">)</span>
+        
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">syntax</span><span class="o">.</span><span class="n">create_managed_table</span><span class="p">(</span><span class="n">parent_objid</span><span class="p">,</span><span class="n">tblid</span><span class="p">))</span>
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objid</span> <span class="o">=</span> <span class="n">tblid</span>
+        <span class="k">if</span> <span class="n">cols</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_columns</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">objid</span> <span class="o">=</span> <span class="n">tblid</span>
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span>
+        </div>
+<div class="viewcode-block" id="Table.drop"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.table.Table.drop">[docs]</a>    <span class="k">def</span> <span class="nf">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&quot;Drop the table in SQL the de-register it.&quot;&quot;&quot;</span>
+        <span class="n">tblinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
+        <span class="n">Entity</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">():</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">drop</span><span class="p">()</span>
+        
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">drop_table</span><span class="p">(</span><span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;parent_objid&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">)</span>
+        
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="bp">True</span>
+        </div>
+<div class="viewcode-block" id="Table.add_columns"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.table.Table.add_columns">[docs]</a>    <span class="k">def</span> <span class="nf">add_columns</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">cols</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add columns to the table.&quot;&quot;&quot;</span>
+        <span class="n">dbid</span><span class="p">,</span><span class="n">tblname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s">&#39;parent_objid&#39;</span><span class="p">],</span><span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span>
+        <span class="n">tblowner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s">&#39;owner&#39;</span><span class="p">]</span>
+        <span class="n">stmts</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">startIndex</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_colindex</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">col</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span><span class="n">startIndex</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_function</span><span class="p">(</span><span class="s">&#39;Column&#39;</span><span class="p">,</span><span class="s">&#39;create&#39;</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">,</span><span class="n">index</span><span class="o">=</span><span class="n">i</span><span class="p">,</span><span class="o">**</span><span class="n">col</span><span class="p">)</span>
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute_many</span><span class="p">(</span><span class="n">stmts</span><span class="p">)</span>
+        <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;ddl&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="k">return</span>
+        </div>
+<div class="viewcode-block" id="Table.columns"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.table.Table.columns">[docs]</a>    <span class="k">def</span> <span class="nf">columns</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a listing of columns for the table.&quot;&quot;&quot;</span>
+        <span class="n">tblid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">)</span>
+         
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&#39;name&#39;</span><span class="p">,</span>
+            <span class="s">&#39;owner&#39;</span><span class="p">,</span>
+            <span class="s">&#39;objid&#39;</span><span class="p">,</span>
+            <span class="s">&#39;parent_objid&#39;</span><span class="p">,</span>
+            <span class="s">&#39;entitytype&#39;</span><span class="p">,</span>
+            <span class="s">&#39;datatype&#39;</span><span class="p">,</span>
+            <span class="s">&#39;weight&#39;</span><span class="p">,</span>
+            <span class="s">&#39;alias&#39;</span>
+        <span class="p">)</span>
+                
+        <span class="n">header</span> <span class="o">=</span> <span class="p">[{</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="n">x</span><span class="p">,</span><span class="s">&#39;weight&#39;</span><span class="p">:</span><span class="n">i</span><span class="p">}</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cols</span><span class="p">)]</span>
+
+        <span class="n">stmt</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">schema</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">ent_info</span><span class="p">,</span>
+            <span class="n">where</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="s">&#39;parent_objid&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="n">tblid</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;name&#39;</span><span class="p">,</span><span class="s">&#39;!=&#39;</span><span class="p">,</span><span class="s">&#39;rowid&#39;</span><span class="p">),</span>
+                <span class="p">(</span><span class="s">&#39;entitytype&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="s">&#39;Column&#39;</span><span class="p">)</span>
+            <span class="p">],</span>
+            <span class="n">order_by</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;weight&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+        
+        <span class="n">infos</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">controllers</span><span class="p">[</span><span class="s">&#39;drc&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">))</span>
+        <span class="n">retVal</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">infos</span><span class="p">:</span>
+            <span class="n">retVal</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">api</span><span class="o">.</span><span class="n">get_entity</span><span class="p">(</span><span class="n">i</span><span class="p">[</span><span class="s">&#39;entitytype&#39;</span><span class="p">])(</span><span class="n">objid</span><span class="o">=</span><span class="n">i</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">]))</span>
+            
+        <span class="k">return</span> <span class="n">retVal</span>
+        </div>
+    <span class="k">def</span> <span class="nf">_process_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dtypes</span><span class="p">,</span><span class="n">values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Process a row before inserting it.&quot;&quot;&quot;</span>
+        <span class="n">retVal</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">dtypes</span><span class="p">,</span><span class="n">values</span><span class="p">)):</span>
+            <span class="n">retVal</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_item</span><span class="p">(</span><span class="n">i</span><span class="p">,</span><span class="o">*</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">retVal</span>
+    
+    <span class="k">def</span> <span class="nf">_process_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">i</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">val</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Process an individual item before inserting it.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s">&#39;rowid&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">val</span>
+        <span class="n">typeobj</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">datatypes</span><span class="p">,</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">typeobj</span><span class="p">,</span><span class="n">datatypes</span><span class="o">.</span><span class="n">Geographic</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="nb">basestring</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">wkt</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">val</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span><span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isid</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">jsonpickle</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">dtype</span> <span class="o">==</span> <span class="s">&#39;Json&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">val</span>
+    
+    <span class="k">def</span> <span class="nf">_new_rowid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets a new rowid for an inserted row.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">&#39;row-&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">uuid</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;-&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_insert_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">rowid</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Insert a row where the input is a dict.&quot;&quot;&quot;</span>
+        <span class="n">tblinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
+        <span class="n">colinfo</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">objid</span><span class="o">=</span><span class="n">tblid</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">()</span>
+        <span class="n">geocols</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colinfo</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s">&#39;datatype&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;geography&#39;</span><span class="p">)]</span>
+        <span class="n">dbid</span><span class="p">,</span><span class="n">tblname</span> <span class="o">=</span> <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;parent_objid&#39;</span><span class="p">],</span><span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">colnames</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colinfo</span><span class="p">]</span>
+        <span class="n">decoder</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colinfo</span><span class="p">)</span>
+        <span class="n">decoder</span><span class="p">[</span><span class="s">&#39;_adm-rowid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;_adm-rowid&#39;</span>
+        <span class="n">sub</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;INSERT INTO </span><span class="si">%(tqn)s</span><span class="s"> (</span><span class="si">%(headers)s</span><span class="s">) VALUES (</span><span class="si">%(vals)s</span><span class="s">)&quot;&quot;&quot;</span>
+        <span class="n">sub</span><span class="p">[</span><span class="s">&#39;tqn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">get_tqn</span><span class="p">(</span><span class="n">dbid</span><span class="p">,</span><span class="n">tblid</span><span class="p">)</span>
+        <span class="n">headers</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&quot;&#39;</span><span class="o">+</span><span class="n">decoder</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">+</span><span class="s">&#39;&quot;&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span>
+        <span class="n">sub</span><span class="p">[</span><span class="s">&#39;headers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">headers</span><span class="p">)</span>
+        <span class="n">sub</span><span class="p">[</span><span class="s">&#39;vals&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s">&#39;%(&#39;</span><span class="o">+</span><span class="n">col</span><span class="o">+</span><span class="s">&#39;)s&#39;</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">stmt</span> <span class="o">%</span> <span class="n">sub</span>
+        <span class="n">values</span><span class="p">[</span><span class="s">&#39;_adm-rowid&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_new_rowid</span><span class="p">()</span> <span class="k">if</span> <span class="n">rowid</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">rowid</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dml&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;_adm-rowid&#39;</span><span class="p">]</span>
+    
+    <span class="k">def</span> <span class="nf">_insert_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">rowid</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Insert a row where the input is a list.&quot;&quot;&quot;</span>
+        <span class="n">tblinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">info</span>
+        <span class="n">colinfo</span> <span class="o">=</span> <span class="n">Table</span><span class="p">(</span><span class="n">objid</span><span class="o">=</span><span class="n">tblid</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">()</span>
+        <span class="n">dtypes</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;rowid&#39;</span><span class="p">]</span><span class="o">+</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;datatype&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colinfo</span><span class="p">]</span>
+        <span class="n">dbid</span><span class="p">,</span><span class="n">tblname</span> <span class="o">=</span> <span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;parent_objid&#39;</span><span class="p">],</span><span class="n">tblinfo</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;INSERT INTO </span><span class="si">%(tqn)s</span><span class="s"> VALUES (DEFAULT,</span><span class="si">%(vals)s</span><span class="s">)&quot;&quot;&quot;</span>
+        <span class="n">sub</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">sub</span><span class="p">[</span><span class="s">&#39;tqn&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">get_tqn</span><span class="p">(</span><span class="n">dbid</span><span class="p">,</span><span class="n">tblid</span><span class="p">)</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_new_rowid</span><span class="p">()</span> <span class="k">if</span> <span class="n">rowid</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">rowid</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+        <span class="n">placeholders</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;%(&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;)s&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">values</span><span class="p">)))</span>
+        <span class="n">sub</span><span class="p">[</span><span class="s">&#39;vals&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">placeholders</span><span class="p">)</span>
+        <span class="n">insVals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_process_row</span><span class="p">(</span><span class="n">dtypes</span><span class="p">,</span><span class="n">values</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dml&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="o">%</span><span class="n">sub</span><span class="p">,</span><span class="n">insVals</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">DataError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">print</span> <span class="n">insVals</span>
+            <span class="k">raise</span> <span class="n">e</span>
+        <span class="k">return</span> <span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        
+<div class="viewcode-block" id="Table.insert_file"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.table.Table.insert_file">[docs]</a>    <span class="k">def</span> <span class="nf">insert_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">fobj</span><span class="p">,</span><span class="n">cols</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">fallback</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">errors</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="n">tqn</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;.&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="s">&#39;parent_objid&#39;</span><span class="p">],</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">fobj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">cols</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;&quot;&#39;</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">]</span><span class="o">+</span><span class="s">&#39;&quot;&#39;</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">columns</span><span class="p">()]</span>
+        <span class="k">with</span> <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dml&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span> <span class="k">as</span> <span class="n">cur</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cur</span><span class="o">.</span><span class="n">copy_from</span><span class="p">(</span><span class="n">fobj</span><span class="p">,</span> <span class="n">tqn</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+                <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dml&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">DataError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dml&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+                <span class="n">fobj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cur</span><span class="o">.</span><span class="n">copy_from</span><span class="p">(</span><span class="n">fobj</span><span class="p">,</span> <span class="n">tqn</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+                <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dml&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+                <span class="k">return</span> <span class="n">errors</span>
+            <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">DataError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dml&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+            
+            <span class="n">fobj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">fobj</span><span class="p">):</span>
+                <span class="n">w_row</span> <span class="o">=</span> <span class="p">[</span><span class="n">val</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">,</span><span class="s">&#39;\,&#39;</span><span class="p">)</span> <span class="k">for</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span>
+                <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">w_row</span><span class="p">)</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">cur</span><span class="o">.</span><span class="n">copy_from</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">tqn</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&#39;,&#39;</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="n">cols</span><span class="p">)</span>
+                <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dml&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+                <span class="k">return</span>
+            <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">DataError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dml&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+                <span class="k">raise</span> <span class="n">e</span>
+                <span class="n">bad_line</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">diag</span><span class="o">.</span><span class="n">context</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&#39;:&#39;</span><span class="p">,</span><span class="s">&#39;&#39;</span><span class="p">))</span>
+            
+            <span class="n">fobj</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="n">StringIO</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
+            <span class="n">w</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">writer</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">errors</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">errors</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">rowlen</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">row</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">csv</span><span class="o">.</span><span class="n">reader</span><span class="p">(</span><span class="n">fobj</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">bad_line</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">errors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+                    <span class="k">continue</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">w</span><span class="o">.</span><span class="n">writerow</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+            <span class="n">s</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">insert_file</span><span class="p">(</span>
+                <span class="n">s</span><span class="p">,</span><span class="n">cols</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span><span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span><span class="n">fallback</span><span class="o">=</span><span class="n">fallback</span><span class="p">,</span><span class="n">errors</span><span class="o">=</span><span class="n">errors</span>
+            <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Table.insert"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.table.Table.insert">[docs]</a>    <span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">rowid</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Insert the row or rows into the table.&quot;&quot;&quot;</span>
+        <span class="n">childTypes</span> <span class="o">=</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span><span class="nb">list</span><span class="p">,</span><span class="nb">dict</span><span class="p">)</span>
+        <span class="n">tblid</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">objid</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span><span class="nb">dict</span><span class="p">):</span>
+            <span class="n">rowid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insert_dict</span><span class="p">(</span><span class="n">tblid</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">rowid</span><span class="p">)</span>
+            <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dml&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">rowid</span>
+        <span class="k">elif</span> <span class="nb">any</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">type_</span><span class="p">)</span> <span class="k">for</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">childTypes</span><span class="p">):</span>
+            <span class="c"># Single recursion via comprehension</span>
+            <span class="n">rowids</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">row</span><span class="p">,</span><span class="n">rowid</span><span class="p">)</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">values</span><span class="p">]</span>
+            <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dml&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">rowids</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rowid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_insert_row</span><span class="p">(</span><span class="n">tblid</span><span class="p">,</span><span class="n">values</span><span class="p">,</span><span class="n">rowid</span><span class="p">)</span>
+            <span class="n">controllers</span><span class="p">[</span><span class="s">&#39;dml&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">rowid</span>
+    </div>
+<div class="viewcode-block" id="Table.update"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.entities.html#nimbodata.core.pg.entities.table.Table.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">rowid</span><span class="p">,</span><span class="n">new_values</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Update a row specified by rowid.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">tblid</span><span class="p">,</span><span class="n">new_values</span><span class="p">,</span><span class="n">rowid</span><span class="p">)</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Entities &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="index.html" />
+    <link rel="next" title="Select" href="select.html" />
+    <link rel="prev" title="Architecture" href="architecture.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="select.html" title="Select"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="architecture.html" title="Architecture"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="entities">
+<span id="id1"></span><h1>Entities<a class="headerlink" href="#entities" title="Permalink to this headline">¶</a></h1>
+<p>Entities are API objects which relate to each other to form a database.
+Entities are those items which are complex collections of other data or other
+entities.  Currently, the Entities closely model a traditional SQL database,
+but as additional features are developed, additional entities will be needed.</p>
+<div class="section" id="database">
+<h2>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h2>
+<p>A <tt class="xref py py-class docutils literal"><span class="pre">Database</span></tt> is a logical collection of tables, views, datatypes,
+functions and applications related to the same set of data or purpose.
+Databases are the equivalent of (and implemented as) a PostgreSQL schema.
+In Nimbodata, all <tt class="xref py py-class docutils literal"><span class="pre">Database</span></tt> objects exist in the same &#8220;cloud&#8221;
+(although not all might be visible or accessible to any particular user),
+although Universe would be a clearer term considering that some items may
+not be accessible to one-another.</p>
+<p>Here&#8217;s an example of creating a database:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">cloud</span><span class="o">.</span><span class="n">create_database</span><span class="p">(</span><span class="s">&#39;organization&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can access and manage your database later really easily too:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">cloud</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s">&#39;organization&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s">&#39;nuthouse&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">cloud</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s">&#39;nuthouse&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cloud</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s">&#39;nuthouse&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">()</span> <span class="c"># same as db.drop()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">cloud</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s">&#39;organization&#39;</span><span class="p">)</span> <span class="c"># no more horsing around</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="table">
+<h2>Table<a class="headerlink" href="#table" title="Permalink to this headline">¶</a></h2>
+<p>A <tt class="xref py py-class docutils literal"><span class="pre">Table</span></tt> stores rows of data with one or more columns.
+Each <tt class="xref py py-class docutils literal"><span class="pre">Column</span></tt> has a datatype, and the Column&#8217;s datatype is also the
+constructor for values of that type.  All data exists first in a table, because
+you may only insert into a table.  Constraints and columns also maintain a
+certain core affinity to the table that they are associated with, even when
+being presented in a derived view.  Here&#8217;s an example of creating a table with
+no columns:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s">&#39;people&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As you might expect, management is easy here too:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">cloud</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s">&#39;organization&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s">&#39;people&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s">&#39;employees&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">info</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">info</span> <span class="c"># original table object still a-ok after rename</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cloud</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s">&#39;organization&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s">&#39;employees&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">drop</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">drop</span><span class="p">()</span> <span class="c"># would have done the same thing... but will error here</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">cloud</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s">&#39;organization&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s">&#39;people&#39;</span><span class="p">)</span> <span class="c"># goofin again.</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="column">
+<h2>Column<a class="headerlink" href="#column" title="Permalink to this headline">¶</a></h2>
+<p>A column is a named, typed data descriptor.  In a relational database, any
+data value in a row is described by its column. Server-side slice is
+forthcoming, but in the interim, limit + client slice is still pretty useful.
+For a table to be really useful, you need columns... so, here&#8217;s a more useful
+example:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cols</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;fullname&#39;</span><span class="p">,</span><span class="s">&#39;datatype&#39;</span><span class="p">:</span><span class="s">&#39;Text&#39;</span><span class="p">},</span>
+<span class="gp">... </span>    <span class="p">{</span><span class="s">&#39;name&#39;</span><span class="p">:</span><span class="s">&#39;age&#39;</span><span class="p">,</span><span class="s">&#39;datatype&#39;</span><span class="p">:</span><span class="s">&#39;Integer&#39;</span><span class="p">}</span>
+<span class="gp">... </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">cloud</span><span class="o">.</span><span class="n">create_database</span><span class="p">(</span><span class="s">&#39;organization&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s">&#39;people&#39;</span><span class="p">,</span><span class="n">cols</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">fullname</span><span class="p">,</span> <span class="n">age</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">()</span> <span class="c"># Useful for queries.</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">insert</span><span class="p">([</span><span class="s">&#39;Jane&#39;</span><span class="p">,</span><span class="mi">38</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">insert</span><span class="p">({</span><span class="s">&#39;age&#39;</span><span class="p">:</span><span class="mi">83</span><span class="p">,</span><span class="s">&#39;fullname&#39;</span><span class="p">:</span><span class="s">&#39;John&#39;</span><span class="p">})</span> <span class="c"># Also works</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">insert</span><span class="p">({</span><span class="s">&#39;fullname&#39;</span><span class="p">:</span><span class="s">&#39;Zorro&#39;</span><span class="p">})</span> <span class="c"># He&#39;s sensitive about his age</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="view">
+<h2>View<a class="headerlink" href="#view" title="Permalink to this headline">¶</a></h2>
+<p>A <tt class="xref py py-class docutils literal"><span class="pre">View</span></tt> is a reference to a query.  It provides a mechanism to
+access a consistent selection of data based on a pre-defined query.  From
+the user&#8217;s perspective, the only difference between a <tt class="xref py py-class docutils literal"><span class="pre">Table</span></tt> and
+<tt class="xref py py-class docutils literal"><span class="pre">View</span></tt> is that you may only add data to a <tt class="xref py py-class docutils literal"><span class="pre">Table</span></tt>.
+In fact, whenever selecting data, a user is only ever interacting with a
+view, even if they are selecting from a table.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">fullname</span><span class="p">,</span> <span class="n">age</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">create_view</span><span class="p">(</span><span class="s">&#39;oldtimers&#39;</span><span class="p">,{</span><span class="s">&#39;objid&#39;</span><span class="p">:</span><span class="n">table</span><span class="p">,</span><span class="s">&#39;where&#39;</span><span class="p">:</span><span class="n">age</span> <span class="o">&gt;</span> <span class="mi">50</span> <span class="p">})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">view</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">fullname</span><span class="p">])</span><span class="o">.</span><span class="n">rows</span>
+<span class="go">[[&#39;John&#39;]]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="constraint">
+<h2>Constraint<a class="headerlink" href="#constraint" title="Permalink to this headline">¶</a></h2>
+<p>A :py:class:&#8217;Constraint&#8217; is a limitation on the data that can be inserted into
+a particular table.  These are currently just a wrapper around SQL constraints,
+but longer term we will implement functional-constraints built in the
+analytical environment.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Entities</a><ul>
+<li><a class="reference internal" href="#database">Database</a></li>
+<li><a class="reference internal" href="#table">Table</a></li>
+<li><a class="reference internal" href="#column">Column</a></li>
+<li><a class="reference internal" href="#view">View</a></li>
+<li><a class="reference internal" href="#constraint">Constraint</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="architecture.html"
+                        title="previous chapter">Architecture</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="select.html"
+                        title="next chapter">Select</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/entities.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="select.html" title="Select"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="architecture.html" title="Architecture"
+             >previous</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

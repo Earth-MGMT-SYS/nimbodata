@@ -1,0 +1,323 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>core.pg.entities.relations package &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../index.html" />
+    <link rel="up" title="core.pg.entities package" href="core.pg.entities.html" />
+    <link rel="next" title="core.util package" href="core.util.html" />
+    <link rel="prev" title="core.pg.entities package" href="core.pg.entities.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.util.html" title="core.util package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="core.pg.entities.html" title="core.pg.entities package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="core.html" >core package</a> &raquo;</li>
+          <li><a href="core.pg.html" >core.pg package</a> &raquo;</li>
+          <li><a href="core.pg.entities.html" accesskey="U">core.pg.entities package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="core-pg-entities-relations-package">
+<h1>core.pg.entities.relations package<a class="headerlink" href="#core-pg-entities-relations-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-core.pg.entities.relations.geo">
+<span id="core-pg-entities-relations-geo-module"></span><h2>core.pg.entities.relations.geo module<a class="headerlink" href="#module-core.pg.entities.relations.geo" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the PostgreSQL entities that are database members, such
+as tables, views, etc...</p>
+<dl class="class">
+<dt id="core.pg.entities.relations.geo.GeoTable">
+<em class="property">class </em><tt class="descclassname">core.pg.entities.relations.geo.</tt><tt class="descname">GeoTable</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/geo.html#GeoTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.geo.GeoTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.entities.relations.geo.GeoView" title="core.pg.entities.relations.geo.GeoView"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.entities.relations.geo.GeoView</span></tt></a>, <a class="reference internal" href="#core.pg.entities.relations.table.Table" title="core.pg.entities.relations.table.Table"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.entities.relations.table.Table</span></tt></a></p>
+<dl class="method">
+<dt id="core.pg.entities.relations.geo.GeoTable.listing">
+<tt class="descname">listing</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/geo.html#GeoTable.listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.geo.GeoTable.listing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="core.pg.entities.relations.geo.GeoView">
+<em class="property">class </em><tt class="descclassname">core.pg.entities.relations.geo.</tt><tt class="descname">GeoView</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/geo.html#GeoView"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.geo.GeoView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.entities.relations.view.View" title="core.pg.entities.relations.view.View"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.entities.relations.view.View</span></tt></a></p>
+<dl class="method">
+<dt id="core.pg.entities.relations.geo.GeoView.features">
+<tt class="descname">features</tt><big>(</big><em>rowids</em>, <em>z=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/geo.html#GeoView.features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.geo.GeoView.features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.geo.GeoView.listing">
+<tt class="descname">listing</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/geo.html#GeoView.listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.geo.GeoView.listing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.geo.GeoView.tile">
+<tt class="descname">tile</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/geo.html#GeoView.tile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.geo.GeoView.tile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.geo.GeoView.tile_rowids">
+<tt class="descname">tile_rowids</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/geo.html#GeoView.tile_rowids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.geo.GeoView.tile_rowids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.entities.relations.table">
+<span id="core-pg-entities-relations-table-module"></span><h2>core.pg.entities.relations.table module<a class="headerlink" href="#module-core.pg.entities.relations.table" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the PostgreSQL table.</p>
+<dl class="class">
+<dt id="core.pg.entities.relations.table.Table">
+<em class="property">class </em><tt class="descclassname">core.pg.entities.relations.table.</tt><tt class="descname">Table</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/table.html#Table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.table.Table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.entities.relations.view.View" title="core.pg.entities.relations.view.View"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.entities.relations.view.View</span></tt></a></p>
+<p>PostgreSQL table</p>
+<dl class="method">
+<dt id="core.pg.entities.relations.table.Table.add_columns">
+<tt class="descname">add_columns</tt><big>(</big><em>cols</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/table.html#Table.add_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.table.Table.add_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <cite>tblid</cite> and <cite>[cols]</cite>, add and register the columns.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.table.Table.columns">
+<tt class="descname">columns</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/table.html#Table.columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.table.Table.columns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.table.Table.create">
+<tt class="descname">create</tt><big>(</big><em>parent</em>, <em>name</em>, <em>owner</em>, <em>cols</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/table.html#Table.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.table.Table.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <cite>dbid</cite>,`tblname`,`tblowner`,`[cols]`, create and register
+a table, and return the new <cite>tblid</cite>.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.table.Table.drop">
+<tt class="descname">drop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/table.html#Table.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.table.Table.drop" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.table.Table.insert">
+<tt class="descname">insert</tt><big>(</big><em>values</em>, <em>rowid=None</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/table.html#Table.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.table.Table.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given a <cite>tblid</cite>, insert <cite>(values)</cite> or <cite>[(values)]</cite> into the 
+specified table.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.relations.table.Table.objid_prefix">
+<tt class="descname">objid_prefix</tt><em class="property"> = 'tbl'</em><a class="headerlink" href="#core.pg.entities.relations.table.Table.objid_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.relations.table.Table.tbl_reg">
+<tt class="descname">tbl_reg</tt><em class="property"> = '_adm-tableregistry'</em><a class="headerlink" href="#core.pg.entities.relations.table.Table.tbl_reg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.table.Table.update">
+<tt class="descname">update</tt><big>(</big><em>tblid</em>, <em>rowid</em>, <em>new_values</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/table.html#Table.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.table.Table.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.entities.relations.tree">
+<span id="core-pg-entities-relations-tree-module"></span><h2>core.pg.entities.relations.tree module<a class="headerlink" href="#module-core.pg.entities.relations.tree" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the tree.</p>
+<dl class="class">
+<dt id="core.pg.entities.relations.tree.Tree">
+<em class="property">class </em><tt class="descclassname">core.pg.entities.relations.tree.</tt><tt class="descname">Tree</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/tree.html#Tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.tree.Tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.pg.entities.relations.table.Table" title="core.pg.entities.relations.table.Table"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.entities.relations.table.Table</span></tt></a></p>
+<p>A special table for a tree</p>
+<dl class="method">
+<dt id="core.pg.entities.relations.tree.Tree.create">
+<tt class="descname">create</tt><big>(</big><em>parent</em>, <em>name</em>, <em>owner</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/tree.html#Tree.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.tree.Tree.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.entities.relations.view">
+<span id="core-pg-entities-relations-view-module"></span><h2>core.pg.entities.relations.view module<a class="headerlink" href="#module-core.pg.entities.relations.view" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the PostgreSQL view.</p>
+<dl class="class">
+<dt id="core.pg.entities.relations.view.View">
+<em class="property">class </em><tt class="descclassname">core.pg.entities.relations.view.</tt><tt class="descname">View</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/view.html#View"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.view.View" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.pg.entities.html#core.pg.entities.prototype.Entity" title="core.pg.entities.prototype.Entity"><tt class="xref py py-class docutils literal"><span class="pre">core.pg.entities.prototype.Entity</span></tt></a></p>
+<p>A view represents a query subject, such as a table or another view</p>
+<dl class="method">
+<dt id="core.pg.entities.relations.view.View.column">
+<tt class="descname">column</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/view.html#View.column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.view.View.column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.view.View.columns">
+<tt class="descname">columns</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/view.html#View.columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.view.View.columns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.view.View.create">
+<tt class="descname">create</tt><big>(</big><em>parent</em>, <em>name</em>, <em>owner</em>, <em>select</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/view.html#View.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.view.View.create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.view.View.geo_columns">
+<tt class="descname">geo_columns</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/view.html#View.geo_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.view.View.geo_columns" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.relations.view.View.geo_types">
+<tt class="descname">geo_types</tt><em class="property"> = ['Point', 'Line']</em><a class="headerlink" href="#core.pg.entities.relations.view.View.geo_types" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.view.View.get_q_cols">
+<tt class="descname">get_q_cols</tt><big>(</big><em>select</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/view.html#View.get_q_cols"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.view.View.get_q_cols" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.relations.view.View.objid_prefix">
+<tt class="descname">objid_prefix</tt><em class="property"> = 'viw'</em><a class="headerlink" href="#core.pg.entities.relations.view.View.objid_prefix" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="core.pg.entities.relations.view.View.select">
+<tt class="descname">select</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/core/pg/entities/relations/view.html#View.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#core.pg.entities.relations.view.View.select" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.relations.view.View.view_col_info">
+<tt class="descname">view_col_info</tt><em class="property"> = '_adm-viewcolinfo'</em><a class="headerlink" href="#core.pg.entities.relations.view.View.view_col_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="core.pg.entities.relations.view.View.view_cols">
+<tt class="descname">view_cols</tt><em class="property"> = '_adm-viewcolumns'</em><a class="headerlink" href="#core.pg.entities.relations.view.View.view_cols" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-core.pg.entities.relations">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-core.pg.entities.relations" title="Permalink to this headline">¶</a></h2>
+<p>Copyright (C) 2014  Bradley Alan Smith</p>
+<p>Module implements the PostgreSQL relations (tables, views, flavors thereof).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">core.pg.entities.relations package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-core.pg.entities.relations.geo">core.pg.entities.relations.geo module</a></li>
+<li><a class="reference internal" href="#module-core.pg.entities.relations.table">core.pg.entities.relations.table module</a></li>
+<li><a class="reference internal" href="#module-core.pg.entities.relations.tree">core.pg.entities.relations.tree module</a></li>
+<li><a class="reference internal" href="#module-core.pg.entities.relations.view">core.pg.entities.relations.view module</a></li>
+<li><a class="reference internal" href="#module-core.pg.entities.relations">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="core.pg.entities.html"
+                        title="previous chapter">core.pg.entities package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="core.util.html"
+                        title="next chapter">core.util package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/apidoc/core.pg.entities.relations.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="core.util.html" title="core.util package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="core.pg.entities.html" title="core.pg.entities package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="core.html" >core package</a> &raquo;</li>
+          <li><a href="core.pg.html" >core.pg package</a> &raquo;</li>
+          <li><a href="core.pg.entities.html" >core.pg.entities package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

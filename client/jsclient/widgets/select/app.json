@@ -1,0 +1,13 @@
+[
+    {
+        "id":"qcontainer",
+        "widget":"Container",
+        "children":[
+            {
+                "id":"querybox",
+                "widget":"Select",
+                "datasource":"./examples/example.json"
+            }
+        ]
+    }
+]

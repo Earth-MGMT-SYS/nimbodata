@@ -1,0 +1,386 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nimbodata.core.pg package &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../index.html" />
+    <link rel="up" title="nimbodata.core package" href="nimbodata.core.html" />
+    <link rel="next" title="nimbodata.core.pg.datatypes package" href="nimbodata.core.pg.datatypes.html" />
+    <link rel="prev" title="nimbodata.core.auth package" href="nimbodata.core.auth.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.pg.datatypes.html" title="nimbodata.core.pg.datatypes package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.auth.html" title="nimbodata.core.auth package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="nimbodata.html" >nimbodata package</a> &raquo;</li>
+          <li><a href="nimbodata.core.html" accesskey="U">nimbodata.core package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nimbodata-core-pg-package">
+<h1>nimbodata.core.pg package<a class="headerlink" href="#nimbodata-core-pg-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="nimbodata.core.pg.datatypes.html">nimbodata.core.pg.datatypes package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.datatypes.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.datatypes.html#module-nimbodata.core.pg.datatypes.function">nimbodata.core.pg.datatypes.function module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.datatypes.html#module-nimbodata.core.pg.datatypes.geographic">nimbodata.core.pg.datatypes.geographic module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.datatypes.html#module-nimbodata.core.pg.datatypes.numeric">nimbodata.core.pg.datatypes.numeric module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.datatypes.html#module-nimbodata.core.pg.datatypes.pg_prototype">nimbodata.core.pg.datatypes.pg_prototype module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.datatypes.html#module-nimbodata.core.pg.datatypes.ranges">nimbodata.core.pg.datatypes.ranges module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.datatypes.html#module-nimbodata.core.pg.datatypes.text">nimbodata.core.pg.datatypes.text module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.datatypes.html#module-nimbodata.core.pg.datatypes.time">nimbodata.core.pg.datatypes.time module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.datatypes.html#module-nimbodata.core.pg.datatypes">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nimbodata.core.pg.entities.html">nimbodata.core.pg.entities package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.entities.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.entities.html#module-nimbodata.core.pg.entities.column">nimbodata.core.pg.entities.column module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.entities.html#module-nimbodata.core.pg.entities.constraint">nimbodata.core.pg.entities.constraint module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.entities.html#module-nimbodata.core.pg.entities.database">nimbodata.core.pg.entities.database module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.entities.html#module-nimbodata.core.pg.entities.prototype">nimbodata.core.pg.entities.prototype module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.entities.html#module-nimbodata.core.pg.entities.table">nimbodata.core.pg.entities.table module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.entities.html#nimbodata-core-pg-entities-tree-module">nimbodata.core.pg.entities.tree module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.entities.html#module-nimbodata.core.pg.entities.view">nimbodata.core.pg.entities.view module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.core.pg.entities.html#module-nimbodata.core.pg.entities">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-nimbodata.core.pg.engine">
+<span id="nimbodata-core-pg-engine-module"></span><h2>nimbodata.core.pg.engine module<a class="headerlink" href="#module-nimbodata.core.pg.engine" title="Permalink to this headline">¶</a></h2>
+<p>Module encapsulates PG access at a certain permission level.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.engine.Engine">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.engine.</tt><tt class="descname">Engine</tt><big>(</big><em>user=None</em>, <em>drc=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/engine.html#Engine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.engine.Engine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Engine for PostgreSQL database.</p>
+<dl class="method">
+<dt id="nimbodata.core.pg.engine.Engine.close">
+<tt class="descname">close</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/engine.html#Engine.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.engine.Engine.close" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="nimbodata.core.pg.engine.Engine.conn_string">
+<tt class="descname">conn_string</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/engine.html#Engine.conn_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.engine.Engine.conn_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.engine.Engine.execute">
+<tt class="descname">execute</tt><big>(</big><em>stmt</em>, <em>params=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/engine.html#Engine.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.engine.Engine.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the statement in a transaction, parameters optional.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.engine.Engine.execute_many">
+<tt class="descname">execute_many</tt><big>(</big><em>stmts</em>, <em>return_cursors=False</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/engine.html#Engine.execute_many"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.engine.Engine.execute_many" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute multiple statements within a transaction.</p>
+<p>Optionally return the cursors resulting from each.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.engine.Engine.mogrify">
+<tt class="descname">mogrify</tt><big>(</big><em>stmt</em>, <em>params=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/engine.html#Engine.mogrify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.engine.Engine.mogrify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Combines statement and params to string for human use.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.select">
+<span id="nimbodata-core-pg-select-module"></span><h2>nimbodata.core.pg.select module<a class="headerlink" href="#module-nimbodata.core.pg.select" title="Permalink to this headline">¶</a></h2>
+<p>Module implements query functionality against Nimbodata.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.select.Select">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.select.</tt><tt class="descname">Select</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/select.html#Select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.select.Select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#nimbodata.core.pg.engine.Engine" title="nimbodata.core.pg.engine.Engine"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.engine.Engine</span></tt></a></p>
+<p>A customized Postgres engine providing various query capabilities.</p>
+<dl class="attribute">
+<dt id="nimbodata.core.pg.select.Select.allowed_funcs">
+<tt class="descname">allowed_funcs</tt><em class="property"> = ['max', 'min', 'avg']</em><a class="headerlink" href="#nimbodata.core.pg.select.Select.allowed_funcs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.select.Select.execute">
+<tt class="descname">execute</tt><big>(</big><em>stmt</em>, <em>params=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/select.html#Select.execute"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.select.Select.execute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute the SQL statement using the provided parameters.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.select.Select.get_array">
+<tt class="descname">get_array</tt><big>(</big><em>viewid=None</em>, <em>col=None</em>, <em>join=None</em>, <em>where=None</em>, <em>group_by=None</em>, <em>order_by=None</em>, <em>limit=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/select.html#Select.get_array"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.select.Select.get_array" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns an array of a single column from a select query.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.select.Select.get_byrowid">
+<tt class="descname">get_byrowid</tt><big>(</big><em>viewid</em>, <em>ids</em>, <em>alias=False</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/select.html#Select.get_byrowid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.select.Select.get_byrowid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a row from a specified relation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.select.Select.select">
+<tt class="descname">select</tt><big>(</big><em>viewid=None</em>, <em>cols=None</em>, <em>join=None</em>, <em>where=None</em>, <em>group_by=None</em>, <em>order_by=None</em>, <em>limit=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/select.html#Select.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.select.Select.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Execute a select query.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.select.subid">
+<tt class="descclassname">nimbodata.core.pg.select.</tt><tt class="descname">subid</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/select.html#subid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.select.subid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.syntax">
+<span id="nimbodata-core-pg-syntax-module"></span><h2>nimbodata.core.pg.syntax module<a class="headerlink" href="#module-nimbodata.core.pg.syntax" title="Permalink to this headline">¶</a></h2>
+<p>Module implements PostgreSQL syntax implemented as Python functions.</p>
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.add_column">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">add_column</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em>, <em>dtype</em>, <em>pk=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#add_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.add_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.add_constraint_check">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">add_constraint_check</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>conid</em>, <em>const_stmt</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#add_constraint_check"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.add_constraint_check" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.add_constraint_notnull">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">add_constraint_notnull</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#add_constraint_notnull"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.add_constraint_notnull" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.add_constraint_unique">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">add_constraint_unique</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>conid</em>, <em>colid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#add_constraint_unique"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.add_constraint_unique" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.alter_column_type">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">alter_column_type</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em>, <em>newtype</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#alter_column_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.alter_column_type" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.alter_default">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">alter_default</tt><big>(</big><em>schemaid</em>, <em>uname</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#alter_default"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.alter_default" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.create_db">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">create_db</tt><big>(</big><em>schemaid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#create_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.create_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.create_managed_table">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">create_managed_table</tt><big>(</big><em>schemaid</em>, <em>tblid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#create_managed_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.create_managed_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.create_table">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">create_table</tt><big>(</big><em>schemaid</em>, <em>tblid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#create_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.create_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.create_view">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">create_view</tt><big>(</big><em>schemaid</em>, <em>viewid</em>, <em>select</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#create_view"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.create_view" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.delete_row">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">delete_row</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>where</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#delete_row"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.delete_row" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.drop_column">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">drop_column</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#drop_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.drop_column" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.drop_constraint">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">drop_constraint</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>conid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#drop_constraint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.drop_constraint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.drop_constraint_notnull">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">drop_constraint_notnull</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#drop_constraint_notnull"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.drop_constraint_notnull" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.drop_db">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">drop_db</tt><big>(</big><em>schemaid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#drop_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.drop_db" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.drop_table">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">drop_table</tt><big>(</big><em>schemaid</em>, <em>tblid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#drop_table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.drop_table" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.get_tqn">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">get_tqn</tt><big>(</big><em>schemaid</em>, <em>tblid</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.syntax.get_tqn" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.grant_usage">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">grant_usage</tt><big>(</big><em>schemaid</em>, <em>uname</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#grant_usage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.grant_usage" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.insert">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">insert</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>values=None</em>, <em>colnames=False</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.insert" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.process_where">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">process_where</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>clause</em>, <em>i=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#process_where"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.process_where" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.select">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">select</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>cols=None</em>, <em>where=None</em>, <em>join=None</em>, <em>group_by=None</em>, <em>order_by=None</em>, <em>limit=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.select" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.select_features_byrowid">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">select_features_byrowid</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em>, <em>colname</em>, <em>rowids</em>, <em>z=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#select_features_byrowid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.select_features_byrowid" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.select_geography">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">select_geography</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em>, <em>colname</em>, <em>bb=None</em>, <em>geotype=None</em>, <em>z=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#select_geography"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.select_geography" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.select_geography_rowids">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">select_geography_rowids</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>colid</em>, <em>bb</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#select_geography_rowids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.select_geography_rowids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.syntax.update">
+<tt class="descclassname">nimbodata.core.pg.syntax.</tt><tt class="descname">update</tt><big>(</big><em>schemaid</em>, <em>tblid</em>, <em>values</em>, <em>colnames=False</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/syntax.html#update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.syntax.update" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-nimbodata.core.pg" title="Permalink to this headline">¶</a></h2>
+<p>Module implements all of the functionality to interact with PostgreSQL.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">nimbodata.core.pg package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.engine">nimbodata.core.pg.engine module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.select">nimbodata.core.pg.select module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.syntax">nimbodata.core.pg.syntax module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="nimbodata.core.auth.html"
+                        title="previous chapter">nimbodata.core.auth package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="nimbodata.core.pg.datatypes.html"
+                        title="next chapter">nimbodata.core.pg.datatypes package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/apidoc/nimbodata.core.pg.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.pg.datatypes.html" title="nimbodata.core.pg.datatypes package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.auth.html" title="nimbodata.core.auth package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="nimbodata.html" >nimbodata package</a> &raquo;</li>
+          <li><a href="nimbodata.core.html" >nimbodata.core package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

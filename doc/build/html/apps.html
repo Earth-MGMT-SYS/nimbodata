@@ -1,0 +1,197 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Apps &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="index.html" />
+    <link rel="next" title="nimbodata package" href="apidoc/nimbodata.html" />
+    <link rel="prev" title="API Reference" href="api.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="apidoc/nimbodata.html" title="nimbodata package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="API Reference"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="apps">
+<span id="id1"></span><h1>Apps<a class="headerlink" href="#apps" title="Permalink to this headline">¶</a></h1>
+<p>Apps are built upon the Nimbodata platform.  Any functionality which is not
+core functionality runs as an app.  The app platform provides two key
+functionalities:</p>
+<ul class="simple">
+<li>An in-browser MVC framework powered primarily by Python, but extensible
+in Javascript.  This provides a layout manager which can be managed
+natively in Python with no HTML as well as widgets which are oriented
+towards Nimbodata types and entities.  The widget framework is easily
+extensible, from modifying the event filter to extending existing widgets.</li>
+<li>Server-side functionality beyond core queries.  This can be used
+to execute a number of commands in one-round trip and to provide a domain-
+specific API.  Currently the server-side component is in-progress, current
+apps are front-end only, using core functionality to provide the data.  The
+API generation functionality will support programming a server application
+in Python an dynamically providing access via the Javascript Data Manager.</li>
+</ul>
+<p>Apps are database entities in and of themselves, and as such, benefit from all
+of the core database functionality, such as metadata management and built-in
+permissions control.</p>
+<p>In this Alpha mode, apps are files, but soon the app code, css and html will
+be hosted entirely dynamically by the platform. (use python -m SimpleHTTPServer
+in project root dir to serve files on :8000).</p>
+<div class="section" id="architecture">
+<h2>Architecture<a class="headerlink" href="#architecture" title="Permalink to this headline">¶</a></h2>
+<p>All data persistence is provided by the Nimbodata server, and all operations
+conducted by an app, either server-side or client-side, are mediated through
+the core API.  This means that permissions and other aspects of policy are
+managed centrally, app designers need not concern themselves with security
+beyond establishing sensible policies.</p>
+<p>Currently, only the core functionality exists server-side, to support the
+catalog app.  Dynamic generation of APIs and REST servers using Flask is
+still nascent.</p>
+<p>The architecture basically conforms to the MVC concept, but we use terms which
+are not tainted by the confusion, and are hopefully clearer about the roles
+the components play in the overall client system.</p>
+<p>The browser environment consists of four primary components:</p>
+<ul class="simple">
+<li>The Layout Manager, which interprets the JSON document specification, and
+manages setting the view mode of widgets and managing resizes.  Longer-term,
+the layout manager will be the first to initialize to determine environment
+and pull down only the resources specific to the environment (i.e. browser,
+mobile, etc...).</li>
+<li>The Subscription Manager, which mediates the interactions between widgets.
+Essentially, the datamodel is a local pub-sub controller.  Widgets
+(sources) are responsible for notifying the datamodel when they emit an
+event (distinct from DOM events), and the datamodel will examine its
+subscription list and route the event to the appropriate consumers (sinks).</li>
+<li>The Data Manager, which provides the bridge between Javascript and
+the REST API for the core (and the apps...).</li>
+<li>Widgets fire events which correlate to actions against the API.  Widgets
+have an <cite>event_filter</cite> method which provides the widget an opportunity to
+receive the update data as-is, or to provide a new request based on some
+modification of the original and the widget state.  The Data Model collects
+all the requests, and executes the individual requests necessary to
+fulfill all the requests, then provides the update results to the sinks.</li>
+<li>Widgets are where the rubber meets the road.  All DOM interactions
+are controlled by widgets, which pretty well explains their purpose.  They
+fit into slots in the Layout Manager.  Widgets provide an <cite>init</cite> method
+as well as an <cite>update</cite> method.  <cite>init</cite> is called by the layout manager when
+the widget is created, and is provided the root node as a d3 selection, and
+the JSON specification for the widget, &#8216;id&#8217; and &#8216;widget&#8217; properties are
+required, a few others will be reserved, and the remainder will be free
+for widget specs.</li>
+</ul>
+</div>
+<div class="section" id="layout-manager">
+<h2>Layout Manager<a class="headerlink" href="#layout-manager" title="Permalink to this headline">¶</a></h2>
+<p>The overall layout of the page is controlled by the Layout Manager.  The
+Layout Manager does not interact with the DOM itself, but calls widget refresh
+methods in a controlled manner in response to events which cause layout
+changes.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Apps</a><ul>
+<li><a class="reference internal" href="#architecture">Architecture</a></li>
+<li><a class="reference internal" href="#layout-manager">Layout Manager</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="previous chapter">API Reference</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="apidoc/nimbodata.html"
+                        title="next chapter">nimbodata package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/apps.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="apidoc/nimbodata.html" title="nimbodata package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="API Reference"
+             >previous</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

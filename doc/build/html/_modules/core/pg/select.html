@@ -1,0 +1,471 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>core.pg.select &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for core.pg.select</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Copyright (C) 2014  Bradley Alan Smith</span>
+
+<span class="sd">Module implements Select, which allows read-only query functionality.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">string</span><span class="o">,</span><span class="nn">random</span><span class="o">,</span><span class="nn">copy</span>
+
+<span class="kn">import</span> <span class="nn">psycopg2</span>
+
+<span class="kn">import</span> <span class="nn">engine</span>
+<span class="kn">import</span> <span class="nn">errors</span>
+<span class="kn">import</span> <span class="nn">results</span>
+<span class="kn">import</span> <span class="nn">entities</span>
+<span class="kn">import</span> <span class="nn">syntax</span>
+<span class="kn">import</span> <span class="nn">datatypes</span>
+
+<div class="viewcode-block" id="subid"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.select.subid">[docs]</a><span class="k">def</span> <span class="nf">subid</span><span class="p">():</span>
+    <span class="k">return</span> <span class="s">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">ascii_uppercase</span> <span class="o">+</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">)</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Select"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.select.Select">[docs]</a><span class="k">class</span> <span class="nc">Select</span><span class="p">(</span><span class="n">engine</span><span class="o">.</span><span class="n">Engine</span><span class="p">):</span>
+    <span class="n">allowed_funcs</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;max&#39;</span><span class="p">,</span><span class="s">&#39;min&#39;</span><span class="p">,</span><span class="s">&#39;avg&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">engine</span><span class="o">.</span><span class="n">Engine</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="s">&#39;dql_agent&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">set_session</span><span class="p">(</span><span class="n">readonly</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">autocommit</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    
+    <span class="k">def</span> <span class="nf">_qtn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">viewinfo</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&#39;&quot;</span><span class="si">%(dbid)s</span><span class="s">&quot;.&quot;</span><span class="si">%(relationid)s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="p">{</span>
+            <span class="s">&#39;dbid&#39;</span><span class="p">:</span><span class="n">viewinfo</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">],</span>
+            <span class="s">&#39;relationid&#39;</span><span class="p">:</span><span class="n">viewinfo</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">]</span>
+        <span class="p">}</span>
+    
+    <span class="k">def</span> <span class="nf">_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">viewid</span><span class="p">,</span><span class="n">cols</span><span class="p">,</span><span class="n">join</span><span class="p">):</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span><span class="se">\n</span><span class="s">SELECT &quot;&quot;&quot;</span>
+        <span class="n">viewinfo</span> <span class="o">=</span> <span class="n">entities</span><span class="o">.</span><span class="n">get_byid</span><span class="p">(</span><span class="n">objid</span><span class="o">=</span><span class="n">viewid</span><span class="p">)</span>
+        <span class="n">viewname</span> <span class="o">=</span> <span class="n">viewinfo</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">colinfo</span> <span class="o">=</span> <span class="n">viewinfo</span><span class="o">.</span><span class="n">columns</span><span class="p">()</span>
+        <span class="n">colinfo_by_colname</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colinfo</span><span class="p">)</span>
+        
+        <span class="n">decoder</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colinfo</span><span class="p">)</span>
+        <span class="n">geocols</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">viewinfo</span><span class="o">.</span><span class="n">geo_columns</span><span class="p">()]</span>
+        
+        <span class="n">join_stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="n">join</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">joininfo</span> <span class="o">=</span> <span class="n">join</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">info</span>
+            <span class="n">j_colinfo</span> <span class="o">=</span> <span class="n">join</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">columns</span><span class="p">()</span>
+            
+            <span class="n">j_viewname</span> <span class="o">=</span> <span class="n">joininfo</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+            
+            <span class="n">decoder</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">((</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">j_colinfo</span><span class="p">))</span>
+            <span class="n">decoder</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">((</span><span class="n">viewname</span><span class="o">+</span><span class="s">&quot;.&quot;</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colinfo</span><span class="p">))</span>
+            <span class="n">decoder</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">dict</span><span class="p">((</span><span class="n">j_viewname</span><span class="o">+</span><span class="s">&quot;.&quot;</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">],</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">])</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">j_colinfo</span><span class="p">))</span>
+            
+            <span class="n">join_stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;JOIN  &quot;</span><span class="si">%(joinview)s</span><span class="s">&quot; AS &quot;</span><span class="si">%(joinshort)s</span><span class="s">&quot;</span><span class="se">\n</span><span class="s">ON &quot;&quot;&quot;</span>
+            
+            <span class="n">strSub</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">strSub</span><span class="p">[</span><span class="s">&#39;joinshort&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joininfo</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">strSub</span><span class="p">[</span><span class="s">&#39;joinview&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">joininfo</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">]</span><span class="o">+</span><span class="s">&#39;&quot;.&quot;&#39;</span><span class="o">+</span><span class="n">joininfo</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">]</span>
+            
+            <span class="n">join_stmt</span> <span class="o">=</span> <span class="n">join_stmt</span> <span class="o">%</span> <span class="n">strSub</span>
+            
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">join</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="nb">basestring</span><span class="p">):</span>
+                <span class="n">whereCol</span><span class="p">,</span> <span class="n">whereCmp</span><span class="p">,</span> <span class="n">whereCond</span> <span class="o">=</span> <span class="n">join</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">whereCol</span><span class="p">,</span> <span class="n">whereCmp</span><span class="p">,</span> <span class="n">whereCond</span> <span class="o">=</span> <span class="n">join</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">whereCol</span> <span class="o">=</span> <span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">decoder</span><span class="p">[</span><span class="n">whereCol</span><span class="p">]</span>
+            <span class="n">whereCond</span> <span class="o">=</span> <span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">decoder</span><span class="p">[</span><span class="n">whereCond</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="n">whereCmp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;&lt;&#39;</span><span class="p">,</span><span class="s">&#39;&gt;&#39;</span><span class="p">,</span><span class="s">&#39;&gt;=&#39;</span><span class="p">,</span><span class="s">&#39;&lt;=&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="s">&#39;&lt;&gt;&#39;</span><span class="p">,</span><span class="s">&#39;!=&#39;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid comparison operator&quot;</span><span class="p">)</span>
+            
+            <span class="c"># TODO evaluate the where condition better</span>
+            <span class="n">join_stmt</span> <span class="o">+=</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">whereCol</span><span class="p">,</span><span class="n">whereCmp</span><span class="p">,</span><span class="n">whereCond</span><span class="p">))</span>
+        
+        
+        <span class="c"># COLUMNS</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">cols</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">cols</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">join</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colinfo</span><span class="p">]</span>
+            <span class="n">out_colinfo</span> <span class="o">=</span> <span class="p">[</span><span class="n">colinfo_by_colname</span><span class="p">[</span><span class="n">x</span><span class="p">]</span><span class="o">.</span><span class="n">row_dict</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">cols</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">cols</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">join</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">viewname</span><span class="o">+</span><span class="s">&quot;.&quot;</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colinfo</span><span class="p">]</span>
+            <span class="n">out_colinfo</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">row_dict</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">colinfo</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">out_colinfo</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">viewname</span><span class="o">+</span><span class="s">&#39;.&#39;</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">cols</span> <span class="o">+=</span> <span class="p">[</span><span class="n">j_viewname</span><span class="o">+</span><span class="s">&#39;.&#39;</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">j_colinfo</span><span class="p">]</span>
+            <span class="n">j_colinfo</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span><span class="o">.</span><span class="n">row_dict</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">j_colinfo</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">j_colinfo</span><span class="p">:</span>
+                <span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">j_viewname</span><span class="o">+</span><span class="s">&#39;.&#39;</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+            <span class="n">out_colinfo</span> <span class="o">+=</span> <span class="n">j_colinfo</span>
+            
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Otherwise we need a lookup tool</span>
+            <span class="n">out_colinfo</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">out_colinfo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colinfo_by_colname</span><span class="p">[</span><span class="n">col</span><span class="p">]</span><span class="o">.</span><span class="n">row_dict</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">out_colinfo</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colinfo_by_colname</span><span class="p">[</span><span class="n">col</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">row_dict</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">print</span> <span class="n">colinfo_by_colname</span><span class="p">,</span><span class="n">col</span>
+        
+        <span class="c"># Now, we dance.  With the columns... to build the target for select</span>
+        <span class="n">col_sub</span> <span class="o">=</span> <span class="p">[]</span>
+        
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">colspec</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">colid</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">[</span><span class="n">colspec</span><span class="p">]</span>
+                <span class="n">colname</span> <span class="o">=</span> <span class="n">colspec</span>
+                <span class="n">funcname</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">colspec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">allowed_funcs</span><span class="p">:</span>
+                    <span class="k">print</span> <span class="n">colspec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">raise</span> <span class="n">errors</span><span class="o">.</span><span class="n">InvalidFunction</span>
+                <span class="n">colid</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">[</span><span class="n">colspec</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+                <span class="n">colname</span> <span class="o">=</span> <span class="n">colspec</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">funcname</span> <span class="o">=</span> <span class="n">colspec</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="n">colname</span> <span class="ow">in</span> <span class="n">geocols</span><span class="p">:</span>
+                <span class="n">colStr</span> <span class="o">=</span> <span class="n">datatypes</span><span class="o">.</span><span class="n">Geographic</span><span class="p">()</span><span class="o">.</span><span class="n">sql_target</span><span class="p">(</span><span class="n">colid</span><span class="p">,</span><span class="n">colname</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">funcname</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">colStr</span> <span class="o">=</span> <span class="n">datatypes</span><span class="o">.</span><span class="n">Function</span><span class="p">()</span><span class="o">.</span><span class="n">sql_target</span><span class="p">(</span><span class="n">colid</span><span class="p">,</span><span class="n">funcname</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">colStr</span> <span class="o">=</span> <span class="n">datatypes</span><span class="o">.</span><span class="n">Datatype</span><span class="p">()</span><span class="o">.</span><span class="n">sql_target</span><span class="p">(</span><span class="n">colid</span><span class="p">,</span><span class="n">colname</span><span class="p">)</span>
+            
+            <span class="n">col_sub</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">colStr</span><span class="p">)</span>        
+        
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col_sub</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+                
+        <span class="k">return</span> <span class="n">stmt</span><span class="p">,</span> <span class="n">join_stmt</span><span class="p">,</span> <span class="p">{},</span> <span class="n">out_colinfo</span><span class="p">,</span> <span class="n">decoder</span>
+    
+    <span class="k">def</span> <span class="nf">_from</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">viewinfo</span><span class="p">):</span>
+        <span class="n">viewid</span> <span class="o">=</span> <span class="n">viewinfo</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">]</span>
+        <span class="n">stub</span> <span class="o">=</span> <span class="s">&#39;FROM </span><span class="si">%(qtn)s</span><span class="s"> AS &quot;</span><span class="si">%(viewname)s</span><span class="s">&quot; &#39;</span> <span class="o">%</span> <span class="p">{</span>
+            <span class="s">&#39;qtn&#39;</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_qtn</span><span class="p">(</span><span class="n">viewinfo</span><span class="p">),</span>
+            <span class="s">&#39;viewname&#39;</span><span class="p">:</span><span class="n">viewinfo</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">stub</span><span class="p">,{}</span>
+        
+    <span class="k">def</span> <span class="nf">_where</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">where</span><span class="p">,</span><span class="n">decoder</span><span class="p">):</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">w_params</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="n">where</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">where</span> <span class="o">!=</span> <span class="p">[]</span> <span class="ow">and</span> <span class="n">where</span> <span class="o">!=</span> <span class="p">{}:</span>
+            
+            <span class="k">def</span> <span class="nf">process_clause</span><span class="p">(</span><span class="n">whereClause</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">whereClause</span><span class="p">,</span><span class="nb">basestring</span><span class="p">):</span>
+                    <span class="n">whereCol</span><span class="p">,</span> <span class="n">whereCmp</span><span class="p">,</span> <span class="n">whereCond</span> <span class="o">=</span> <span class="n">whereClause</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">whereCol</span><span class="p">,</span> <span class="n">whereCmp</span><span class="p">,</span> <span class="n">whereCond</span> <span class="o">=</span> <span class="n">whereClause</span>
+                
+                <span class="n">colid</span> <span class="o">=</span> <span class="n">decoder</span><span class="p">[</span><span class="n">whereCol</span><span class="p">]</span>
+                <span class="n">whereCol</span> <span class="o">=</span> <span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">colid</span>
+                
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">whereCond</span> <span class="o">=</span> <span class="s">&#39;&quot;</span><span class="si">%s</span><span class="s">&quot;&#39;</span> <span class="o">%</span> <span class="n">decoder</span><span class="p">[</span><span class="n">whereCond</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">sub</span> <span class="o">=</span> <span class="n">subid</span><span class="p">()</span>
+                    <span class="n">fmtstring</span> <span class="o">=</span> <span class="s">&#39;%(&#39;</span> <span class="o">+</span> <span class="n">sub</span> <span class="o">+</span> <span class="s">&#39;)s&#39;</span>
+                    <span class="n">col_type</span> <span class="o">=</span> <span class="n">entities</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="n">colid</span><span class="p">)[</span><span class="s">&#39;datatype&#39;</span><span class="p">]</span>
+                    <span class="n">col_type</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">datatypes</span><span class="p">,</span><span class="n">col_type</span><span class="p">)</span>
+                    <span class="n">params</span><span class="p">[</span><span class="n">sub</span><span class="p">]</span> <span class="o">=</span> <span class="n">col_type</span><span class="p">(</span><span class="n">whereCond</span><span class="p">)</span>
+                    <span class="n">w_params</span><span class="p">[</span><span class="n">sub</span><span class="p">]</span> <span class="o">=</span> <span class="n">fmtstring</span>
+                    <span class="n">whereCond</span> <span class="o">=</span> <span class="n">fmtstring</span>
+
+                
+                <span class="k">if</span> <span class="n">whereCmp</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;&lt;&#39;</span><span class="p">,</span><span class="s">&#39;&gt;&#39;</span><span class="p">,</span><span class="s">&#39;&gt;=&#39;</span><span class="p">,</span><span class="s">&#39;&lt;=&#39;</span><span class="p">,</span><span class="s">&#39;=&#39;</span><span class="p">,</span><span class="s">&#39;&lt;&gt;&#39;</span><span class="p">,</span><span class="s">&#39;!=&#39;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid comparison operator&quot;</span><span class="p">)</span>
+                            
+                <span class="c"># TODO evaluate the where condition better</span>
+                <span class="k">return</span> <span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="n">whereCol</span><span class="p">,</span><span class="n">whereCmp</span><span class="p">,</span><span class="n">whereCond</span><span class="p">))</span>
+            
+            
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">where</span><span class="p">,</span><span class="nb">basestring</span><span class="p">):</span>
+                <span class="n">where</span> <span class="o">=</span> <span class="p">[</span><span class="n">where</span><span class="p">]</span>
+            
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">where</span><span class="p">,</span><span class="nb">list</span><span class="p">):</span>
+                <span class="n">whereClauses</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">whereClause</span> <span class="ow">in</span> <span class="n">where</span><span class="p">:</span>
+                    <span class="n">whereClauses</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">process_clause</span><span class="p">(</span><span class="n">whereClause</span><span class="p">))</span>
+                <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;WHERE </span><span class="se">\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="s">&#39; AND &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">whereClauses</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="k">return</span> <span class="n">stmt</span><span class="p">,</span> <span class="n">params</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_all</span> <span class="o">=</span> <span class="s">&#39; AND &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">process_clause</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">where</span><span class="p">[</span><span class="s">&#39;all&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">_all</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                    <span class="n">_all</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span><span class="ne">TypeError</span><span class="p">):</span>
+                <span class="n">_all</span> <span class="o">=</span> <span class="bp">None</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_any</span> <span class="o">=</span> <span class="s">&#39; OR &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">process_clause</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">where</span><span class="p">[</span><span class="s">&#39;any&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">_any</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                    <span class="n">_any</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span><span class="ne">TypeError</span><span class="p">):</span>
+                <span class="n">_any</span> <span class="o">=</span> <span class="bp">None</span>
+            
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">_none</span> <span class="o">=</span> <span class="s">&#39; OR &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">process_clause</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">where</span><span class="p">[</span><span class="s">&#39;none&#39;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">_none</span> <span class="o">==</span> <span class="s">&#39;&#39;</span><span class="p">:</span>
+                    <span class="n">_none</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span><span class="ne">TypeError</span><span class="p">):</span>
+                <span class="n">_none</span> <span class="o">=</span> <span class="bp">None</span>
+            
+            <span class="n">whereStmt</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+            <span class="k">if</span> <span class="n">_all</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_any</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_none</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">whereStmt</span> <span class="o">+=</span> <span class="s">&#39;(&#39;</span> <span class="o">+</span> <span class="n">_all</span> <span class="o">+</span> <span class="s">&#39;)&#39;</span>
+            <span class="k">elif</span> <span class="n">_all</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_any</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_none</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">whereStmt</span> <span class="o">+=</span> <span class="s">&#39;(&#39;</span> <span class="o">+</span> <span class="n">_any</span> <span class="o">+</span> <span class="s">&#39;)&#39;</span>
+            <span class="k">elif</span> <span class="n">_all</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_any</span> <span class="ow">is</span>  <span class="bp">None</span> <span class="ow">and</span> <span class="n">_none</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">whereStmt</span> <span class="o">+=</span> <span class="s">&#39; NOT (&#39;</span> <span class="o">+</span> <span class="n">_none</span> <span class="o">+</span> <span class="s">&#39;)&#39;</span>
+            <span class="k">elif</span> <span class="n">_all</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_any</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_none</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">whereStmt</span> <span class="o">+=</span> <span class="s">&#39;(&#39;</span> <span class="o">+</span> <span class="n">_all</span> <span class="o">+</span> <span class="s">&#39;) AND (&#39;</span> <span class="o">+</span> <span class="n">_any</span> <span class="o">+</span> <span class="s">&#39;)&#39;</span>
+            <span class="k">elif</span> <span class="n">_all</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_any</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_none</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">whereStmt</span> <span class="o">+=</span> <span class="s">&#39;(&#39;</span> <span class="o">+</span> <span class="n">_all</span> <span class="o">+</span> <span class="s">&#39;) AND NOT (&#39;</span> <span class="o">+</span> <span class="n">_none</span> <span class="o">+</span> <span class="s">&#39;)&#39;</span>
+            <span class="k">elif</span> <span class="n">_all</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_any</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_none</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">whereStmt</span> <span class="o">+=</span> <span class="s">&#39;(&#39;</span> <span class="o">+</span> <span class="n">_all</span> <span class="o">+</span> <span class="s">&#39;) AND (&#39;</span> <span class="o">+</span> <span class="n">_any</span> <span class="o">+</span> <span class="s">&#39;) AND NOT (&#39;</span> <span class="o">+</span> <span class="n">_none</span> <span class="o">+</span> <span class="s">&#39;)&#39;</span>
+            
+            
+            <span class="k">if</span> <span class="n">_all</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_any</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">_none</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">where_sub</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;all&#39;</span><span class="p">:</span><span class="n">_all</span><span class="p">,</span><span class="s">&#39;any&#39;</span><span class="p">:</span><span class="n">_any</span><span class="p">,</span><span class="s">&#39;none&#39;</span><span class="p">:</span><span class="n">_none</span><span class="p">}</span>
+                <span class="n">where_sub</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">w_params</span><span class="p">)</span>
+                <span class="n">whereStmt</span> <span class="o">=</span> <span class="n">whereStmt</span> <span class="o">%</span> <span class="n">where_sub</span>
+                <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;WHERE&quot;</span> <span class="o">+</span> <span class="n">whereStmt</span>
+                <span class="k">return</span> <span class="n">stmt</span><span class="p">,</span> <span class="n">params</span>
+            
+        <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="p">,</span> <span class="n">params</span>
+        
+    <span class="k">def</span> <span class="nf">_group_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">group_by</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">group_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">stmt</span> <span class="o">=</span> <span class="s">&#39;&#39;&#39;GROUP BY &quot;&#39;&#39;&#39;</span> <span class="o">+</span> <span class="s">&#39;&quot;, &quot;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">group_by</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;&quot;&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">stmt</span><span class="p">,</span> <span class="p">{}</span>
+        
+    <span class="k">def</span> <span class="nf">_order_by</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">order_by</span><span class="p">,</span><span class="n">decoder</span><span class="p">):</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">order_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">order_by</span> <span class="o">!=</span> <span class="p">[]:</span>
+            <span class="n">order_parts</span> <span class="o">=</span> <span class="p">[]</span>
+            
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">order_by</span><span class="p">,</span><span class="nb">basestring</span><span class="p">):</span>
+                <span class="n">order_by</span> <span class="o">=</span> <span class="p">[</span><span class="n">order_by</span><span class="p">]</span>
+            
+            <span class="k">for</span> <span class="n">orderClause</span> <span class="ow">in</span> <span class="n">order_by</span><span class="p">:</span>
+                <span class="n">split</span> <span class="o">=</span> <span class="n">orderClause</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">split</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">split</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&#39;asc&#39;</span><span class="p">,</span><span class="s">&#39;desc&#39;</span><span class="p">,</span><span class="s">&#39;dsc&#39;</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;Invalid sort directive&quot;</span><span class="p">)</span>
+                <span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">decoder</span><span class="p">[</span><span class="n">split</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">+</span> <span class="s">&#39;&quot;&#39;</span>
+                <span class="n">order_parts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">split</span><span class="p">))</span>
+            
+            <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;ORDER BY &quot;</span> <span class="o">+</span> <span class="s">&#39; , &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">order_parts</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+            
+        <span class="k">return</span> <span class="n">stmt</span><span class="p">,</span> <span class="p">{}</span>
+    
+    <span class="k">def</span> <span class="nf">_limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">limit</span><span class="p">):</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;LIMIT &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">limit</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">stmt</span><span class="p">,</span> <span class="p">{}</span>
+    
+    <span class="k">def</span> <span class="nf">_prepare_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">viewid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">cols</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">join</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">where</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">group_by</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">order_by</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="c"># First we get the prerequisite info to build the query</span>
+        <span class="n">viewinfo</span> <span class="o">=</span> <span class="n">entities</span><span class="o">.</span><span class="n">get_byid</span><span class="p">(</span><span class="n">viewid</span><span class="p">)</span>
+        <span class="n">dbid</span><span class="p">,</span><span class="n">viewname</span> <span class="o">=</span> <span class="n">viewinfo</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">],</span><span class="n">viewinfo</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="n">viewid</span> <span class="o">=</span> <span class="n">viewinfo</span><span class="p">[</span><span class="s">&#39;objid&#39;</span><span class="p">]</span>
+        
+        <span class="n">colinfo</span> <span class="o">=</span> <span class="n">entities</span><span class="o">.</span><span class="n">get_byid</span><span class="p">(</span><span class="n">objid</span><span class="o">=</span><span class="n">viewid</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">()</span>
+        
+        <span class="n">stmt</span><span class="p">,</span> <span class="n">join_stmt</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">out_colinfo</span><span class="p">,</span> <span class="n">decoder</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_target</span><span class="p">(</span><span class="n">viewid</span><span class="p">,</span><span class="n">cols</span><span class="p">,</span><span class="n">join</span><span class="p">)</span>
+        
+        <span class="n">from_stmt</span><span class="p">,</span><span class="n">from_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_from</span><span class="p">(</span><span class="n">viewinfo</span><span class="p">)</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="n">from_stmt</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">from_params</span><span class="p">)</span>
+        
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="n">join_stmt</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+        
+        <span class="n">where_stmt</span><span class="p">,</span> <span class="n">where_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_where</span><span class="p">(</span><span class="n">where</span><span class="p">,</span><span class="n">decoder</span><span class="p">)</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="n">where_stmt</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">where_params</span><span class="p">)</span>
+                
+        <span class="n">group_stmt</span><span class="p">,</span> <span class="n">group_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_group_by</span><span class="p">(</span><span class="n">group_by</span><span class="p">)</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="n">group_stmt</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">group_params</span><span class="p">)</span>
+        
+        <span class="n">order_stmt</span><span class="p">,</span> <span class="n">order_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_order_by</span><span class="p">(</span><span class="n">order_by</span><span class="p">,</span><span class="n">decoder</span><span class="p">)</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="n">order_stmt</span> <span class="o">+</span> <span class="s">&#39;</span><span class="se">\n</span><span class="s">&#39;</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">order_params</span><span class="p">)</span>
+        
+        <span class="n">limit_stmt</span><span class="p">,</span> <span class="n">limit_params</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="n">limit_stmt</span>
+        <span class="n">params</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">limit_params</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">,</span><span class="n">out_colinfo</span>
+    
+<div class="viewcode-block" id="Select.get_array"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.select.Select.get_array">[docs]</a>    <span class="k">def</span> <span class="nf">get_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">viewid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">col</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">join</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">where</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">group_by</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">order_by</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        
+        <span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">,</span><span class="n">out_colinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_select</span><span class="p">(</span>
+            <span class="n">viewid</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">col</span><span class="p">],</span>
+            <span class="n">join</span><span class="p">,</span><span class="n">where</span><span class="p">,</span>
+            <span class="n">group_by</span><span class="p">,</span>
+            <span class="n">order_by</span><span class="p">,</span><span class="n">limit</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">stmt</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">out_colinfo</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+        
+        <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">r</span><span class="p">]</span>
+    </div>
+<div class="viewcode-block" id="Select.get_byrowid"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.select.Select.get_byrowid">[docs]</a>    <span class="k">def</span> <span class="nf">get_byrowid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">viewid</span><span class="p">,</span><span class="n">ids</span><span class="p">,</span><span class="n">alias</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="n">viewinfo</span> <span class="o">=</span> <span class="n">entities</span><span class="o">.</span><span class="n">Entity</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">viewid</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">alias</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">alias</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="s">&#39;name&#39;</span><span class="p">]</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s">&#39;alias&#39;</span><span class="p">]</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">x</span><span class="p">[</span><span class="s">&#39;alias&#39;</span><span class="p">]</span>
+        <span class="n">ent</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">entities</span><span class="p">,</span><span class="n">viewinfo</span><span class="p">[</span><span class="s">&#39;entitytype&#39;</span><span class="p">])</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">label</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ent</span><span class="p">(</span><span class="n">objid</span><span class="o">=</span><span class="n">viewid</span><span class="p">)</span><span class="o">.</span><span class="n">columns</span><span class="p">()]</span>
+        <span class="n">dbid</span> <span class="o">=</span> <span class="n">viewinfo</span><span class="p">[</span><span class="s">&#39;parent&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ids</span><span class="p">,</span><span class="nb">basestring</span><span class="p">):</span>
+            <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;SELECT * FROM </span><span class="si">%(tqn)s</span><span class="s"> WHERE &quot;_adm-rowid&quot; = </span><span class="si">%(rowid)s</span><span class="s">&quot;&quot;&quot;</span>
+            <span class="n">stmt</span> <span class="o">=</span> <span class="n">stmt</span> <span class="o">%</span> <span class="p">{</span>
+                <span class="s">&#39;tqn&#39;</span><span class="p">:</span><span class="n">syntax</span><span class="o">.</span><span class="n">_get_tqn</span><span class="p">(</span><span class="n">dbid</span><span class="p">,</span><span class="n">viewid</span><span class="p">),</span>
+                <span class="s">&#39;rowid&#39;</span><span class="p">:</span><span class="s">&#39;</span><span class="si">%s</span><span class="s">&#39;</span>
+            <span class="p">}</span>
+            <span class="n">begin_index</span> <span class="o">=</span> <span class="mi">2</span> <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">viewid</span><span class="p">)</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&#39;tbl&#39;</span><span class="p">)</span> <span class="k">else</span> <span class="mi">1</span>
+            <span class="k">return</span> <span class="p">[(</span><span class="n">col</span><span class="p">,</span><span class="n">val</span><span class="p">)</span> <span class="k">for</span> <span class="n">col</span><span class="p">,</span><span class="n">val</span> <span class="ow">in</span> 
+                    <span class="nb">zip</span><span class="p">(</span><span class="n">cols</span><span class="p">,</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_first</span><span class="p">(</span><span class="n">stmt</span><span class="p">,[</span><span class="n">ids</span><span class="p">])[</span><span class="n">begin_index</span><span class="p">:])]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">getby_id</span><span class="p">(</span><span class="n">viewid</span><span class="p">,</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">]</span>
+</div>
+<div class="viewcode-block" id="Select.execute"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.select.Select.execute">[docs]</a>    <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">):</span>
+        <span class="c">#print self.mogrify(stmt,params)</span>
+        <span class="k">return</span> <span class="n">engine</span><span class="o">.</span><span class="n">Engine</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Select.select"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.select.Select.select">[docs]</a>    <span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">viewid</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">cols</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">join</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">where</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+               <span class="n">group_by</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">order_by</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Given, optionally:</span>
+<span class="sd">        </span>
+<span class="sd">        -  &#39;tblid`</span>
+<span class="sd">        -  `cols=[]`</span>
+<span class="sd">        -  `join=(tblid,joinStmt)`</span>
+<span class="sd">        -  `where=whereStmt`</span>
+<span class="sd">        -  `order_by=colname`</span>
+<span class="sd">        -  `limit=int`</span>
+<span class="sd">        </span>
+<span class="sd">        selects and returns the `[results]`.</span>
+<span class="sd">        </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">,</span><span class="n">out_colinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prepare_select</span><span class="p">(</span>
+            <span class="n">viewid</span><span class="p">,</span>
+            <span class="n">cols</span><span class="p">,</span>
+            <span class="n">join</span><span class="p">,</span>
+            <span class="n">where</span><span class="p">,</span>
+            <span class="n">group_by</span><span class="p">,</span>
+            <span class="n">order_by</span><span class="p">,</span><span class="n">limit</span>
+        <span class="p">)</span>
+        
+        <span class="k">if</span> <span class="n">stmt</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">out_colinfo</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">results</span><span class="o">.</span><span class="n">Results</span><span class="p">([],[])</span>
+        
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">psycopg2</span><span class="o">.</span><span class="n">ProgrammingError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">print</span> <span class="bp">self</span><span class="o">.</span><span class="n">mogrify</span><span class="p">(</span><span class="n">stmt</span><span class="p">,</span><span class="n">params</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="k">print</span> <span class="n">stmt</span>
+            <span class="k">raise</span> <span class="n">e</span>
+
+        <span class="k">return</span> <span class="n">results</span><span class="o">.</span><span class="n">Results</span><span class="p">(</span><span class="n">out_colinfo</span><span class="p">,</span><span class="nb">list</span><span class="p">(</span><span class="n">r</span><span class="p">))</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

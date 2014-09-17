@@ -1,0 +1,11 @@
+[
+    {
+        "id":"map",
+        "widget":"Map",
+        "maxbutton":true,
+        "browserview":{
+            "width":"80%",
+            "height":"80%"
+        }
+    }
+]

@@ -1,0 +1,490 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>core.pg.syntax &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for core.pg.syntax</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Copyright (C) 2014  Bradley Alan Smith</span>
+
+<span class="sd">Module implements the PostgreSQL syntax as methods which accept parameters</span>
+<span class="sd">and return parameterized SQL and the input values processed for use as</span>
+<span class="sd">substitution parameters by the cursor.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c">###############################################################################</span>
+<span class="c">### UTILITY FUNCTIONS #########################################################</span>
+<span class="c">###############################################################################</span>
+
+<span class="k">def</span> <span class="nf">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">schemaid</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;&quot;.&quot;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">tblid</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;&quot;&#39;</span>
+
+<span class="n">get_tqn</span> <span class="o">=</span> <span class="n">_get_tqn</span>
+
+<span class="k">def</span> <span class="nf">_get_cqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">colname</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">schemaid</span> <span class="o">+</span> <span class="s">&#39;&quot;.&quot;&#39;</span> <span class="o">+</span> <span class="n">tblid</span> <span class="o">+</span> <span class="s">&#39;&quot;.&quot;&#39;</span> <span class="o">+</span> <span class="n">colname</span> <span class="o">+</span> <span class="s">&#39;&quot;&#39;</span>
+
+<span class="c">###############################################################################</span>
+<span class="c">### DDL #######################################################################</span>
+<span class="c">###############################################################################</span>
+
+<div class="viewcode-block" id="create_db"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.create_db">[docs]</a><span class="k">def</span> <span class="nf">create_db</span><span class="p">(</span><span class="n">schemaid</span><span class="p">):</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;CREATE SCHEMA &quot;</span><span class="si">%(schemaid)s</span><span class="s">&quot; &quot;&quot;&quot;</span>
+    <span class="n">subStr</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;schemaid&#39;</span><span class="p">:</span><span class="n">schemaid</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">stmt</span> <span class="o">%</span> <span class="n">subStr</span>
+</div>
+<div class="viewcode-block" id="create_table"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.create_table">[docs]</a><span class="k">def</span> <span class="nf">create_table</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">):</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;CREATE TABLE </span><span class="si">%(tqn)s</span><span class="s"> &quot;&quot;&quot;</span>
+    <span class="n">subStr</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;tqn&#39;</span><span class="p">:</span><span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">)}</span>
+    <span class="k">return</span> <span class="n">stmt</span> <span class="o">%</span> <span class="n">subStr</span>
+    </div>
+<div class="viewcode-block" id="create_managed_table"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.create_managed_table">[docs]</a><span class="k">def</span> <span class="nf">create_managed_table</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">):</span>
+    <span class="k">return</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">            CREATE TABLE </span><span class="si">%(qtn)s</span><span class="s"></span>
+<span class="s">                (&quot;_adm-timestamp&quot; timestamp with time zone DEFAULT clock_timestamp(),</span>
+<span class="s">                 &quot;_adm-rowid&quot; text)</span>
+<span class="s">           &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span><span class="s">&#39;qtn&#39;</span><span class="p">:</span><span class="n">get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">)}</span>
+</div>
+<div class="viewcode-block" id="create_view"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.create_view">[docs]</a><span class="k">def</span> <span class="nf">create_view</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">viewid</span><span class="p">,</span><span class="n">select</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
+<span class="s">        CREATE VIEW </span><span class="si">%(qtn)s</span><span class="s"></span>
+<span class="s">        AS</span>
+<span class="s">        </span>
+<span class="s">    &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span><span class="s">&#39;qtn&#39;</span><span class="p">:</span><span class="n">get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">viewid</span><span class="p">)})</span> <span class="o">+</span> <span class="n">select</span>
+</div>
+<div class="viewcode-block" id="alter_column_type"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.alter_column_type">[docs]</a><span class="k">def</span> <span class="nf">alter_column_type</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">colid</span><span class="p">,</span><span class="n">newtype</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">                ALTER TABLE </span><span class="si">%(qtn)s</span><span class="s"></span>
+<span class="s">                ALTER COLUMN &quot;</span><span class="si">%(colid)s</span><span class="s">&quot;</span>
+<span class="s">                TYPE </span><span class="si">%(coltype)s</span><span class="s"></span>
+<span class="s">                USING</span>
+<span class="s">                    (&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;::</span><span class="si">%(coltype)s</span><span class="s">)</span>
+<span class="s">           &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span>
+                    <span class="s">&#39;qtn&#39;</span><span class="p">:</span><span class="n">get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">),</span>
+                    <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span><span class="p">,</span>
+                    <span class="s">&#39;coltype&#39;</span><span class="p">:</span><span class="n">newtype</span>
+                 <span class="p">}</span>
+           </div>
+<div class="viewcode-block" id="add_column"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.add_column">[docs]</a><span class="k">def</span> <span class="nf">add_column</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">colid</span><span class="p">,</span><span class="n">dtype</span><span class="p">,</span><span class="n">pk</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">subStr</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;tqn&#39;</span><span class="p">:</span><span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">),</span>
+            <span class="s">&#39;const&#39;</span><span class="p">:</span><span class="s">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">tblid</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;_pkuq&quot;&#39;</span><span class="p">,</span>
+            <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">colid</span><span class="p">),</span>
+            <span class="s">&#39;dtype&#39;</span><span class="p">:</span><span class="nb">str</span><span class="p">(</span><span class="n">dtype</span><span class="p">),</span>
+            <span class="p">}</span>
+    <span class="k">if</span> <span class="n">pk</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;ALTER TABLE </span><span class="si">%(tqn)s</span><span class="s"> ADD COLUMN &quot;</span><span class="si">%(colid)s</span><span class="s">&quot; </span><span class="si">%(dtype)s</span><span class="s"> &quot;&quot;&quot;</span>
+    <span class="k">elif</span> <span class="n">pk</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">                ALTER TABLE </span><span class="si">%(tqn)s</span><span class="s"></span>
+<span class="s">                ADD COLUMN &quot;</span><span class="si">%(colid)s</span><span class="s">&quot; </span><span class="si">%(dtype)s</span><span class="s">,</span>
+<span class="s">                ADD CONSTRAINT </span><span class="si">%(const)s</span><span class="s"> UNIQUE (&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;),</span>
+<span class="s">                ADD PRIMARY KEY (&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;)  &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">stmt</span> <span class="o">%</span> <span class="n">subStr</span>
+</div>
+<div class="viewcode-block" id="add_constraint_check"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.add_constraint_check">[docs]</a><span class="k">def</span> <span class="nf">add_constraint_check</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span> <span class="n">tblid</span><span class="p">,</span> <span class="n">conid</span><span class="p">,</span> <span class="n">const_stmt</span><span class="p">):</span>
+    <span class="n">l</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">const_stmt</span>
+    <span class="n">subStr</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;tqn&#39;</span><span class="p">:</span> <span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">),</span>
+        <span class="s">&#39;conid&#39;</span><span class="p">:</span> <span class="n">conid</span><span class="p">,</span>
+        <span class="s">&#39;const_stmt&#39;</span><span class="p">:</span> <span class="s">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="n">l</span> <span class="o">+</span> <span class="s">&#39;&quot; &#39;</span> <span class="o">+</span> <span class="n">o</span> <span class="o">+</span> <span class="s">&#39; </span><span class="si">%(compval)s</span><span class="s">&#39;</span><span class="p">,</span>
+        <span class="s">&#39;compval&#39;</span><span class="p">:</span><span class="s">&#39;</span><span class="si">%(compval)s</span><span class="s">&#39;</span>
+    <span class="p">}</span>
+    
+    <span class="n">stmt</span> <span class="o">=</span>  \
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ALTER TABLE %(tqn)s</span>
+<span class="sd">        ADD CONSTRAINT &quot;%(conid)s&quot;</span>
+<span class="sd">        CHECK (%(const_stmt)s)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">stmt</span> <span class="o">%</span> <span class="n">subStr</span>
+    </div>
+<div class="viewcode-block" id="add_constraint_notnull"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.add_constraint_notnull">[docs]</a><span class="k">def</span> <span class="nf">add_constraint_notnull</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span> <span class="n">tblid</span><span class="p">,</span> <span class="n">colid</span><span class="p">):</span>
+    <span class="k">return</span> \
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ALTER TABLE %(tqn)s</span>
+<span class="sd">        ALTER COLUMN &quot;%(colid)s&quot;</span>
+<span class="sd">        SET NOT NULL</span>
+<span class="sd">        &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span><span class="s">&#39;tqn&#39;</span><span class="p">:</span><span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">),</span><span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span><span class="p">}</span>
+</div>
+<div class="viewcode-block" id="add_constraint_unique"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.add_constraint_unique">[docs]</a><span class="k">def</span> <span class="nf">add_constraint_unique</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span> <span class="n">tblid</span><span class="p">,</span> <span class="n">conid</span><span class="p">,</span> <span class="n">colid</span><span class="p">):</span>
+    <span class="k">return</span> \
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ALTER TABLE %(tqn)s</span>
+<span class="sd">        ADD CONSTRAINT &quot;%(conid)s&quot;</span>
+<span class="sd">        UNIQUE(&quot;%(colid)s&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span><span class="s">&#39;tqn&#39;</span><span class="p">:</span><span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">),</span><span class="s">&#39;conid&#39;</span><span class="p">:</span><span class="n">conid</span><span class="p">,</span><span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span><span class="p">}</span>
+    </div>
+<div class="viewcode-block" id="drop_db"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.drop_db">[docs]</a><span class="k">def</span> <span class="nf">drop_db</span><span class="p">(</span><span class="n">schemaid</span><span class="p">):</span>
+    <span class="n">subStr</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;schemaid&#39;</span><span class="p">:</span><span class="n">schemaid</span>
+    <span class="p">}</span>
+    
+    <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;DROP SCHEMA &quot;</span><span class="si">%(schemaid)s</span><span class="s">&quot; CASCADE &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">stmt</span> <span class="o">%</span> <span class="n">subStr</span>
+    </div>
+<div class="viewcode-block" id="drop_table"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.drop_table">[docs]</a><span class="k">def</span> <span class="nf">drop_table</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">):</span>
+    <span class="n">subStr</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;tqn&#39;</span><span class="p">:</span> <span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">)</span>
+    <span class="p">}</span>
+    
+    <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;DROP TABLE </span><span class="si">%(tqn)s</span><span class="s"> CASCADE &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">stmt</span> <span class="o">%</span> <span class="n">subStr</span>
+</div>
+<div class="viewcode-block" id="drop_column"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.drop_column">[docs]</a><span class="k">def</span> <span class="nf">drop_column</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">colid</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">        ALTER TABLE </span><span class="si">%(tqn)s</span><span class="s"></span>
+<span class="s">        DROP COLUMN &quot;</span><span class="si">%(colid)s</span><span class="s">&quot;</span>
+<span class="s">    &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span>
+        <span class="s">&#39;tqn&#39;</span><span class="p">:</span><span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">),</span>
+        <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span>
+    <span class="p">}</span>
+    </div>
+<div class="viewcode-block" id="drop_constraint"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.drop_constraint">[docs]</a><span class="k">def</span> <span class="nf">drop_constraint</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span> <span class="n">tblid</span><span class="p">,</span> <span class="n">conid</span><span class="p">):</span>
+    <span class="k">return</span> \
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ALTER TABLE %(tqn)s</span>
+<span class="sd">        DROP CONSTRAINT &quot;%(conid)s&quot;</span>
+<span class="sd">        &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span>
+            <span class="s">&#39;tqn&#39;</span><span class="p">:</span><span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">),</span>
+            <span class="s">&#39;conid&#39;</span><span class="p">:</span><span class="n">conid</span>
+        <span class="p">}</span>
+        </div>
+<div class="viewcode-block" id="drop_constraint_notnull"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.drop_constraint_notnull">[docs]</a><span class="k">def</span> <span class="nf">drop_constraint_notnull</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span> <span class="n">tblid</span><span class="p">,</span> <span class="n">colid</span><span class="p">):</span>
+    <span class="k">return</span> \
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        ALTER TABLE %(tqn)s</span>
+<span class="sd">        ALTER COLUMN &quot;%(colid)s&quot;</span>
+<span class="sd">        DROP NOT NULL</span>
+<span class="sd">        &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span>
+            <span class="s">&#39;tqn&#39;</span><span class="p">:</span><span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">),</span>
+            <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span>
+        <span class="p">}</span>
+    
+<span class="c">###############################################################################</span>
+<span class="c">### PERMISSIONS ###############################################################</span>
+<span class="c">###############################################################################</span>
+</div>
+<div class="viewcode-block" id="grant_usage"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.grant_usage">[docs]</a><span class="k">def</span> <span class="nf">grant_usage</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">uname</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">        GRANT USAGE</span>
+<span class="s">        ON SCHEMA &quot;</span><span class="si">%(schemaid)s</span><span class="s">&quot;</span>
+<span class="s">        TO &quot;</span><span class="si">%(uname)s</span><span class="s">&quot;</span>
+<span class="s">        </span>
+<span class="s">        &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span><span class="s">&#39;schemaid&#39;</span><span class="p">:</span><span class="n">schemaid</span><span class="p">,</span><span class="s">&#39;uname&#39;</span><span class="p">:</span><span class="n">uname</span><span class="p">}</span>
+    </div>
+<div class="viewcode-block" id="alter_default"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.alter_default">[docs]</a><span class="k">def</span> <span class="nf">alter_default</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">uname</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s">&quot;&quot;&quot;                        </span>
+<span class="s">            ALTER DEFAULT PRIVILEGES </span>
+<span class="s">            IN SCHEMA &quot;</span><span class="si">%(schemaid)s</span><span class="s">&quot;</span>
+<span class="s">            GRANT SELECT ON TABLES</span>
+<span class="s">            TO &quot;</span><span class="si">%(uname)s</span><span class="s">&quot;;</span>
+<span class="s">        </span>
+<span class="s">        &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span><span class="s">&#39;schemaid&#39;</span><span class="p">:</span><span class="n">schemaid</span><span class="p">,</span><span class="s">&#39;uname&#39;</span><span class="p">:</span><span class="n">uname</span><span class="p">}</span>
+
+<span class="c">###############################################################################</span>
+<span class="c">### DML #######################################################################</span>
+<span class="c">###############################################################################</span>
+</div>
+<div class="viewcode-block" id="insert"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.insert">[docs]</a><span class="k">def</span> <span class="nf">insert</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span> <span class="n">tblid</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">colnames</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="n">subStr</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;tqn&#39;</span><span class="p">:</span> <span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">)}</span>
+    <span class="k">if</span> <span class="n">colnames</span><span class="p">:</span>
+        <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;cols&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&quot;&#39;</span> <span class="o">+</span> <span class="s">&#39;&quot;, &quot;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">colnames</span><span class="p">)</span> <span class="o">+</span> <span class="s">&#39;&quot;&#39;</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;INSERT INTO </span><span class="si">%(tqn)s</span><span class="s"> (</span><span class="si">%(cols)s</span><span class="s">) &quot;&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;INSERT INTO </span><span class="si">%(tqn)s</span><span class="s"> &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">values</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;vals&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">values</span><span class="p">)</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;VALUES (</span><span class="si">%(vals)s</span><span class="s">) &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">stmt</span> <span class="o">%</span> <span class="n">subStr</span>
+    <span class="k">elif</span> <span class="n">values</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">colnames</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">=</span> <span class="n">stmt</span> <span class="o">%</span> <span class="n">subStr</span>
+        <span class="n">sub</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;vals&#39;</span><span class="p">:</span><span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">((</span><span class="s">&quot;%(&quot;</span><span class="o">+</span><span class="n">col</span><span class="o">+</span><span class="s">&quot;)s&quot;</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">colnames</span><span class="p">))}</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;VALUES (</span><span class="si">%(vals)s</span><span class="s">) &quot;&quot;&quot;</span> <span class="o">%</span> <span class="n">sub</span>
+        <span class="k">return</span> <span class="n">stmt</span>
+    </div>
+<div class="viewcode-block" id="update"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.update">[docs]</a><span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span> <span class="n">tblid</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">colnames</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">insert</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span> <span class="n">tblid</span><span class="p">,</span> <span class="n">values</span><span class="p">,</span> <span class="n">colnames</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    
+<span class="c">###############################################################################</span>
+<span class="c">### DQL #######################################################################</span>
+<span class="c">###############################################################################   </span>
+</div>
+<div class="viewcode-block" id="process_where"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.process_where">[docs]</a><span class="k">def</span> <span class="nf">process_where</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">clause</span><span class="p">,</span><span class="n">i</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">whereAdd</span> <span class="o">=</span> <span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">)</span> <span class="o">+</span><span class="s">&#39;.&quot;&#39;</span><span class="o">+</span> <span class="n">clause</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39;&quot; &#39;</span> 
+    <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">whereAdd</span> <span class="o">+=</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">clause</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39; </span><span class="si">%(whereVal)s</span><span class="s"> &#39;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">whereAdd</span> <span class="o">+=</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">clause</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s">&#39; %(whereVal_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;)s &#39;</span>
+    <span class="k">return</span> <span class="n">whereAdd</span>
+    </div>
+<div class="viewcode-block" id="select"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.select">[docs]</a><span class="k">def</span> <span class="nf">select</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span> <span class="n">tblid</span><span class="p">,</span> 
+           <span class="n">cols</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">join</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">group_by</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">order_by</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> 
+           <span class="n">limit</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">subStr</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&#39;tqn&#39;</span><span class="p">:</span><span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">params</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;cols&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;.&quot;&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;&quot;&#39;</span> 
+                                   <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">cols</span><span class="p">)</span>
+        <span class="n">stmt</span> <span class="o">=</span> \
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                SELECT %(cols)s </span>
+<span class="sd">                FROM %(tqn)s</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">=</span> \
+                <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">                SELECT * </span>
+<span class="sd">                FROM %(tqn)s</span>
+<span class="sd">                &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">join</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">                JOIN </span><span class="si">%(jtbl)s</span><span class="s"></span>
+<span class="s">                ON </span><span class="si">%(on)s</span><span class="s"></span>
+<span class="s">                &quot;&quot;&quot;</span>
+        <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;jtbl&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_tqn</span><span class="p">(</span><span class="n">join</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">join</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;on&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;.&quot;&#39;</span><span class="o">+</span><span class="n">join</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="s">&#39;&quot; &#39;</span><span class="o">+</span><span class="n">join</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;on&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s">&#39; &#39;</span> <span class="o">+</span> <span class="n">_get_tqn</span><span class="p">(</span><span class="n">join</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">join</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">+</span><span class="s">&#39;.&quot;&#39;</span><span class="o">+</span><span class="n">join</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">+</span><span class="s">&#39;&quot;&#39;</span>
+
+    <span class="k">if</span> <span class="n">where</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">WHERE &quot;</span>
+        <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;where&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;&#39;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">where</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">tuple</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">where</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="nb">list</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span><span class="n">clause</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">where</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;where&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="s">&#39; AND &#39;</span>
+                <span class="n">params</span><span class="p">[</span><span class="s">&#39;whereVal_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="n">clause</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;where&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">process_where</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">clause</span><span class="p">,</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;where&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">process_where</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">where</span><span class="p">)</span>
+            <span class="n">params</span><span class="p">[</span><span class="s">&#39;whereVal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">where</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span><span class="si">%(where)s</span><span class="s">&quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">group_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_get_cqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
+                                   <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">group_by</span><span class="p">)</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">                GROUP BY </span><span class="si">%(group)s</span><span class="s"></span>
+<span class="s">                &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">order_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">order_by</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;order&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">order_by</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;order&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_get_cqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">+</span><span class="s">&#39; &#39;</span><span class="o">+</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+                                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">order_by</span><span class="p">)</span>
+        
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">                ORDER BY </span><span class="si">%(order)s</span><span class="s"></span>
+<span class="s">                &quot;&quot;&quot;</span>
+    
+    <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;limit&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">limit</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">                LIMIT </span><span class="si">%(limit)s</span><span class="s"></span>
+<span class="s">                &quot;&quot;&quot;</span>
+    
+    <span class="k">return</span> <span class="n">stmt</span> <span class="o">%</span> <span class="n">subStr</span><span class="p">,</span><span class="n">params</span>
+
+<span class="c">###############################################################################</span>
+<span class="c">### DQL for POSTGIS ###########################################################</span>
+<span class="c">###############################################################################   </span>
+</div>
+<div class="viewcode-block" id="select_geography"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.select_geography">[docs]</a><span class="k">def</span> <span class="nf">select_geography</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">colid</span><span class="p">,</span><span class="n">colname</span><span class="p">,</span><span class="n">bb</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">geotype</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            WITH data AS (</span>
+<span class="s">                SELECT *</span>
+<span class="s">                FROM &quot;</span><span class="si">%(schemaid)s</span><span class="s">&quot;.&quot;</span><span class="si">%(tblid)s</span><span class="s">&quot;</span>
+<span class="s">            )</span>
+<span class="s">            SELECT &quot;_adm-rowid&quot; as rowid,</span>
+<span class="s">           &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="mi">12</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            </span><span class="si">%(output_func)s</span><span class="s">(ST_simplify(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;::geometry,</span><span class="si">%(tolerance)s</span><span class="s">))</span>
+<span class="s">           &quot;&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            </span><span class="si">%(output_func)s</span><span class="s">(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;)</span>
+<span class="s">           &quot;&quot;&quot;</span>
+    <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">                as &quot;</span><span class="si">%(colname)s</span><span class="s">&quot;</span>
+<span class="s">            FROM data</span>
+<span class="s">            </span>
+<span class="s">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">bb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;WHERE ST_Intersects(</span><span class="si">%(bb)s</span><span class="s">, &quot;</span><span class="si">%(colid)s</span><span class="s">&quot;)&quot;&quot;&quot;</span>
+        
+    <span class="n">output_func</span> <span class="o">=</span> <span class="s">&#39;ST_AsGeoJSON&#39;</span>
+    <span class="k">if</span> <span class="n">geotype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">geotype</span> <span class="o">==</span> <span class="s">&#39;wkb&#39;</span><span class="p">:</span>
+            <span class="n">output_func</span> <span class="o">=</span> <span class="s">&#39;ST_AsBinary&#39;</span>
+        <span class="k">elif</span> <span class="n">geotype</span> <span class="o">==</span> <span class="s">&#39;wkt&#39;</span><span class="p">:</span>
+            <span class="n">output_func</span> <span class="o">=</span> <span class="s">&#39;ST_AsEWKB&#39;</span>
+        
+    <span class="n">stmt</span> <span class="o">=</span> <span class="n">stmt</span> <span class="o">%</span> <span class="p">{</span>
+        <span class="s">&#39;bb&#39;</span><span class="p">:</span><span class="n">bb</span><span class="p">,</span>
+        <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span><span class="p">,</span>
+        <span class="s">&#39;colname&#39;</span><span class="p">:</span><span class="n">colname</span><span class="p">,</span>
+        <span class="s">&#39;schemaid&#39;</span><span class="p">:</span><span class="n">schemaid</span><span class="p">,</span>
+        <span class="s">&#39;tblid&#39;</span><span class="p">:</span><span class="n">tblid</span><span class="p">,</span>
+        <span class="s">&#39;output_func&#39;</span><span class="p">:</span><span class="n">output_func</span><span class="p">,</span>
+        <span class="s">&#39;tolerance&#39;</span><span class="p">:</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="nb">float</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="n">stmt</span>
+    </div>
+<div class="viewcode-block" id="select_features_byrowid"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.select_features_byrowid">[docs]</a><span class="k">def</span> <span class="nf">select_features_byrowid</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">colid</span><span class="p">,</span><span class="n">colname</span><span class="p">,</span><span class="n">rowids</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot; WITH data AS (</span>
+<span class="s">                    SELECT *</span>
+<span class="s">                    FROM &quot;</span><span class="si">%(schemaid)s</span><span class="s">&quot;.&quot;</span><span class="si">%(tblid)s</span><span class="s">&quot;</span>
+<span class="s">                    WHERE &quot;_adm-rowid&quot; IN </span><span class="si">%(rowids)s</span><span class="s"></span>
+<span class="s">                )</span>
+<span class="s">                SELECT &quot;_adm-rowid&quot; as rowid,</span>
+<span class="s">                    </span><span class="si">%(output_func)s</span><span class="s">(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;) as &quot;</span><span class="si">%(colname)s</span><span class="s">&quot;</span>
+<span class="s">                FROM data</span>
+<span class="s">            </span>
+<span class="s">        &quot;&quot;&quot;</span>
+    
+    <span class="n">output_func</span> <span class="o">=</span> <span class="s">&#39;ST_AsGeoJSON&#39;</span>
+    
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rowids</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">rowids</span> <span class="o">=</span> <span class="p">(</span><span class="n">rowids</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">rowids</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">rowids</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">rowids</span><span class="p">)</span>
+        
+    <span class="n">stmt</span> <span class="o">=</span> <span class="n">stmt</span> <span class="o">%</span> <span class="p">{</span>
+        <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span><span class="p">,</span>
+        <span class="s">&#39;colname&#39;</span><span class="p">:</span><span class="n">colname</span><span class="p">,</span>
+        <span class="s">&#39;schemaid&#39;</span><span class="p">:</span><span class="n">schemaid</span><span class="p">,</span>
+        <span class="s">&#39;tblid&#39;</span><span class="p">:</span><span class="n">tblid</span><span class="p">,</span>
+        <span class="s">&#39;rowids&#39;</span><span class="p">:</span><span class="n">rowids</span><span class="p">,</span>
+        <span class="s">&#39;output_func&#39;</span><span class="p">:</span><span class="n">output_func</span><span class="p">,</span>
+        <span class="s">&#39;tolerance&#39;</span><span class="p">:</span><span class="bp">None</span> <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="nb">float</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="n">stmt</span>
+    </div>
+<div class="viewcode-block" id="select_geography_rowids"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.select_geography_rowids">[docs]</a><span class="k">def</span> <span class="nf">select_geography_rowids</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">colid</span><span class="p">,</span><span class="n">bb</span><span class="p">,</span><span class="n">z</span><span class="p">):</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            WITH data AS (</span>
+<span class="s">                SELECT *</span>
+<span class="s">                FROM &quot;</span><span class="si">%(schemaid)s</span><span class="s">&quot;.&quot;</span><span class="si">%(tblid)s</span><span class="s">&quot;</span>
+<span class="s">            )</span>
+<span class="s">            SELECT &quot;_adm-rowid&quot; as rowid</span>
+<span class="s">            FROM data</span>
+<span class="s">            WHERE ST_Intersects(</span><span class="si">%(bb)s</span><span class="s">, &quot;</span><span class="si">%(colid)s</span><span class="s">&quot;)</span>
+<span class="s">            &quot;&quot;&quot;</span>
+    
+    <span class="n">stmt</span> <span class="o">=</span> <span class="n">stmt</span> <span class="o">%</span> <span class="p">{</span>
+        <span class="s">&#39;bb&#39;</span><span class="p">:</span><span class="n">bb</span><span class="p">,</span>
+        <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span><span class="p">,</span>
+        <span class="s">&#39;schemaid&#39;</span><span class="p">:</span><span class="n">schemaid</span><span class="p">,</span>
+        <span class="s">&#39;tblid&#39;</span><span class="p">:</span><span class="n">tblid</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="n">stmt</span>
+
+</div>
+<div class="viewcode-block" id="delete_row"><a class="viewcode-back" href="../../../apidoc/core.pg.html#core.pg.syntax.delete_row">[docs]</a><span class="k">def</span> <span class="nf">delete_row</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">where</span><span class="p">):</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">        DELETE FROM </span><span class="si">%(qtn)s</span><span class="s"></span>
+<span class="s">        WHERE </span>
+<span class="s">    &quot;&quot;&quot;</span>
+    
+    <span class="n">stmt</span> <span class="o">=</span> <span class="n">stmt</span> <span class="o">%</span> <span class="p">{</span>
+        <span class="s">&#39;qtn&#39;</span><span class="p">:</span><span class="n">_get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">),</span>
+    <span class="p">}</span>
+    
+    <span class="n">stmt</span> <span class="o">+=</span> <span class="n">process_where</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">where</span><span class="p">)</span> <span class="o">%</span> <span class="p">{</span><span class="s">&#39;whereVal&#39;</span><span class="p">:</span><span class="s">&quot;&#39;&quot;</span><span class="o">+</span><span class="n">where</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="s">&quot;&#39;&quot;</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">stmt</span>
+    
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

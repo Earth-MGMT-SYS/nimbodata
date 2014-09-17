@@ -1,0 +1,190 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Select &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="index.html" />
+    <link rel="next" title="API Reference" href="api.html" />
+    <link rel="prev" title="Entities" href="entities.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="API Reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="entities.html" title="Entities"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="select">
+<span id="id1"></span><h1>Select<a class="headerlink" href="#select" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="query-principles">
+<h2>Query Principles<a class="headerlink" href="#query-principles" title="Permalink to this headline">¶</a></h2>
+<p>The query language in nimbodata is driven by a few primary considerations:</p>
+<ul class="simple">
+<li>Terseness: use Pythonic/Mathematical notation and JSON-like structures
+rather than chaining method calls where possible.</li>
+<li>Flexibility: since nimbodata is a distributed system, support exists for
+advanced overriden operators in Python, as well a string-clause or
+JSON/string parser.</li>
+<li>Beyond SQL: be inspired by the power of SQL, but do not be limited by it.</li>
+</ul>
+<p>An example of a minimal query in Python is:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">cloud</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s">&#39;spam&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s">&#39;eggs&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span><span class="o">.</span><span class="n">select</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>While a more complex (contrived) query would look like (all of the variables in
+the parameters would be column objects, easy to get):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">from_table</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s">&#39;a&#39;</span><span class="p">),</span> <span class="n">from_table</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s">&#39;b&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">join_target</span> <span class="o">=</span> <span class="n">cloud</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s">&#39;SomeOtherDB&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s">&#39;SomeOtherTable&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">join_fk</span> <span class="o">=</span> <span class="n">join_target</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s">&#39;fk&#39;</span><span class="p">)</span> <span class="c"># The Foreign Key Column</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">join_val</span> <span class="o">=</span> <span class="n">join_target</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s">&#39;val&#39;</span><span class="p">)</span> <span class="c"># The Interesting Value</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">results</span> <span class="o">=</span> <span class="n">cloud</span><span class="o">.</span><span class="n">select</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">from_table</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="n">b</span><span class="p">,</span><span class="n">avg</span><span class="p">(</span><span class="n">join_val</span><span class="p">)],</span>
+<span class="gp">... </span>    <span class="n">where</span> <span class="o">=</span> <span class="p">((</span><span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">b</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)),</span>
+<span class="gp">... </span>    <span class="n">join</span> <span class="o">=</span> <span class="n">a</span> <span class="o">==</span> <span class="n">join_fk</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">group_by</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">order_by</span> <span class="o">=</span> <span class="n">a</span><span class="p">,</span>
+<span class="gp">... </span>    <span class="n">limit</span> <span class="o">=</span> <span class="mi">3</span>
+<span class="gp">... </span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Which could also be represented as a JSON Payload to ./select:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">{</span>
+    <span class="s">&quot;from&quot;</span><span class="p">:</span><span class="s">&quot;from_table&quot;</span><span class="p">,</span>
+    <span class="s">&quot;cols&quot;</span><span class="p">:[</span><span class="s">&quot;b&quot;</span><span class="p">,</span><span class="s">&quot;avg(join.val)&quot;</span><span class="p">],</span>
+    <span class="s">&quot;where&quot;</span><span class="p">:[</span><span class="s">&quot;a &lt; b&quot;</span><span class="p">,</span><span class="s">&quot;b != 2&quot;</span><span class="p">],</span>
+    <span class="s">&quot;join&quot;</span><span class="p">:</span><span class="s">&quot;a == join.fk&quot;</span><span class="p">,</span>
+    <span class="s">&quot;group_by&quot;</span><span class="p">:</span><span class="s">&quot;b&quot;</span><span class="p">,</span>
+    <span class="s">&quot;order_by&quot;</span><span class="p">:</span><span class="s">&quot;a&quot;</span><span class="p">,</span>
+    <span class="s">&quot;limit&quot;</span><span class="p">:</span><span class="mi">3</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Or the entities could be represented by the objid, but since those are 36 chars
+of nonsense, they&#8217;re not too interesting to look at.</p>
+</div>
+<div class="section" id="query-a-single-relation">
+<h2>Query A Single Relation<a class="headerlink" href="#query-a-single-relation" title="Permalink to this headline">¶</a></h2>
+<p>In the case where we want to query a single relation (be it a table, view)
+we can do it directly via the relation object as shown in the first example
+above.  A more complete example would be:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">db</span> <span class="o">=</span> <span class="n">cloud</span><span class="o">.</span><span class="n">Database</span><span class="p">(</span><span class="s">&#39;MyDatabase&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">table</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Table</span><span class="p">(</span><span class="s">&#39;MyTable&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">columns</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">select</span><span class="p">()</span> <span class="c"># SELECT * FROM &quot;MyDatabase&quot;.&quot;MyTable&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">])</span> <span class="c"># SELECT A, B FROM &quot;MyDatabase&quot;.&quot;MyTable&quot;</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">result</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">],</span><span class="n">a</span> <span class="o">&lt;</span> <span class="n">b</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">other_result</span> <span class="o">=</span> <span class="n">table</span><span class="o">.</span><span class="n">select</span><span class="p">([</span><span class="s">&#39;a&#39;</span><span class="p">,</span><span class="s">&#39;b&#39;</span><span class="p">],</span><span class="s">&#39;a &lt; b&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">result</span> <span class="o">==</span> <span class="n">other_result</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Select</a><ul>
+<li><a class="reference internal" href="#query-principles">Query Principles</a></li>
+<li><a class="reference internal" href="#query-a-single-relation">Query A Single Relation</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="entities.html"
+                        title="previous chapter">Entities</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="api.html"
+                        title="next chapter">API Reference</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/select.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="api.html" title="API Reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="entities.html" title="Entities"
+             >previous</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

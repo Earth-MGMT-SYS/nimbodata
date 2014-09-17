@@ -1,0 +1,508 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nimbodata.core.pg.entities package &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../index.html" />
+    <link rel="up" title="nimbodata.core.pg package" href="nimbodata.core.pg.html" />
+    <link rel="prev" title="nimbodata.core.pg.datatypes package" href="nimbodata.core.pg.datatypes.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.pg.datatypes.html" title="nimbodata.core.pg.datatypes package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="nimbodata.html" >nimbodata package</a> &raquo;</li>
+          <li><a href="nimbodata.core.html" >nimbodata.core package</a> &raquo;</li>
+          <li><a href="nimbodata.core.pg.html" accesskey="U">nimbodata.core.pg package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nimbodata-core-pg-entities-package">
+<h1>nimbodata.core.pg.entities package<a class="headerlink" href="#nimbodata-core-pg-entities-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-nimbodata.core.pg.entities.column">
+<span id="nimbodata-core-pg-entities-column-module"></span><h2>nimbodata.core.pg.entities.column module<a class="headerlink" href="#module-nimbodata.core.pg.entities.column" title="Permalink to this headline">¶</a></h2>
+<p>Module implements the PostgreSQL table column.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.entities.column.Column">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.entities.column.</tt><tt class="descname">Column</tt><big>(</big><em>name=None</em>, <em>objid=None</em>, <em>info=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/column.html#Column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.column.Column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.entities.column.Column</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.entities.prototype.Entity" title="nimbodata.core.pg.entities.prototype.Entity"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.entities.prototype.Entity</span></tt></a></p>
+<p>Column in a table, referenced by views.  Can be used in where filter.</p>
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.column.Column.create">
+<tt class="descname">create</tt><big>(</big><em>parent</em>, <em>name</em>, <em>datatype</em>, <em>alias=None</em>, <em>primary_key=None</em>, <em>tblinfo=None</em>, <em>index=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/column.html#Column.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.column.Column.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the column in SQL, register it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.column.Column.drop">
+<tt class="descname">drop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/column.html#Column.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.column.Column.drop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop the column from the table.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.column.Column.modify">
+<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/column.html#Column.modify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.column.Column.modify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Change the type of a column.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.column.Column.rename">
+<tt class="descname">rename</tt><big>(</big><em>newname</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.column.Column.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename the entity.</p>
+<p>Should work for all implementations that use Entity.create()</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.column.Column.select">
+<tt class="descname">select</tt><big>(</big><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.column.Column.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all children of this entity.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.entities.constraint">
+<span id="nimbodata-core-pg-entities-constraint-module"></span><h2>nimbodata.core.pg.entities.constraint module<a class="headerlink" href="#module-nimbodata.core.pg.entities.constraint" title="Permalink to this headline">¶</a></h2>
+<p>Module implements PostgreSQL constraints.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.entities.constraint.Constraint">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.entities.constraint.</tt><tt class="descname">Constraint</tt><big>(</big><em>name=None</em>, <em>objid=None</em>, <em>info=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/constraint.html#Constraint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.constraint.Constraint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.entities.constraint.Constraint</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.entities.prototype.Entity" title="nimbodata.core.pg.entities.prototype.Entity"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.entities.prototype.Entity</span></tt></a></p>
+<p>A PostgreSQL constraint as a Nimbodata Entity.</p>
+<dl class="attribute">
+<dt id="nimbodata.core.pg.entities.constraint.Constraint.con_reg">
+<tt class="descname">con_reg</tt><em class="property"> = '_adm-constregistry'</em><a class="headerlink" href="#nimbodata.core.pg.entities.constraint.Constraint.con_reg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.constraint.Constraint.create">
+<tt class="descname">create</tt><big>(</big><em>const</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/constraint.html#Constraint.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.constraint.Constraint.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the constraint and register it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.constraint.Constraint.drop">
+<tt class="descname">drop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/constraint.html#Constraint.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.constraint.Constraint.drop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop the constraint from the table.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.constraint.Constraint.modify">
+<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.constraint.Constraint.modify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.constraint.Constraint.rename">
+<tt class="descname">rename</tt><big>(</big><em>newname</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.constraint.Constraint.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename the entity.</p>
+<p>Should work for all implementations that use Entity.create()</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.constraint.Constraint.select">
+<tt class="descname">select</tt><big>(</big><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.constraint.Constraint.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all children of this entity.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.entities.database">
+<span id="nimbodata-core-pg-entities-database-module"></span><h2>nimbodata.core.pg.entities.database module<a class="headerlink" href="#module-nimbodata.core.pg.entities.database" title="Permalink to this headline">¶</a></h2>
+<p>Module implements the PostgreSQL schema entity (database in Nimbodata).</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.entities.database.Database">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.entities.database.</tt><tt class="descname">Database</tt><big>(</big><em>name=None</em>, <em>objid=None</em>, <em>info=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/database.html#Database"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.database.Database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.entities.database.Database</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.entities.prototype.Entity" title="nimbodata.core.pg.entities.prototype.Entity"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.entities.prototype.Entity</span></tt></a></p>
+<p>PostgreSQL Schema or Nimbodata Database.</p>
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.database.Database.create">
+<tt class="descname">create</tt><big>(</big><em>name</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/database.html#Database.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.database.Database.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and register.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.database.Database.drop">
+<tt class="descname">drop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/database.html#Database.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.database.Database.drop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop the database.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.database.Database.modify">
+<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.database.Database.modify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.database.Database.rename">
+<tt class="descname">rename</tt><big>(</big><em>newname</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.database.Database.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename the entity.</p>
+<p>Should work for all implementations that use Entity.create()</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.database.Database.select">
+<tt class="descname">select</tt><big>(</big><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.database.Database.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all children of this entity.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.entities.prototype">
+<span id="nimbodata-core-pg-entities-prototype-module"></span><h2>nimbodata.core.pg.entities.prototype module<a class="headerlink" href="#module-nimbodata.core.pg.entities.prototype" title="Permalink to this headline">¶</a></h2>
+<p>Module implements the PostgreSQL Entity base class.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.entities.prototype.Entity">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.entities.prototype.</tt><tt class="descname">Entity</tt><big>(</big><em>name=None</em>, <em>objid=None</em>, <em>info=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/prototype.html#Entity"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.entities.prototype.Entity</span></tt></p>
+<p>Base class for an entity in a PostgreSQL database (in PG terms).</p>
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.prototype.Entity.create">
+<tt class="descname">create</tt><big>(</big><em>vals</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/prototype.html#Entity.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Register an entity in the metadata registry.</p>
+<p>Default create method for an entity - only used in conjunction with
+an actual implementation of an Entity - because this only registers
+the entity in the registry - it does not execute the entity SQL
+itself.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.prototype.Entity.drop">
+<tt class="descname">drop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/prototype.html#Entity.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.drop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop the entity.</p>
+<p>Does not execute the actual SQL required to drop the object - just 
+drops the entity from the registry.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="nimbodata.core.pg.entities.prototype.Entity.ent_info">
+<tt class="descname">ent_info</tt><em class="property"> = '_adm-entityinfo'</em><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.ent_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="nimbodata.core.pg.entities.prototype.Entity.ent_reg">
+<tt class="descname">ent_reg</tt><em class="property"> = '_adm-entityregistry'</em><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.ent_reg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="nimbodata.core.pg.entities.prototype.Entity.info">
+<tt class="descname">info</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/prototype.html#Entity.info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>So that we always have accurate metadata.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.prototype.Entity.listing">
+<tt class="descname">listing</tt><big>(</big><em>child_type=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/prototype.html#Entity.listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.listing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all peers or children of the entity.</p>
+<p>Called directly, it provides a list of same-type siblings.</p>
+<p>The method also serves a <cite>__getattr__</cite> for the lowercase plural of any
+entity type (i.e. <cite>Database().tables()</cite> or <cite>Table().columns()</cite>).  When
+called via <cite>__getattr__</cite>, it will be called with the <cite>child_type</cite> 
+converted from the <cite>attr</cite> argument.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.prototype.Entity.modify">
+<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.modify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.prototype.Entity.rename">
+<tt class="descname">rename</tt><big>(</big><em>newname</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/prototype.html#Entity.rename"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename the entity.</p>
+<p>Should work for all implementations that use Entity.create()</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="nimbodata.core.pg.entities.prototype.Entity.schema">
+<tt class="descname">schema</tt><em class="property"> = '_adm-registries'</em><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.schema" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.prototype.Entity.select">
+<tt class="descname">select</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/prototype.html#Entity.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all children of this entity.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.prototype.Entity.tree">
+<tt class="descname">tree</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/prototype.html#Entity.tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.tree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all children of this entity.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.entities.table">
+<span id="nimbodata-core-pg-entities-table-module"></span><h2>nimbodata.core.pg.entities.table module<a class="headerlink" href="#module-nimbodata.core.pg.entities.table" title="Permalink to this headline">¶</a></h2>
+<p>Module implements the PostgreSQL table for Nimbodata.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.entities.table.Table">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.entities.table.</tt><tt class="descname">Table</tt><big>(</big><em>name=None</em>, <em>objid=None</em>, <em>info=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/table.html#Table"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.entities.table.Table</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.entities.view.View" title="nimbodata.core.pg.entities.view.View"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.entities.view.View</span></tt></a></p>
+<p>PostgreSQL table as Nimbodata Entity.</p>
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.table.Table.add_columns">
+<tt class="descname">add_columns</tt><big>(</big><em>cols</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/table.html#Table.add_columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.add_columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add columns to the table.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.table.Table.columns">
+<tt class="descname">columns</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/table.html#Table.columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a listing of columns for the table.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.table.Table.create">
+<tt class="descname">create</tt><big>(</big><em>parent_objid</em>, <em>name</em>, <em>cols</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/table.html#Table.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the table in SQL then register it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.table.Table.drop">
+<tt class="descname">drop</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/table.html#Table.drop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.drop" title="Permalink to this definition">¶</a></dt>
+<dd><p>&#8220;Drop the table in SQL the de-register it.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.table.Table.insert">
+<tt class="descname">insert</tt><big>(</big><em>values</em>, <em>rowid=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/table.html#Table.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert the row or rows into the table.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.table.Table.insert_file">
+<tt class="descname">insert_file</tt><big>(</big><em>fobj</em>, <em>cols=None</em>, <em>header=True</em>, <em>fallback=True</em>, <em>errors=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/table.html#Table.insert_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.insert_file" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.table.Table.modify">
+<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.modify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.table.Table.rename">
+<tt class="descname">rename</tt><big>(</big><em>newname</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename the entity.</p>
+<p>Should work for all implementations that use Entity.create()</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.table.Table.select">
+<tt class="descname">select</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select from the relation, <cite>self.objid</cite> is provided to select.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="nimbodata.core.pg.entities.table.Table.tbl_reg">
+<tt class="descname">tbl_reg</tt><em class="property"> = '_adm-tableregistry'</em><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.tbl_reg" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.table.Table.update">
+<tt class="descname">update</tt><big>(</big><em>tblid</em>, <em>rowid</em>, <em>new_values</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/table.html#Table.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update a row specified by rowid.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="nimbodata-core-pg-entities-tree-module">
+<h2>nimbodata.core.pg.entities.tree module<a class="headerlink" href="#nimbodata-core-pg-entities-tree-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-nimbodata.core.pg.entities.view">
+<span id="nimbodata-core-pg-entities-view-module"></span><h2>nimbodata.core.pg.entities.view module<a class="headerlink" href="#module-nimbodata.core.pg.entities.view" title="Permalink to this headline">¶</a></h2>
+<p>Module implements the PostgreSQL view.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.entities.view.View">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.entities.view.</tt><tt class="descname">View</tt><big>(</big><em>name=None</em>, <em>objid=None</em>, <em>info=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/view.html#View"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.view.View" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.entities.view.View</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.entities.prototype.Entity" title="nimbodata.core.pg.entities.prototype.Entity"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.entities.prototype.Entity</span></tt></a></p>
+<p>A view represents a query subject, such as a table or another view.</p>
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.view.View.columns">
+<tt class="descname">columns</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/view.html#View.columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.columns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of columns in the relation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.view.View.create">
+<tt class="descname">create</tt><big>(</big><em>parent_objid</em>, <em>name</em>, <em>select</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/view.html#View.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create and register.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.view.View.drop">
+<tt class="descname">drop</tt><big>(</big><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.drop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Drop the entity.</p>
+<p>Does not execute the actual SQL required to drop the object - just 
+drops the entity from the registry.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.view.View.features">
+<tt class="descname">features</tt><big>(</big><em>rowids</em>, <em>z=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/view.html#View.features"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.features" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.view.View.get_q_cols">
+<tt class="descname">get_q_cols</tt><big>(</big><em>select</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/view.html#View.get_q_cols"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.get_q_cols" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the columns resulting from a query without fetching rows.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.view.View.modify">
+<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.modify" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.view.View.rename">
+<tt class="descname">rename</tt><big>(</big><em>newname</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename the entity.</p>
+<p>Should work for all implementations that use Entity.create()</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.view.View.select">
+<tt class="descname">select</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/view.html#View.select"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.select" title="Permalink to this definition">¶</a></dt>
+<dd><p>Select from the relation, <cite>self.objid</cite> is provided to select.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.view.View.tile">
+<tt class="descname">tile</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/view.html#View.tile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.tile" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.entities.view.View.tile_rowids">
+<tt class="descname">tile_rowids</tt><big>(</big><em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/view.html#View.tile_rowids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.tile_rowids" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="nimbodata.core.pg.entities.view.View.view_col_info">
+<tt class="descname">view_col_info</tt><em class="property"> = '_adm-viewcolinfo'</em><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.view_col_info" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="nimbodata.core.pg.entities.view.View.view_cols">
+<tt class="descname">view_cols</tt><em class="property"> = '_adm-viewcolumns'</em><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.view_cols" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.entities">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-nimbodata.core.pg.entities" title="Permalink to this headline">¶</a></h2>
+<p>Module implements PostgreSQL entities as Python objects for Nimbodata.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">nimbodata.core.pg.entities package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.entities.column">nimbodata.core.pg.entities.column module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.entities.constraint">nimbodata.core.pg.entities.constraint module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.entities.database">nimbodata.core.pg.entities.database module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.entities.prototype">nimbodata.core.pg.entities.prototype module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.entities.table">nimbodata.core.pg.entities.table module</a></li>
+<li><a class="reference internal" href="#nimbodata-core-pg-entities-tree-module">nimbodata.core.pg.entities.tree module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.entities.view">nimbodata.core.pg.entities.view module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.entities">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="nimbodata.core.pg.datatypes.html"
+                        title="previous chapter">nimbodata.core.pg.datatypes package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/apidoc/nimbodata.core.pg.entities.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.pg.datatypes.html" title="nimbodata.core.pg.datatypes package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="nimbodata.html" >nimbodata package</a> &raquo;</li>
+          <li><a href="nimbodata.core.html" >nimbodata.core package</a> &raquo;</li>
+          <li><a href="nimbodata.core.pg.html" >nimbodata.core.pg package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,86 @@
+ body {
+   font-family: 'Inconsolata', Monaco, Consolas, "Lucida Console", monospace;
+   background-color: #A9D1FF;
+ }
+
+#left { 
+    background: #75B5FF;
+}
+
+#menu {
+    margin: 1em;
+}
+
+#right {
+    overflow: hidden;
+}
+
+#results {
+    
+}
+
+#dataarea {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+td.n_results {
+    cursor: crosshair;
+}
+
+th {
+    cursor: pointer;
+}
+
+span.argo, div.argo {
+    
+    max-width: none;
+    padding: 0;
+}
+
+.argo_button {
+    background: #A9A9A9;
+    border-radius: 0.3em;
+}
+
+.argo_button:hover {
+    background: #B7B7B7;
+}
+
+#querybox_select_button_container {
+    border: none;
+}
+
+#querybox {
+    background: #A9D1FF;
+    margin: 0;
+    overflow: auto;
+    border: none;
+    width: 100%;
+}
+
+div.n_tabs {
+    background: #425F81;
+}
+
+div.n_tabs > ul.n_tabs > li.n_tabs {
+    background: #656565;
+}
+
+div.n_tabs > ul.n_tabs > li.n_tabs:hover {
+    background: #C2BDBD;
+}
+
+#entitymenu {
+    width: 100%;
+    background: #5B8BC3;
+}
+
+#entitymenu_container {
+    padding: 0.5em;
+}
+
+.n_menu_label {
+    margin: 0.1em;
+}

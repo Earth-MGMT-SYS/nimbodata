@@ -1,0 +1,10 @@
+syntax:glob
+*.pyc
+*~
+build
+logs
+tmp
+core/test/nimbodata/lib/
+core/test/nimbodata/bin/
+core/test/nimbodta/local
+

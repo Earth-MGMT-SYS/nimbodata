@@ -1,0 +1,455 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nimbodata.core.pg.datatypes package &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../index.html" />
+    <link rel="up" title="nimbodata.core.pg package" href="nimbodata.core.pg.html" />
+    <link rel="next" title="nimbodata.core.pg.entities package" href="nimbodata.core.pg.entities.html" />
+    <link rel="prev" title="nimbodata.core.pg package" href="nimbodata.core.pg.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.pg.entities.html" title="nimbodata.core.pg.entities package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.pg.html" title="nimbodata.core.pg package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="nimbodata.html" >nimbodata package</a> &raquo;</li>
+          <li><a href="nimbodata.core.html" >nimbodata.core package</a> &raquo;</li>
+          <li><a href="nimbodata.core.pg.html" accesskey="U">nimbodata.core.pg package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nimbodata-core-pg-datatypes-package">
+<h1>nimbodata.core.pg.datatypes package<a class="headerlink" href="#nimbodata-core-pg-datatypes-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-nimbodata.core.pg.datatypes.function">
+<span id="nimbodata-core-pg-datatypes-function-module"></span><h2>nimbodata.core.pg.datatypes.function module<a class="headerlink" href="#module-nimbodata.core.pg.datatypes.function" title="Permalink to this headline">¶</a></h2>
+<p>Module implements column-functions in PostgreSQL.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.function.Function">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.function.</tt><tt class="descname">Function</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/function.html#Function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.function.Function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.function.Function</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<p>A column function in PostgreSQL implemented in Nimbodata.</p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.function.Function.sql_target">
+<tt class="descname">sql_target</tt><big>(</big><em>colid</em>, <em>funcname</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/function.html#Function.sql_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.function.Function.sql_target" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.datatypes.geographic">
+<span id="nimbodata-core-pg-datatypes-geographic-module"></span><h2>nimbodata.core.pg.datatypes.geographic module<a class="headerlink" href="#module-nimbodata.core.pg.datatypes.geographic" title="Permalink to this headline">¶</a></h2>
+<p>Module implements PostGIS datatypes in Nimbodata, also using shapely.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.geographic.GeoAdapter">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.geographic.</tt><tt class="descname">GeoAdapter</tt><big>(</big><em>f</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#GeoAdapter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.GeoAdapter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Adapt shapely.geography for psycopg2.</p>
+<dl class="staticmethod">
+<dt id="nimbodata.core.pg.datatypes.geographic.GeoAdapter.cast">
+<em class="property">static </em><tt class="descname">cast</tt><big>(</big><em>s</em>, <em>cur</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#GeoAdapter.cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.GeoAdapter.cast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.geographic.GeoAdapter.getquoted">
+<tt class="descname">getquoted</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#GeoAdapter.getquoted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.GeoAdapter.getquoted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.geographic.Geographic">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.geographic.</tt><tt class="descname">Geographic</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#Geographic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.Geographic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<p>Generic geographic type.</p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.geographic.Geographic.sql_target">
+<tt class="descname">sql_target</tt><big>(</big><em>colid</em>, <em>colname</em>, <em>alias=True</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#Geographic.sql_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.Geographic.sql_target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the column results as GeoJSON string</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.geographic.Line">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.geographic.</tt><tt class="descname">Line</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#Line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.Line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.geographic.Line</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.geographic.Geographic" title="nimbodata.core.pg.datatypes.geographic.Geographic"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.geographic.Geographic</span></tt></a></p>
+<p>Linestring extends PostGIS <cite>LINESTRING</cite> and shapely <cite>Linestring</cite>.</p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.geographic.Line.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#Line.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.Line.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.geographic.MultiLine">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.geographic.</tt><tt class="descname">MultiLine</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#MultiLine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.MultiLine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.geographic.MultiLine</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.geographic.Geographic" title="nimbodata.core.pg.datatypes.geographic.Geographic"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.geographic.Geographic</span></tt></a></p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.geographic.MultiLine.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#MultiLine.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.MultiLine.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.geographic.MultiPoint">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.geographic.</tt><tt class="descname">MultiPoint</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#MultiPoint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.MultiPoint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.geographic.MultiPoint</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.geographic.Geographic" title="nimbodata.core.pg.datatypes.geographic.Geographic"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.geographic.Geographic</span></tt></a></p>
+<p>Simple X,Y point.  Extends PostGIS <cite>POINT</cite> and Shapely <cite>Point</cite>.</p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.geographic.MultiPoint.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#MultiPoint.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.MultiPoint.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.geographic.MultiPolygon">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.geographic.</tt><tt class="descname">MultiPolygon</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#MultiPolygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.MultiPolygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.geographic.MultiPolygon</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.geographic.Geographic" title="nimbodata.core.pg.datatypes.geographic.Geographic"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.geographic.Geographic</span></tt></a></p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.geographic.MultiPolygon.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#MultiPolygon.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.MultiPolygon.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.geographic.Point">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.geographic.</tt><tt class="descname">Point</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#Point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.Point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.geographic.Point</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.geographic.Geographic" title="nimbodata.core.pg.datatypes.geographic.Geographic"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.geographic.Geographic</span></tt></a></p>
+<p>Simple X,Y point.  Extends PostGIS <cite>POINT</cite> and Shapely <cite>Point</cite>.</p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.geographic.Point.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#Point.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.Point.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.geographic.Polygon">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.geographic.</tt><tt class="descname">Polygon</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#Polygon"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.Polygon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.geographic.Polygon</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.geographic.Geographic" title="nimbodata.core.pg.datatypes.geographic.Geographic"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.geographic.Geographic</span></tt></a></p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.geographic.Polygon.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/geographic.html#Polygon.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.geographic.Polygon.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.datatypes.numeric">
+<span id="nimbodata-core-pg-datatypes-numeric-module"></span><h2>nimbodata.core.pg.datatypes.numeric module<a class="headerlink" href="#module-nimbodata.core.pg.datatypes.numeric" title="Permalink to this headline">¶</a></h2>
+<p>Module implements select PostgreSQL numeric datatypes.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.numeric.Boolean">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.numeric.</tt><tt class="descname">Boolean</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/numeric.html#Boolean"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.numeric.Boolean" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.numeric.Boolean</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.numeric.Boolean.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/numeric.html#Boolean.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.numeric.Boolean.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.numeric.Float">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.numeric.</tt><tt class="descname">Float</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/numeric.html#Float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.numeric.Float" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.numeric.Float</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.numeric.Float.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/numeric.html#Float.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.numeric.Float.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.numeric.Integer">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.numeric.</tt><tt class="descname">Integer</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/numeric.html#Integer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.numeric.Integer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.numeric.Integer</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.numeric.Integer.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/numeric.html#Integer.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.numeric.Integer.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.datatypes.pg_prototype">
+<span id="nimbodata-core-pg-datatypes-pg-prototype-module"></span><h2>nimbodata.core.pg.datatypes.pg_prototype module<a class="headerlink" href="#module-nimbodata.core.pg.datatypes.pg_prototype" title="Permalink to this headline">¶</a></h2>
+<p>Module implements the prototype of a Nimbodata PostgreSQL Datatype.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.pg_prototype.</tt><tt class="descname">PG_Datatype</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/pg_prototype.html#PG_Datatype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.prototype.Datatype</span></tt></p>
+<p>The base class for a PostgreSQL datatype in Nimbodata.</p>
+<p>A datatype represents a datatype that can be stored in the database and 
+used on the platform.  Encapsulates the SQL for creating, the SQL for
+selecting a column of the type as a target, as well as functions for
+converting to/from JSON, as well as instantiation of complex platform types
+(such as geographic via Shapely).</p>
+<dl class="attribute">
+<dt id="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype.sql_create">
+<tt class="descname">sql_create</tt><em class="property"> = None</em><a class="headerlink" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype.sql_target">
+<tt class="descname">sql_target</tt><big>(</big><em>colid</em>, <em>colname</em>, <em>alias=True</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/pg_prototype.html#PG_Datatype.sql_target"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype.sql_target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the SQL statement to process a column in a Select target.</p>
+<p>Given a column objid and column name, returns the SQL text to
+properly format and alias the query results for the column.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.datatypes.ranges">
+<span id="nimbodata-core-pg-datatypes-ranges-module"></span><h2>nimbodata.core.pg.datatypes.ranges module<a class="headerlink" href="#module-nimbodata.core.pg.datatypes.ranges" title="Permalink to this headline">¶</a></h2>
+<p>Module implements postgresql range datatypes in Nimbodata.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.ranges.FloatRange">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.ranges.</tt><tt class="descname">FloatRange</tt><big>(</big><em>value=None</em>, <em>cur=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/ranges.html#FloatRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.ranges.FloatRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.ranges.FloatRange</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<dl class="attribute">
+<dt id="nimbodata.core.pg.datatypes.ranges.FloatRange.sql_create">
+<tt class="descname">sql_create</tt><em class="property"> = 'numrange'</em><a class="headerlink" href="#nimbodata.core.pg.datatypes.ranges.FloatRange.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.ranges.IntegerRange">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.ranges.</tt><tt class="descname">IntegerRange</tt><big>(</big><em>value=None</em>, <em>cur=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/ranges.html#IntegerRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.ranges.IntegerRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.ranges.IntegerRange</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<dl class="attribute">
+<dt id="nimbodata.core.pg.datatypes.ranges.IntegerRange.sql_create">
+<tt class="descname">sql_create</tt><em class="property"> = 'int4range'</em><a class="headerlink" href="#nimbodata.core.pg.datatypes.ranges.IntegerRange.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.ranges.LongRange">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.ranges.</tt><tt class="descname">LongRange</tt><big>(</big><em>value=None</em>, <em>cur=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/ranges.html#LongRange"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.ranges.LongRange" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.ranges.LongRange</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<dl class="attribute">
+<dt id="nimbodata.core.pg.datatypes.ranges.LongRange.sql_create">
+<tt class="descname">sql_create</tt><em class="property"> = 'int8range'</em><a class="headerlink" href="#nimbodata.core.pg.datatypes.ranges.LongRange.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.ranges.RangeAdapter">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.ranges.</tt><tt class="descname">RangeAdapter</tt><big>(</big><em>f</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/ranges.html#RangeAdapter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.ranges.RangeAdapter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="staticmethod">
+<dt id="nimbodata.core.pg.datatypes.ranges.RangeAdapter.cast">
+<em class="property">static </em><tt class="descname">cast</tt><big>(</big><em>s</em>, <em>cur</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/ranges.html#RangeAdapter.cast"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.ranges.RangeAdapter.cast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.ranges.RangeAdapter.getquoted">
+<tt class="descname">getquoted</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/ranges.html#RangeAdapter.getquoted"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.ranges.RangeAdapter.getquoted" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.datatypes.text">
+<span id="nimbodata-core-pg-datatypes-text-module"></span><h2>nimbodata.core.pg.datatypes.text module<a class="headerlink" href="#module-nimbodata.core.pg.datatypes.text" title="Permalink to this headline">¶</a></h2>
+<p>Module implements text types.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.text.Json">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.text.</tt><tt class="descname">Json</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/text.html#Json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.text.Json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.text.Json</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.text.Json.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/text.html#Json.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.text.Json.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.text.Text">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.text.</tt><tt class="descname">Text</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/text.html#Text"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.text.Text" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.text.Text</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.text.Text.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/text.html#Text.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.text.Text.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="nimbodata.core.pg.datatypes.text.fallback_json">
+<tt class="descclassname">nimbodata.core.pg.datatypes.text.</tt><tt class="descname">fallback_json</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/text.html#fallback_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.text.fallback_json" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.datatypes.time">
+<span id="nimbodata-core-pg-datatypes-time-module"></span><h2>nimbodata.core.pg.datatypes.time module<a class="headerlink" href="#module-nimbodata.core.pg.datatypes.time" title="Permalink to this headline">¶</a></h2>
+<p>Module implements date and time types.</p>
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.time.Date">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.time.</tt><tt class="descname">Date</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/time.html#Date"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.time.Date" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.time.Date</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.time.Date.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/time.html#Date.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.time.Date.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.time.Time">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.time.</tt><tt class="descname">Time</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/time.html#Time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.time.Time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.time.Timestamp</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.time.Time.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/time.html#Time.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.time.Time.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.core.pg.datatypes.time.Timestamp">
+<em class="property">class </em><tt class="descclassname">nimbodata.core.pg.datatypes.time.</tt><tt class="descname">Timestamp</tt><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/time.html#Timestamp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.time.Timestamp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">common.datatypes.time.Timestamp</span></tt>, <a class="reference internal" href="#nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype" title="nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype"><tt class="xref py py-class docutils literal"><span class="pre">nimbodata.core.pg.datatypes.pg_prototype.PG_Datatype</span></tt></a></p>
+<dl class="method">
+<dt id="nimbodata.core.pg.datatypes.time.Timestamp.sql_create">
+<tt class="descname">sql_create</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/datatypes/time.html#Timestamp.sql_create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.datatypes.time.Timestamp.sql_create" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.core.pg.datatypes">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-nimbodata.core.pg.datatypes" title="Permalink to this headline">¶</a></h2>
+<p>Module implements PostgreSQL datatypes for Nimbodata.</p>
+<p>Implements datatypes for the platform - handles serialization and
+database interaction (encapsulates SQL for creating, formatting and aliasing
+the datatypes).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">nimbodata.core.pg.datatypes package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.datatypes.function">nimbodata.core.pg.datatypes.function module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.datatypes.geographic">nimbodata.core.pg.datatypes.geographic module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.datatypes.numeric">nimbodata.core.pg.datatypes.numeric module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.datatypes.pg_prototype">nimbodata.core.pg.datatypes.pg_prototype module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.datatypes.ranges">nimbodata.core.pg.datatypes.ranges module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.datatypes.text">nimbodata.core.pg.datatypes.text module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.datatypes.time">nimbodata.core.pg.datatypes.time module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.core.pg.datatypes">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="nimbodata.core.pg.html"
+                        title="previous chapter">nimbodata.core.pg package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="nimbodata.core.pg.entities.html"
+                        title="next chapter">nimbodata.core.pg.entities package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/apidoc/nimbodata.core.pg.datatypes.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.pg.entities.html" title="nimbodata.core.pg.entities package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.core.pg.html" title="nimbodata.core.pg package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="nimbodata.html" >nimbodata package</a> &raquo;</li>
+          <li><a href="nimbodata.core.html" >nimbodata.core package</a> &raquo;</li>
+          <li><a href="nimbodata.core.pg.html" >nimbodata.core.pg package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

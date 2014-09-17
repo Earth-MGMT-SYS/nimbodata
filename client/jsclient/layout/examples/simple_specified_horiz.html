@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+    <meta name="copyright" content="&copy; 2014 Bradley Alan Smith" />
+    <title>Container Widget</title>
+    
+    <link rel="stylesheet" href="../../widgets/base/base.css" />
+    <link rel="stylesheet" href="../../widgets/container/container.css" />
+    <link rel="stylesheet" href="../layout.css" />
+    <link rel="stylesheet" href="./simple.css" />
+    
+    <script src="http://d3js.org/d3.v3.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore.js"></script>
+    <script src="../layout.js"></script>
+    <script src="../../widgets/base/base.js"></script>
+    <script src="../../widgets/container/container.js"></script>
+    
+</head>
+<body>
+
+    <script>
+        
+var doc = [
+    {
+        'id':'left',
+        'widget':'Container',
+        'browserview':{
+                'width':'100%',
+                'height':'15%'
+            },
+        'children':[
+            {
+                'id':'leftinner',
+                'widget':'Container',
+                'browserview':{'width':'50%','height':'25%'}
+            }
+        ]
+    },
+    {
+        'id':'right',
+        'widget':'Container',
+        'browserview':{
+                'width':'100%',
+                'height':'85%'
+            },
+        'children':[
+            {
+                'id':'rightinner',
+                'widget':'Container',
+                'browserview':{'width':'50%','height':'25%'}
+            }
+        ]
+    }
+]
+
+Layout.init(doc)
+Layout.update()
+    
+    </script>
+    
+</body>
+

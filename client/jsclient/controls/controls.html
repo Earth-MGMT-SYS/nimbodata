@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+        
+        <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base.css'>
+        <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css'>
+        <link rel='stylesheet' href='//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure.css'>
+        
+        <link rel="stylesheet" href="controls.css"></link>
+        <script src="http://d3js.org/d3.v3.js"></script>
+        <script type="text/javascript" src="controls.js"></script>
+        <style>
+            body, html {
+                margin: 0;
+                padding: 0;
+                width: 100%;
+                height: 100%;
+            }
+            #main {
+                width: 98%;
+                height: 98%;
+            }
+            #input_container {
+                border: 3px solid green;
+                padding: 1em;
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            }
+            
+            #dropdown_container {
+                border: 3px solid orange;
+                padding: 1em;
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            }
+            
+            #button_container {
+                border: 3px solid purple;
+                padding: 1em;
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            }
+            
+            #complex_container {
+                border: 3px solid blue;
+                padding: 1em;
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            }
+            
+            #multi_container {
+                border: 3px solid green;
+                padding: 1em;
+                width: 100%;
+                height: auto;
+                overflow: hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="main"></div>
+        <script type="text/javascript">
+            
+            d3.select("#main")
+                .append("div")
+                .attr("id","input_container")
+            
+            controls.input("input_container",{
+                'label':"uuookie",
+                "id":"uuookie"
+            })
+            controls.input("input_container",{
+                'label':'bamba',
+                "id":"bamba",
+                "default":"bumbaclot",
+            })
+            controls.input("input_container",{
+                'label':'ypslanti',
+                "id":"ypslanti",
+            })
+            controls.input("input_container",{
+                'label':'plantatia',
+                "id":"plantatia",
+            })
+            
+            d3.select("#main")
+                .append("div")
+                .attr("id","dropdown_container")
+                
+            controls.dropdown("dropdown_container",{
+                "label":"carstacio",
+                "id":"carstacio",
+                "options":[[0,"George"],[1,"Frank"]],
+                "on":{
+                    "change":function(){
+                        alert(this.value)
+                    }
+                }
+            })
+            
+            controls.dropdown("dropdown_container",{
+                "label":"loopins",
+                "id":"loopins",
+                "default":2,
+                "options":[
+                    [0,"Moldova"],
+                    [1,"Italy"],
+                    [2,'Boscoville'],
+                    [3,'Narcascio']
+                ],
+                "on":{
+                    "change":function(){
+                        alert(this.value)
+                    }
+                }
+            })
+            
+            controls.multi("dropdown_container",{
+                "label":"Chiggity Check",
+                "id":"check_outer"
+            })
+            
+            controls.checkboxes("check_outer",{
+                "id":"checkboxes",
+                "options":[
+                    [0,"Puerto Rico"],
+                    [1,"Guam"],
+                    [2,"Virgin Islands"],
+                    [3,"Marshall Islands"],
+                    [4,"Bikini Atoll"]
+                ]
+            })
+            
+            controls.button("check_outer",{
+                "label":"What?!?",
+                "id":"what",
+                "on":{
+                    "click":function() {
+                        alert(controls.checkboxes_get_selected("checkboxes"))
+                    }
+                }
+            })
+            
+            controls.button("check_outer",{
+                "label":"CLEAR!",
+                "id":"clearit",
+                "on":{
+                    "click":function(){
+                        controls.checkboxes_clear("checkboxes")
+                    }
+                }
+            })
+            
+            controls.checkboxes("dropdown_container",{
+                "label":"Try me",
+                "id":"nah",
+                "orientation":"vertical",
+                "options":[
+                    [0,"hot"],
+                    [1,"not"]
+                ]
+            })
+            
+            d3.select("#main")
+                .append("div")
+                .attr("id","button_container")
+            
+            controls.button("button_container",{
+                "label":"Action Franklensen",
+                "id":"ActionFranklensen",
+                "on":{
+                    "click":function(){
+                        d3.select("#Announcements")
+                            .text(this.id)
+                    }
+                }
+            })
+            
+            controls.feedback("button_container",{
+                "label":"Corn Cake",
+                "id":"Announcements"
+            })
+            
+            d3.select("#main")
+                .append("div")
+                .attr("id","complex_container")
+            
+            controls.input_button("complex_container",{
+                "label":"Why?: ",
+                "id":"good_questions",
+                "button_label":"prognosticate",
+                "default":"warfarino",
+                "icon":"play",
+                "on":{
+                    "click":function(){
+                        alert(controls.button_get_value(this))
+                    }
+                }
+            })
+            
+            controls.dropdown_button("complex_container",{
+                "label":"Wherefore art thou?",
+                "id":"petulantquestions",
+                "button_label":"quip",
+                "default":"Jersey",
+                "options":[["Concertina","Concertina"],
+                           ["Peru","Peru"],
+                           ["Jersey","Jersey"],
+                           ["Endor","Endor"]],
+                "on":{
+                    "click":function(){
+                        alert(controls.button_get_value(this))
+                    },
+                    "change":function(){
+                        alert(this.value)
+                    }
+                }
+            })
+            
+            d3.select("#main")
+                .append("div")
+                .attr("id","multi_container")
+                
+            var multi = controls.multi("multi_container",{
+                "label":"Multiplicitive capabilitize",
+                "id":"schizo"
+            })
+            
+            controls.input("schizo",{
+                'label':'cringlepimpkin',
+                "id":"pimpkin"
+            })
+            
+            controls.button("schizo",{
+                "label":"stumpy",
+                "id":"stumpy",
+                "button_label":"Stumpin Hard",
+                "on":{
+                    "click":function () {}
+                }
+            })
+            
+            
+        </script>
+    </body>
+</html>

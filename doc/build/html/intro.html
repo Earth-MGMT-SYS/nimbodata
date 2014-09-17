@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Introduction &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="index.html" />
+    <link rel="next" title="Architecture" href="architecture.html" />
+    <link rel="prev" title="Welcome to Nimbodata’s documentation!" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="architecture.html" title="Architecture"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Nimbodata’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="introduction">
+<h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>The initial goals of Nimbodata are to provide relational capabilities in a terse
+and Pythonic syntax, allowing rich support for the analytical power of a relational
+database as if it were a native capability of Python.</p>
+<p>Since Nimbodata is still in the early phases of development, this section is
+basically as important as the rest.  Nimbodata aims to support a modern
+approach to the development, deployment and use of management information
+systems.  The tremendous power inherent in collecting, organizing, and analyzing
+information in a continuous improvement approach is hampered by our 20th
+century tools.  In the hubub over &#8220;big data&#8221;, people seem to have forgotten
+that for many organizations regular data is enouch of a challenge - and if
+our tools aren&#8217;t up to snuff for regular data, big data is still in many ways
+an illusion.</p>
+<p>Nimbodata will support a platform inspired by Python, Zope, ArcGIS and infuriated
+by SharePoint; aimed at producing a cross-platform, standards-based approach
+to developing and deploying applications that exist beyond a particular device
+or machine.</p>
+<p>We will:</p>
+<ul class="simple">
+<li>Enable truly distributed, data-driven applications with an approach influenced
+by github.  By encapsulating the data and code into a single, self-hosting
+data platform that provides revision control and cloning capabilities.</li>
+<li>Provide quick and easy access to the world&#8217;s free data, enabling users to
+develop and share applications to evaluate and act upon the mountains of data
+that are available.</li>
+<li>Enable developers to create domain-specific management systems that are
+easy to deploy, maintain and customize.</li>
+<li>Provide a cloud platform to store and share data and applications, which
+is masterless and decentralized.</li>
+</ul>
+<div class="section" id="functional-description">
+<h2>Functional Description<a class="headerlink" href="#functional-description" title="Permalink to this headline">¶</a></h2>
+<p>Nimbodata is a platform for the full life cycle of collection, management
+and analysis of structured data.  Nimbodata makes a relational data store
+available via a REST interface, which enables a rich, Pythonic client as
+well as a Python/JavaScript MVC framework for developing data-driven
+applications.</p>
+<p>Currently implemented in Nimbodata:</p>
+<ul class="simple">
+<li>Relational datastore powered by PostgreSQL 9.4 offering jsonb, PostGIS and
+range queries (and Python types to support them).</li>
+<li>Metadata manager which provides UUID-style naming for entities, which
+enables both distributed operation as well as renaming without side-
+effects.</li>
+<li>REST interface which provides 100% access to the capabilities of the
+datastore.</li>
+<li>Python client which includes queries driven by JSON or pythonic overloaded
+operators a-la SQLAlchemy but without chaining.</li>
+<li>Javascript MVC client including 10+ widgets, a layout manager and data
+model for navigating and viewing data. Apps are composed primarily of a css
+file and a JSON structure, however, the architecture allows for simple
+extensibility in Javascript.</li>
+<li>Update tool which can ingest web services, csv, geodatabases and shapefiles.</li>
+<li>Owner-based permissions model.</li>
+<li>Data input forms automatically generated from a database table, leveraging
+database constraints and a JSON schema for validation.</li>
+</ul>
+<p>Rudiments in place, More Dev Planned:</p>
+<ul class="simple">
+<li>Temporal database capability.  All non-schema changes are currently captured
+as append-only and presented via a current-view.  Query engine support for
+querying the state as of a particular date needs integration.  Waiting on
+integration with ZFS for cloning and schema-change checkpointing.</li>
+<li>Nimbodata analysis engine.  A set of tools and datatypes which enable the
+same capabilities across the datastore and analysis layer.  Mostly in place,
+just needs to be exposed properly.</li>
+</ul>
+<p>Longer term goals:</p>
+<ul class="simple">
+<li>Workflows and global event manager.</li>
+<li>Conflict manager for managing merges.</li>
+</ul>
+</div>
+<div class="section" id="vision">
+<h2>Vision<a class="headerlink" href="#vision" title="Permalink to this headline">¶</a></h2>
+<p>We reject the notion of domain-specific platforms, the challenges of the 21st
+century are not just operations or resource planning (for instance), but rather
+require cooperation amongst a variety of fields to acheive successful outcomes.</p>
+<p>The Python ecosystem provides the ability to effectively interact with nearly
+any form of digital information with an idiom that encourages easy-to-read
+code.  Platforms such as a GIS or CMS provide domain-specific implementations
+on top of basically the same core functionality - a relational data store.</p>
+<p>While there have been many platforms with similar core concepts since the days
+of the earliest mainframes, technology has developed to enable a few key
+features previously infeasible:</p>
+<ul class="simple">
+<li>Provide reasonable performance and a high-level interface.</li>
+<li>Take advantage of the maturation of web standards to the point where client
+platform independence is feasible using simple techniques.</li>
+<li>A distributed cloud architecture will allow users to take advantage of
+public data sources as well as private-cloud and private-local data in
+a seamless manner.</li>
+</ul>
+<p>Other aspects of the vision which aren&#8217;t really enabled by technology, but
+don&#8217;t seem to have been picked up by others:</p>
+<ul class="simple">
+<li>Enable cooperation amongst groups with different interests and policies for
+sharing data while providing a decentralized platform to manage the flow of
+data.</li>
+<li>Provide a rich data library which allows users full query access to as much
+data as possible in a consistent format (i.e. follow naming standards
+and establish extensive foreign key relationships).</li>
+<li>Python is great for programmers, but the spirit is wholly applicable to
+data analysis tools.  By providing a powerful platform for users to levarage
+Python, we hope to expand the power and reach of the Python ecosystem.</li>
+</ul>
+</div>
+<div class="section" id="what-s-unique">
+<h2>What&#8217;s Unique<a class="headerlink" href="#what-s-unique" title="Permalink to this headline">¶</a></h2>
+<p>While superficially similar concepts exist (such as SQLAlchemy and
+Flask-Restless), Nimbodata strives to develop a full-stack platform inspired by
+Zope and infuriated by SharePoint and ArcGIS.</p>
+<p>Currently the key unique concepts implemented in Nimbodata are:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Append-only modification mode for data and metadata (not including
+structure currently)</li>
+<li>Metadata-mediated queries which reduce the risk of allowing ad hoc
+queries to untrusted users</li>
+<li>Full functionality via REST/JSON</li>
+<li>Tiling GeoJSON query functionality</li>
+<li>All relationships are by ID not name, allowing side-effect-free renames</li>
+</ul>
+</div></blockquote>
+<p>Ongoing development is aimed at the following unique capabilities:</p>
+<blockquote>
+<div><ul class="simple">
+<li>Micro-versioning (temporal database) for all non-structural changes
+(inserts/updates/deletes/renames/create_*)</li>
+<li>Macro-versioning to reproduce state for each database structurural
+change not encapsulated by microversioning</li>
+<li>Ability to control versioning behavior on a default and per-table basis</li>
+<li>Platform applications self-hosted from database - versioning covers apps</li>
+<li>Inherent streaming replication to support read-isolation for queries</li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="what-s-the-same">
+<h2>What&#8217;s The Same<a class="headerlink" href="#what-s-the-same" title="Permalink to this headline">¶</a></h2>
+<p>Nimbodata is inspired by the power of the relational database.  While Nimbodata
+is currently implemented on a SQL database and is closely based on the
+functionality of PostgreSQL, we do not strive to be SQL-compliant or to limit
+Nimbodata to the implementation decisions of SQL.  Most PostgreSQL types are
+reused with the same names.  Most PostGIS types have been simplified and
+condensed (i.e. LineString and MultiLineString are now just Line).</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#functional-description">Functional Description</a></li>
+<li><a class="reference internal" href="#vision">Vision</a></li>
+<li><a class="reference internal" href="#what-s-unique">What&#8217;s Unique</a></li>
+<li><a class="reference internal" href="#what-s-the-same">What&#8217;s The Same</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to Nimbodata&#8217;s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="architecture.html"
+                        title="next chapter">Architecture</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/intro.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="architecture.html" title="Architecture"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to Nimbodata’s documentation!"
+             >previous</a> |</li>
+        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

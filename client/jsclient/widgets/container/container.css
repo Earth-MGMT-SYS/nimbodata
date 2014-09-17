@@ -1,0 +1,99 @@
+
+div.Container {
+    overflow: auto;
+}
+
+div.Container.TabOuter {
+    overflow: hidden;
+    position: relative;
+}
+
+div.n_tabs {
+	height:3em;
+	overflow:hidden;
+    background: blue;
+}
+
+div.n_tabs > ul.n_tabs {
+	list-style:none;
+}
+
+div.n_tabs > ul.n_tabs > li.n_tabs {
+	margin:0 0.4em 0 0;
+	padding:.5em .725em;
+	display:block;
+	float:left;
+	color:#FFF;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	user-select: none;
+	-moz-border-radius-topleft: 0.3em;
+	-moz-border-radius-topright: 0.3em;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	border-top-left-radius:0.3em;
+	border-top-right-radius: 0.3em;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px; 
+	background: orange;
+}
+
+div.n_tabs > ul.n_tabs > li.n_tabs:hover{
+	background: #FFFFFF;
+	cursor:pointer;
+	color: #333;
+}
+
+div.n_tabs > ul.n_tabs > li.n_tabs_Active {
+	background: #FFFFFF;
+	cursor:pointer;
+	color: #333;
+}
+
+div.n_accordion_tab {
+    height: 1em;
+    text-align: center;
+    padding: 1em;
+    width: 100%;
+    color: green;
+    font-weight: bold;
+    background: orange;
+    cursor: pointer;
+}
+
+div.n_accordion_tab:hover {
+    background: #516381;
+}
+
+div.n_accordion_inactive {
+    width: 100%;
+    position: absolute;
+}
+
+div.n_accordion_active {
+    width: 100%;
+    position: absolute;
+}
+
+div.n_accordion_content {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+}
+
+
+div.n_bottom {
+    bottom: 0;
+}
+
+div.n_top {
+    top: 0;
+}
+
+.shown {
+    display: block;
+}
+
+.hidden {
+    display: none;
+}

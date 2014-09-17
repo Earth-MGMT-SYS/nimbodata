@@ -1,0 +1,15 @@
+.ResultViewer {
+  z-index: 5;
+  position: relative;
+  height: 98%;
+  width: 100%;
+}
+
+table.pure-table {
+  min-width: 100%;
+  background: white;
+}
+
+.header_selected {
+  background: orange;
+}

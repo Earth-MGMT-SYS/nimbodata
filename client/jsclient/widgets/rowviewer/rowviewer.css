@@ -1,0 +1,20 @@
+.Overbox {
+  position: absolute;
+  background-color:rgba(0,0,0,0.5);
+  padding: 20px;
+  border-radius: 5px;
+  z-index: 5;
+  -webkit-padding-start: 20px;
+}
+
+.Overbox:hover {
+  background-color:rgba(0,0,0,0.7);
+}
+
+.row_entry {
+  color: lightgray;
+}
+
+.row_entry:hover {
+  color: darkgray;
+}

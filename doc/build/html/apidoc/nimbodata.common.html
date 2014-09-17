@@ -1,0 +1,366 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>nimbodata.common package &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../index.html" />
+    <link rel="up" title="nimbodata package" href="nimbodata.html" />
+    <link rel="next" title="nimbodata.common.datatypes package" href="nimbodata.common.datatypes.html" />
+    <link rel="prev" title="nimbodata package" href="nimbodata.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.common.datatypes.html" title="nimbodata.common.datatypes package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.html" title="nimbodata package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="nimbodata.html" accesskey="U">nimbodata package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="nimbodata-common-package">
+<h1>nimbodata.common package<a class="headerlink" href="#nimbodata-common-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="nimbodata.common.datatypes.html">nimbodata.common.datatypes package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.datatypes.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.datatypes.html#nimbodata-common-datatypes-fallback-json-module">nimbodata.common.datatypes.fallback_json module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.datatypes.html#nimbodata-common-datatypes-function-module">nimbodata.common.datatypes.function module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.datatypes.html#nimbodata-common-datatypes-geographic-module">nimbodata.common.datatypes.geographic module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.datatypes.html#nimbodata-common-datatypes-numeric-module">nimbodata.common.datatypes.numeric module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.datatypes.html#nimbodata-common-datatypes-prototype-module">nimbodata.common.datatypes.prototype module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.datatypes.html#nimbodata-common-datatypes-ranges-module">nimbodata.common.datatypes.ranges module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.datatypes.html#nimbodata-common-datatypes-text-module">nimbodata.common.datatypes.text module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.datatypes.html#nimbodata-common-datatypes-time-module">nimbodata.common.datatypes.time module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.datatypes.html#module-contents">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nimbodata.common.entities.html">nimbodata.common.entities package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.entities.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.entities.html#nimbodata-common-entities-column-module">nimbodata.common.entities.column module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.entities.html#module-nimbodata.common.entities.constraint">nimbodata.common.entities.constraint module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.entities.html#module-nimbodata.common.entities.database">nimbodata.common.entities.database module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.entities.html#nimbodata-common-entities-entities-module">nimbodata.common.entities.entities module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.entities.html#module-nimbodata.common.entities.prototype">nimbodata.common.entities.prototype module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.entities.html#nimbodata-common-entities-table-module">nimbodata.common.entities.table module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.entities.html#module-nimbodata.common.entities.view">nimbodata.common.entities.view module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.entities.html#module-nimbodata.common.entities">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="nimbodata.common.tilecalc.html">nimbodata.common.tilecalc package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="nimbodata.common.tilecalc.html#module-nimbodata.common.tilecalc">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="nimbodata-common-api-module">
+<h2>nimbodata.common.api module<a class="headerlink" href="#nimbodata-common-api-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-nimbodata.common.comparable">
+<span id="nimbodata-common-comparable-module"></span><h2>nimbodata.common.comparable module<a class="headerlink" href="#module-nimbodata.common.comparable" title="Permalink to this headline">¶</a></h2>
+<p>Module implements the comparable base class and WhereClause.</p>
+<dl class="class">
+<dt id="nimbodata.common.comparable.Comparable">
+<em class="property">class </em><tt class="descclassname">nimbodata.common.comparable.</tt><tt class="descname">Comparable</tt><a class="reference internal" href="../_modules/nimbodata/common/comparable.html#Comparable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.comparable.Comparable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Override comparison operators for relational use.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="nimbodata.common.comparable.WhereClause">
+<em class="property">class </em><tt class="descclassname">nimbodata.common.comparable.</tt><tt class="descname">WhereClause</tt><big>(</big><em>a</em>, <em>comp</em>, <em>b</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/common/comparable.html#WhereClause"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.comparable.WhereClause" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Override <cite>&amp;</cite> and <cite>|</cite> for relational use.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-nimbodata.common.errors">
+<span id="nimbodata-common-errors-module"></span><h2>nimbodata.common.errors module<a class="headerlink" href="#module-nimbodata.common.errors" title="Permalink to this headline">¶</a></h2>
+<p>Module implements Exceptions required by various aspects in the core.</p>
+<dl class="exception">
+<dt id="nimbodata.common.errors.BadData">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">BadData</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#BadData"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.BadData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Bad data.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.DataError">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">DataError</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#DataError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.DataError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Data and action are incompatable.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.DatabaseDoesNotExist">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">DatabaseDoesNotExist</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#DatabaseDoesNotExist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.DatabaseDoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Database does not exist.</p>
+<dl class="attribute">
+<dt id="nimbodata.common.errors.DatabaseDoesNotExist.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 004: Sorry, the database does not exist'</em><a class="headerlink" href="#nimbodata.common.errors.DatabaseDoesNotExist.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.IntegrityError">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">IntegrityError</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#IntegrityError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.IntegrityError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Operation would violate constraint</p>
+<dl class="attribute">
+<dt id="nimbodata.common.errors.IntegrityError.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 003: Integrity Error'</em><a class="headerlink" href="#nimbodata.common.errors.IntegrityError.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.InvalidFunction">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">InvalidFunction</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#InvalidFunction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.InvalidFunction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Attempted to call SQL function not identified in allowed_funcs</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.InvalidMethod">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">InvalidMethod</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#InvalidMethod"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.InvalidMethod" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Raised when an illegal method name is called</p>
+<dl class="attribute">
+<dt id="nimbodata.common.errors.InvalidMethod.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 000: Sorry, you requested an illegal method name.'</em><a class="headerlink" href="#nimbodata.common.errors.InvalidMethod.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.NoFromTable">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">NoFromTable</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#NoFromTable"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.NoFromTable" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Query did not specify a table to query from.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.NoResults">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">NoResults</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#NoResults"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.NoResults" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>There&#8217;s no results for this query</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.NotAuthorized">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">NotAuthorized</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#NotAuthorized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.NotAuthorized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<dl class="attribute">
+<dt id="nimbodata.common.errors.NotAuthorized.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 042: Not Authorized'</em><a class="headerlink" href="#nimbodata.common.errors.NotAuthorized.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.PermissionDenied">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">PermissionDenied</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#PermissionDenied"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.PermissionDenied" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>User does not have permission.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.PrimaryKeyError">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">PrimaryKeyError</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#PrimaryKeyError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.PrimaryKeyError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>The insert violates a primary key condition.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.RelationDoesNotExist">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">RelationDoesNotExist</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#RelationDoesNotExist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.RelationDoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Relation does not exist</p>
+<dl class="attribute">
+<dt id="nimbodata.common.errors.RelationDoesNotExist.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 002: Sorry, the relation does not exist'</em><a class="headerlink" href="#nimbodata.common.errors.RelationDoesNotExist.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.RelationExists">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">RelationExists</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#RelationExists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.RelationExists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Database already exists in the registry.</p>
+<dl class="attribute">
+<dt id="nimbodata.common.errors.RelationExists.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 001: Sorry, the relation already exists'</em><a class="headerlink" href="#nimbodata.common.errors.RelationExists.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.TableDoesNotExist">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">TableDoesNotExist</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#TableDoesNotExist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.TableDoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Table does not exist in the database.</p>
+<dl class="attribute">
+<dt id="nimbodata.common.errors.TableDoesNotExist.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 003: Sorry, the table does not exist'</em><a class="headerlink" href="#nimbodata.common.errors.TableDoesNotExist.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.TableExists">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">TableExists</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#TableExists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.TableExists" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Table/user combo already exists in the database.</p>
+<dl class="attribute">
+<dt id="nimbodata.common.errors.TableExists.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 002: Sorry, the table already exists'</em><a class="headerlink" href="#nimbodata.common.errors.TableExists.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.ValueRequired">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">ValueRequired</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#ValueRequired"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.ValueRequired" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Null value where not null required.</p>
+</dd></dl>
+
+<dl class="exception">
+<dt id="nimbodata.common.errors.ViewDoesNotExist">
+<em class="property">exception </em><tt class="descclassname">nimbodata.common.errors.</tt><tt class="descname">ViewDoesNotExist</tt><a class="reference internal" href="../_modules/nimbodata/common/errors.html#ViewDoesNotExist"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.common.errors.ViewDoesNotExist" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></tt></p>
+<p>Table does not exist in the database.</p>
+<dl class="attribute">
+<dt id="nimbodata.common.errors.ViewDoesNotExist.strerror">
+<tt class="descname">strerror</tt><em class="property"> = '!ERROR! 003: Sorry, the table does not exist'</em><a class="headerlink" href="#nimbodata.common.errors.ViewDoesNotExist.strerror" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="nimbodata-common-results-module">
+<h2>nimbodata.common.results module<a class="headerlink" href="#nimbodata-common-results-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-nimbodata.common">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-nimbodata.common" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">nimbodata.common package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#nimbodata-common-api-module">nimbodata.common.api module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.common.comparable">nimbodata.common.comparable module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.common.errors">nimbodata.common.errors module</a></li>
+<li><a class="reference internal" href="#nimbodata-common-results-module">nimbodata.common.results module</a></li>
+<li><a class="reference internal" href="#module-nimbodata.common">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="nimbodata.html"
+                        title="previous chapter">nimbodata package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="nimbodata.common.datatypes.html"
+                        title="next chapter">nimbodata.common.datatypes package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/apidoc/nimbodata.common.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.common.datatypes.html" title="nimbodata.common.datatypes package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="nimbodata.html" title="nimbodata package"
+             >previous</a> |</li>
+        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="nimbodata.html" >nimbodata package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

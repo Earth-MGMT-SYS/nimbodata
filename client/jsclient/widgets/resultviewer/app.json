@@ -1,0 +1,7 @@
+[
+    {
+        "id":"results",
+        "widget":"ResultViewer",
+        "datasource":"./examples/example.json"
+    }
+]

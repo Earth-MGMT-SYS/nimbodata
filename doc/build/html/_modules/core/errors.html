@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>core.errors &mdash; Nimbodata alpha documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     'alpha',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="Nimbodata alpha documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for core.errors</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot; Module implements Exceptions required by various aspects in the core. &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="InvalidMethod"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.InvalidMethod">[docs]</a><span class="k">class</span> <span class="nc">InvalidMethod</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Raised when an illegal method name is called&quot;&quot;&quot;</span>
+    <span class="n">strerror</span> <span class="o">=</span> <span class="s">&#39;!ERROR! 000: Sorry, you requested an illegal method name.&#39;</span>
+</div>
+<div class="viewcode-block" id="RelationExists"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.RelationExists">[docs]</a><span class="k">class</span> <span class="nc">RelationExists</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Database already exists in the registry.&quot;&quot;&quot;</span>
+    <span class="n">strerror</span> <span class="o">=</span> <span class="s">&#39;!ERROR! 001: Sorry, the relation already exists&#39;</span>
+    </div>
+<div class="viewcode-block" id="RelationDoesNotExist"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.RelationDoesNotExist">[docs]</a><span class="k">class</span> <span class="nc">RelationDoesNotExist</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Relation does not exist&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="TableExists"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.TableExists">[docs]</a><span class="k">class</span> <span class="nc">TableExists</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Table/user combo already exists in the database.&quot;&quot;&quot;</span>
+    <span class="n">strerror</span> <span class="o">=</span> <span class="s">&#39;!ERROR! 002: Sorry, the table already exists&#39;</span>
+    </div>
+<div class="viewcode-block" id="TableDoesNotExist"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.TableDoesNotExist">[docs]</a><span class="k">class</span> <span class="nc">TableDoesNotExist</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Table does not exist in the database.&quot;&quot;&quot;</span>
+    <span class="n">strerror</span> <span class="o">=</span> <span class="s">&#39;!ERROR! 003: Sorry, the table does not exist&#39;</span>
+</div>
+<div class="viewcode-block" id="ViewDoesNotExist"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.ViewDoesNotExist">[docs]</a><span class="k">class</span> <span class="nc">ViewDoesNotExist</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Table does not exist in the database.&quot;&quot;&quot;</span>
+    <span class="n">strerror</span> <span class="o">=</span> <span class="s">&#39;!ERROR! 003: Sorry, the table does not exist&#39;</span>
+    </div>
+<div class="viewcode-block" id="DatabaseDoesNotExist"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.DatabaseDoesNotExist">[docs]</a><span class="k">class</span> <span class="nc">DatabaseDoesNotExist</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Database does not exist.&quot;&quot;&quot;</span>
+    <span class="n">strerror</span> <span class="o">=</span> <span class="s">&#39;!ERROR! 004: Sorry, the database does not exist&#39;</span>
+    </div>
+<div class="viewcode-block" id="PrimaryKeyError"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.PrimaryKeyError">[docs]</a><span class="k">class</span> <span class="nc">PrimaryKeyError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The insert violates a primary key condition.&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="ValueRequired"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.ValueRequired">[docs]</a><span class="k">class</span> <span class="nc">ValueRequired</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Null value where not null required.&quot;&quot;&quot;</span>
+    </div>
+<div class="viewcode-block" id="NoFromTable"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.NoFromTable">[docs]</a><span class="k">class</span> <span class="nc">NoFromTable</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Query did not specify a table to query from.&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="BadData"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.BadData">[docs]</a><span class="k">class</span> <span class="nc">BadData</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Bad data.&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="PermissionDenied"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.PermissionDenied">[docs]</a><span class="k">class</span> <span class="nc">PermissionDenied</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;User does not have permission.&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="NoResults"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.NoResults">[docs]</a><span class="k">class</span> <span class="nc">NoResults</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;There&#39;s no results for this query&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="IntegrityError"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.IntegrityError">[docs]</a><span class="k">class</span> <span class="nc">IntegrityError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Operation would violate constraint&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="InvalidFunction"><a class="viewcode-back" href="../../apidoc/core.errors.html#core.errors.InvalidFunction">[docs]</a><span class="k">class</span> <span class="nc">InvalidFunction</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Attempted to call SQL function not identified in allowed_funcs&quot;&quot;&quot;</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Bradley Smith/MGMT-SYS.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
