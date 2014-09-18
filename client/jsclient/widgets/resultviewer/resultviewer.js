@@ -49,6 +49,10 @@ return {
         return false
     },
     
+    refresh: function () {
+        Widget.prototype.update.call(self)
+    },
+    
     update: function(e,dataset) {
                 
         if (dataset) {}
@@ -97,8 +101,7 @@ return {
                 .enter().append("td")
                     .text(function (d) { return d })
         
-        Widget.prototype.update.call(this)
-        Layout.update()
+        Layout.refresh()
     },
     
     insert_single: function () {

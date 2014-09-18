@@ -62,16 +62,17 @@ return {
             .style("height",h)
     },
         
-    update: function (model) {
+    refresh: function (model) {
         
         if (arguments.length == 0) {
             this.model.forEach(function(item) {
-                item.created.update()
-                if (item.children) this.update(item.children)
+                item.created.refresh()
+                if (item.children) this.refresh(item.children)
             }, this)
         } else {
             model.forEach(function(item) {
-                item.created.update()
+                item.created.refresh()
+                if (item.children) this.refresh(item.children)
             }, this)
         }
     },
@@ -99,7 +100,7 @@ return {
 
 window.onresize = function () {
     Layout.set_outer()
-    Layout.update()
+    Layout.refresh()
 }
 
 

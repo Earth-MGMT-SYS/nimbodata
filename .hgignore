@@ -13,3 +13,4 @@ node_modules/*
 log/*
 client/jsclient/lib/*
 core/test/nimbodata/*
+.git/*

@@ -34,6 +34,41 @@ return {
         
         return node
     },
+    
+    expando: function(parent_node,params) {
+        var selector = controls._selector(parent_node)
+        var outer = d3.select(selector)
+            .append('div')
+                .classed('n_expando_outer',true)
+        
+        var tab = outer.append('div')
+            .classed('n_expando_tab',true)
+            .text('Show ' + params.label)
+                
+        var node = outer.append('div')
+            .classed('n_expando_inner',true)
+            .classed('hidden',true)
+            .attr('id',params.id)
+            
+        tab.on('click',function () {
+            if (node.classed('shown')) {
+                node.classed('shown',false)
+                node.classed('hidden',true)
+                tab.text('Show ' + params.label)
+            } else if (node.classed('hidden')) {
+                node.classed('shown',true)
+                node.classed('hidden',false)
+                tab.text('Hide ' + params.label)
+            } else {
+                node.classed('shown',false)
+                node.classed('hidden',true)
+                tab.text('Show ' + params.label)
+            }
+            Layout.refresh()
+        })
+            
+        return node
+    },
 
     input: function (parent_node,params) {
         var selector = controls._selector(parent_node)
@@ -101,12 +136,43 @@ return {
         return node
     },
     
+    listbox: function (parent_node,params) {
+        var selector = controls._selector(parent_node)
+
+        var node = d3.select(selector)
+            .append('span')
+            .append('form')
+            .classed('pure-form',true)
+        
+        node.text(params.label)
+            .classed("argo",true)
+                .append("select")
+                .attr('size',10)
+                .on("change",params.on.change)
+                .data([params.options])
+                .attr("id",params.id)
+                .classed("argo",true)
+                .selectAll("option")
+                    .data(echo)
+                    .enter().append("option")
+                        .attr("value",val)
+                        .classed("argo",true)
+                        .text(text)
+        
+        node.select("select.argo").selectAll("option")
+            .attr("selected",function(d){
+                            return params.default == d[0] ? true : null
+                        })
+        
+        return node
+    },
+    
     checkboxes: function(parent_node,params) {
         var selector = controls._selector(parent_node)
         
         var node = d3.select(selector)
-            .append('span')
-            .classed('argo',true)
+            .append('div')
+            .classed('n_check',true)
             
         node
             .data([params.options])

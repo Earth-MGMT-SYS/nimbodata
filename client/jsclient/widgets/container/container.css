@@ -65,13 +65,46 @@ div.n_accordion_tab:hover {
     background: #516381;
 }
 
-div.n_accordion_inactive {
+div.n_h_accordion_tab {
+    height: 100%;
+    text-align: center;
+    padding: 1em;
+    width: 1em;
+    color: green;
+    font-weight: bold;
+    background: orange;
+    cursor: pointer;
+}
+
+span.n_h_accordion_tab_label {
+    transform: rotate(-90deg);
+    -moz-transform: rotate(-90deg);
+    -webkit-transform: rotate(-90deg);
+    display:block;
+    margin-top: 3em;
+}
+
+div.n_h_accordion_tab:hover {
+    background: #516381;
+}
+
+div.n_v_accordion_inactive {
     width: 100%;
     position: absolute;
 }
 
-div.n_accordion_active {
+div.n_v_accordion_active {
     width: 100%;
+    position: absolute;
+}
+
+div.n_h_accordion_inactive {
+    height: 100%;
+    position: absolute;
+}
+
+div.n_h_accordion_active {
+    height: 100%;
     position: absolute;
 }
 
@@ -88,6 +121,14 @@ div.n_bottom {
 
 div.n_top {
     top: 0;
+}
+
+div.n_left {
+    left: 0;
+}
+
+div.n_right {
+    right: 0;
 }
 
 .shown {

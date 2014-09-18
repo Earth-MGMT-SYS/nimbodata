@@ -26,6 +26,10 @@ Widget.prototype = {
         return this._spec.id + "_" + relid
     },
     
+    refresh: function() {
+        this.update()
+    },
+    
     update: function() {
         
         if (this._spec.browserview && this._spec.browserview.height) {
@@ -44,7 +48,7 @@ Widget.prototype = {
             )
             var tabheight = $(this._node.select('div.n_tabs').node()).outerHeight()
             var shownheight = height - tabheight
-            this._node.select('.Container')
+            this._node.selectAll('.Container')
                 .style('height',shownheight+'px')
                 .style('width',width+'px')
         }

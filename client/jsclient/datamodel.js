@@ -65,7 +65,7 @@ Model.prototype = function () {
                     } else if (fresult && fresult[0] == 'select') {
                         cloud.select(fresult[1],function (e,d) {
                             sink.update(e,d)
-                            Layout.update()
+                            Layout.refresh()
                         })
                     } else if (fresult) {
                         // Otherwise it has a special request
@@ -74,13 +74,13 @@ Model.prototype = function () {
                                 var ent = cloud[fresult[1].entitytype](fresult[1].objid)
                                 ent[fresult[0]](function (e,d) {
                                     sink.update(e,d)
-                                    Layout.update()
+                                    Layout.refresh()
                                 })
                             } else {
                                 var ent = new Entity(fresult[1])
                                 ent.info(function (e,d) {
                                     sink.update(e,d)
-                                    Layout.update()
+                                    Layout.refresh()
                                 })
                             }
                         }
@@ -93,7 +93,7 @@ Model.prototype = function () {
                         basicresponders.forEach(function(rsp) {
                             rsp.update(e,d)
                         })
-                        Layout.update()
+                        Layout.refresh()
                     })
                     return
                 }
@@ -111,7 +111,7 @@ Model.prototype = function () {
                         basicresponders.forEach(function(rsp) {
                             rsp.update(e,d)
                         })
-                        Layout.update()
+                        Layout.refresh()
                     })
                 }
             } else if (event == 'rename') {
@@ -175,7 +175,7 @@ Model.prototype = function () {
                         })
                     }
                 })
-                Layout.update()
+                Layout.refresh()
             })
         },
     }

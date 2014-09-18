@@ -119,6 +119,23 @@
                 }
             })
             
+            controls.listbox("dropdown_container",{
+                "label":"loopins",
+                "id":"loopins",
+                "default":2,
+                "options":[
+                    [0,"Moldova"],
+                    [1,"Italy"],
+                    [2,'Boscoville'],
+                    [3,'Narcascio']
+                ],
+                "on":{
+                    "change":function(){
+                        alert(this.value)
+                    }
+                }
+            })
+            
             controls.multi("dropdown_container",{
                 "label":"Chiggity Check",
                 "id":"check_outer"

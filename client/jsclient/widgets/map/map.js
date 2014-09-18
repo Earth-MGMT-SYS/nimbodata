@@ -101,9 +101,6 @@ return {
         
         _map = null
         
-        var height = $(self._node.node()).innerHeight()
-        var width = $(self._node.node()).innerWidth()
-        
         var cont = this._node.append('div')
             .attr('id',this.relid("container"))
             .attr('class','resizable_map')
@@ -126,20 +123,6 @@ return {
             
             max_button.on('click',function(d) { self.maximize() })
         }
-        
-        layer_control.append('button')
-            .text('Add Layer!')
-            .attr('data-owner',spec.id)
-            .on('click',function (d) {
-                self.add_geojson('./examples/us_outline_500k.json')
-            })
-                
-        layer_control.append('button')
-            .text('Clear!')
-            .attr('data-owner',spec.id)
-            .on('click',function (d) {
-                self.clear()
-            })
             
         _map = L.map(this.relid('container'), {
             center: [37.35, -105.23],
@@ -164,20 +147,11 @@ return {
     },
     
     refresh: function () {
-        _map.invalidateSize()
+        self.update()
     },
     
     reset: function () {
-        var box = d3.select('#'+spec.id)
-        
-        box.style('position',null)
-        
-        box.classed({
-            'resizable_map':true,         
-            'fullscreen_map':false
-        })
-        
-        this.size(spec.width,spec.height)
+        map._invalidateSize()
     },
     
     event_filter: function(source,event,details) {
@@ -198,21 +172,11 @@ return {
     },
     
     update: function(e,d) {
-                
-        var height = $(self._node.node()).innerHeight()
-        var width = $(self._node.node()).innerWidth()
-        
-        if (maximized === false) {
-            Widget.prototype.update.call(this)
-            d3.select(self.relid('container'))
-                .style('width',width + 'px')
-                .style('height',height + 'px')
-        }
         
         var mapsize = self._node.select('span.n_map_size')
         var offset = $(mapsize.node()).outerWidth() + 10
         
-        width = $(self._node.node()).innerWidth()
+        var width = $(self._node.node()).innerWidth()
         mapsize
             .style('left',(width-offset)+'px')
             

@@ -321,7 +321,15 @@ class TestSelect(unittest.TestCase):
     def test_join(self):
         """Can we do a simple inner join?"""
         self._joinTable()
-        join = (self.table2,"jointable.pk = testTable.pk")
+        
+        join = (self.table2,"testTable.pk = jointable.pk")
+        results = cloud.select(self.table,join=join)
+        self.assertEqual(len(results),3)
+        
+        pk, a, b = self.table.columns()
+        j_pk, z = self.table2.columns()
+                
+        join = (self.table2,(pk,'=',j_pk))
         results = cloud.select(self.table,join=join)
         self.assertEqual(len(results),3)
     
@@ -360,7 +368,7 @@ class TestSelect(unittest.TestCase):
         pk, a, b = self.table.columns()
         self._joinTable()
         where = a == 7
-        join = (self.table2,"jointable.pk = testTable.pk")
+        join = (self.table2,"testTable.pk = jointable.pk")
         results = cloud.select(self.table,join=join,where=where)
         self.assertEqual(len(results),1)
         self.assertEqual(results[0][0],'ann')
@@ -371,7 +379,7 @@ class TestSelect(unittest.TestCase):
         self._joinTable()
         pk, a, b = self.table.columns()
         where = a < 9
-        join = (self.table2,"jointable.pk = testTable.pk")
+        join = (self.table2,"testTable.pk = jointable.pk")
         results = cloud.select(self.table,join=join,where=where,order_by='testTable.pk')
         self.assertEqual(len(results),2)
         self.assertEqual(results[1]['jointable.z'],'sting')
@@ -382,7 +390,7 @@ class TestSelect(unittest.TestCase):
         self._joinTable()
         pk, a, b = self.table.columns()
         where = a < 9
-        join = (self.table2,"jointable.pk = testTable.pk")
+        join = (self.table2,"testTable.pk = jointable.pk")
         view = cloud.select(self.table,join=join,where=where,limit=1)
         self.assertEqual(len(view),1)
         self.assertEqual(len(view[0]),5)
@@ -393,7 +401,7 @@ class TestSelect(unittest.TestCase):
         self._joinTable()
         pk, a, b = self.table.columns()
         where = a < 9
-        join = (self.table2,"jointable.pk = testTable.pk")
+        join = (self.table2,"testTable.pk = jointable.pk")
         
         view = cloud.select(
             self.table,

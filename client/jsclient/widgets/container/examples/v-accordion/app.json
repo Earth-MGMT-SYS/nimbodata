@@ -1,0 +1,41 @@
+[
+    {
+        "id":"left",
+        "widget":"Container",
+        "browserview":{
+                "width":"15%",
+                "height":"100%"
+            },
+        "children":[
+            {
+                "id":"cont_type_selector",
+                "widget":"Container"
+            },
+            {
+                "id":"menu",
+                "widget":"MenuTree"
+                
+            }
+        ]
+    },
+    {
+        "id":"right",
+        "widget":"Container",
+        "browserview":{
+                "width":"85%",
+                "height":"100%",
+                "containermode":"v-accordion"
+            },
+        "children":[
+            {
+                "id":"shoutout",
+                "widget":"Container"
+            },
+            {
+                "id":"results",
+                "widget":"ResultViewer",
+                "datasource":"../../../resultviewer/examples/example.json"
+            }
+        ]
+    }
+]

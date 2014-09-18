@@ -48,6 +48,7 @@ class View(base_view.View,Entity):
             'alias':'Row ID'
         })
         
+        
         for col in out_colinfo:
             regVals = {
                 'viewid':viewid,
@@ -58,6 +59,8 @@ class View(base_view.View,Entity):
             self._registry_insert(regVals,self.view_cols)
         
         view_stmt = syntax.create_view(parent_objid,viewid,sel_stmt)
+        
+        print view_stmt
         
         controllers['ddl'].execute(view_stmt, sel_params)
         controllers['ddl'].conn.commit()

@@ -24,12 +24,12 @@
             },
         "children":[
             {
-                "id":"querybox",
-                "widget":"Select"
-            },
-            {
                 "id":"entitymenu",
                 "widget":"EntityMenu"
+            },
+            {
+                "id":"querybox",
+                "widget":"Select"
             },
             {
                 "id":"dataarea",

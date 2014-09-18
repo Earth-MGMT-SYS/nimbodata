@@ -53,7 +53,7 @@ span.argo, div.argo {
 }
 
 #querybox {
-    background: #A9D1FF;
+    background: #CEE6FF;
     margin: 0;
     overflow: auto;
     border: none;
@@ -61,7 +61,7 @@ span.argo, div.argo {
 }
 
 div.n_tabs {
-    background: #425F81;
+    background: lightgray;
 }
 
 div.n_tabs > ul.n_tabs > li.n_tabs {
@@ -84,3 +84,15 @@ div.n_tabs > ul.n_tabs > li.n_tabs:hover {
 .n_menu_label {
     margin: 0.1em;
 }
+
+.n_expando_tab {
+    background: #656565;
+    color: #C2BDBD;
+}
+
+.n_expando_tab:hover {
+    background: #C2BDBD;
+    color: #656565;
+    cursor: pointer;
+}
+

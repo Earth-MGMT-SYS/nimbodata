@@ -44,8 +44,15 @@ class Select(engine.Engine):
         colinfo_by_colname = dict((x['name'],x) for x in colinfo)
         
         decoder = dict((x['name'],x['objid']) for x in colinfo)
-        geocols = [x['name'] for x in viewinfo.geo_columns()]
+        decoder.update(
+            dict((viewname+"."+x['name'],x['objid']) for x in colinfo)
+        )
+        decoder.update(
+            dict((x['objid'],x['objid']) for x in colinfo)
+        )
         
+        geocols = [x['name'] for x in viewinfo.geo_columns()]
+                
         join_stmt = ""
         
         if join is not None:
@@ -55,18 +62,16 @@ class Select(engine.Engine):
                 join[0] = api.get_byid(objid=join[0])
                 joininfo = join[0].info
             j_colinfo = join[0].columns()
-            
             j_viewname = joininfo['name']
             
-            decoder.update(
-                dict((x['name'],x['objid']) for x in j_colinfo)
+            j_decoder = dict((x['name'],x['objid']) for x in j_colinfo)
+            j_decoder.update(
+                dict((x['objid'],x['objid']) for x in j_colinfo)
             )
-            decoder.update(
-                dict((viewname+"."+x['name'],x['objid']) for x in colinfo)
-            )
-            decoder.update(
+            j_decoder.update(
                 dict((j_viewname+"."+x['name'],x['objid']) for x in j_colinfo)
             )
+            
             if alias:
                 join_stmt += """JOIN  "%(joinview)s" AS "%(joinshort)s"\nON """
             else:
@@ -83,12 +88,11 @@ class Select(engine.Engine):
             else:
                 whereCol, whereCmp, whereCond = join[1]
             whereCol = '"%s"' % decoder[whereCol]
-            whereCond = '"%s"' % decoder[whereCond]
+            whereCond = '"%s"' % j_decoder[whereCond]
             
             if whereCmp not in comparable.operators:
                 raise ValueError("Invalid comparison operator")
             
-            # TODO evaluate the where condition better
             join_stmt += ' '.join((whereCol,whereCmp,whereCond))
         
         
@@ -116,35 +120,43 @@ class Select(engine.Engine):
                 try:
                     out_colinfo.append(colinfo_by_colname[col].row_dict)
                 except KeyError:
-                    out_colinfo.append(colinfo_by_colname[col[1]].row_dict)
+                    out_colinfo.append(entities.Column(col.replace('"','')).row_dict)
                 except TypeError:
                     col = tuple(col)
                     out_colinfo.append(colinfo_by_colname[col[1]].row_dict)
-        
+                
         # Now, we dance.  With the columns... to build the target for select
         col_sub = []
         
         for i,colspec in enumerate(cols):
+            if colspec == '_adm-rowid':
+                colid = '_adm-rowid'
+                colname = '_adm-rowid'
+                funcname = None
+                continue
+            
+            # This is truly silly
             try:
                 try:
                     colid = decoder[colspec]
                 except TypeError:
                     colspec = tuple(colspec)
                     colid = decoder[colspec]
+                except KeyError:
+                    try:
+                        colid = j_decoder[colspec]
+                    except TypeError:
+                        colspec = tuple(colspec)
+                        colid = j_decoder[colspec]
                 colname = colspec
                 funcname = None
             except KeyError:
-                if colspec == '_adm-rowid':
-                    colid = '_adm-rowid'
-                    colname = '_adm-rowid'
-                    funcname = None
-                else:
-                    if colspec[0] not in self.allowed_funcs:
-                        print colspec[0]
-                        raise errors.InvalidFunction
-                    colid = decoder[colspec[1]]
-                    colname = colspec[1]
-                    funcname = colspec[0]
+                if colspec[0] not in self.allowed_funcs:
+                    print colspec[0]
+                    raise errors.InvalidFunction
+                colid = decoder[colspec[1]]
+                colname = colspec[1]
+                funcname = colspec[0]
             
             if colname in geocols:
                 colStr = datatypes.Geographic().sql_target(colid,colname,alias,viewcreate)
@@ -211,8 +223,7 @@ class Select(engine.Engine):
                 
                 if whereCmp not in comparable.operators:
                     raise ValueError("Invalid comparison operator")
-                                
-                # TODO evaluate the where condition better
+                
                 return ' '.join((whereCol,whereCmp,whereCond))
             
             

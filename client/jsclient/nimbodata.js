@@ -132,6 +132,10 @@ Database.prototype.create_view = function (name, select, callback) {
     )
 }
 
+Database.prototype.tables = function (callback) {
+    n_get(['databases',this.objid,'tables'],callback)
+}
+
 Database.prototype.Table = function (name) {
     var tbl = new Table(name)
     tbl.parent = this.objid
