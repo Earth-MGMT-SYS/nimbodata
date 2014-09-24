@@ -9,9 +9,21 @@ return {
     model: null,
             
     init: function (model) {
+        this.loadmodel(model)
+    },
+    
+    loadmodel: function(model) {
         this.model = model
         
+        if (model[0].title) {
+            d3.select('title').remove()
+            d3.select('head').append('title').text(model[0].title)
+        }
+        
         var body = d3.select('body')
+        
+        body.selectAll('div').remove()
+        
         var main = body.append('div')
             .attr('id','main')
             
@@ -23,7 +35,7 @@ return {
             node.created = this._add_node(main,node);
         }, this)
     },
-        
+    
     dimensions: function (node) {
         if (node) {
             if (node.node) {

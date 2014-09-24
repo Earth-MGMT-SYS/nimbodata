@@ -144,9 +144,10 @@ class Entity(base_ent.Entity):
         return retVal
 
         
-    def modify(self,newtype):
-        payload = dump({'newtype':newtype})
+    def modify(self,params):
+        payload = dump({'params':params})
         try:
+            self._info = None
             return json.loads(sesh.put(self._get_req_url(self.objid)+"modify/",payload).text)
         except ValueError:
             raise errors.DataError
@@ -168,11 +169,12 @@ class Database(Entity):
 
 class View(Entity):
     
-    def create(self,parent,name,select):
+    def create(self,parent,name,select,temporary=False):
         return Entity.create(self,{
             'parent_objid':parent.objid,
             'name':name,
-            "select":select
+            "select":select,
+            'temporary':temporary
         })
         
     def _get_select_url(self):
@@ -289,6 +291,10 @@ class Table(View):
     def add_columns(self,cols):
         payload = dump({'cols':cols})
         return json.loads(sesh.post(self._get_req_url(self.objid)+"add_columns/",data = payload).text)
+    
+    def add_index(self,col,unique=False):
+        payload = dump({'col':col,'unique':unique})
+        return json.loads(sesh.post(self._get_req_url(self.objid)+"add_index/",data = payload).text)
 
 
 class Column(Entity, comparable.Comparable):
@@ -306,7 +312,7 @@ class Column(Entity, comparable.Comparable):
         def outer(other):
             return func(self,other)
         return outer
-        
+                
 
 class Constraint(Entity):
     

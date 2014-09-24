@@ -13,3 +13,7 @@ table.pure-table {
 .header_selected {
   background: orange;
 }
+
+th {
+    vertical-align: middle;
+}

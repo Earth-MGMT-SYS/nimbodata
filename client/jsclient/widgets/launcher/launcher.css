@@ -1,0 +1,24 @@
+h1.n_launch_item {
+    cursor: pointer;
+}
+
+h1.n_launch_item:hover {
+    color: lightgray;
+}
+
+div.n_launcher_box {
+    width: 15em;
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: auto;
+    float: none;
+    text-align: center;
+    position: relative;
+    top: 30%;
+    color: white;
+    background-color:rgba(0,0,0,0.5);
+    padding: 2em;
+    border-radius: 0.5em;
+    z-index: 5;
+}

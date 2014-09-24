@@ -80,6 +80,17 @@ Entity.prototype = {
     tree: function(callback) {
         n_get([this.entity_type,this.objid],callback)
     },
+    
+    modify: function (params, callback) {
+        if (this._info) this._objid = this._info.objid
+        this._info = false
+        n_post(
+            [this.entity_type,this.objid,'modify'],
+            {'params':params},
+            callback
+        )
+    },
+    
     rename: function (newname, callback) {
         if (this._info) this._objid = this._info.objid
         this._info = false
@@ -119,13 +130,17 @@ Database.prototype.create_table = function (name, cols, callback) {
 }
 
 Database.prototype.create_view = function (name, select, callback) {
+    params = {
+        'name':name,
+        'select':select,
+        'parent_objid':this.objid,
+    }
+    if (name == 'temp') {
+        params.temporary = true
+    }
     n_post(
         ['views'],
-        {
-            'name':name,
-            'select':select,
-            'parent_objid':this.objid
-        },
+        params,
         function (e,d) {
             callback(e, new View(d))
         }
@@ -219,14 +234,6 @@ Column = function (objinfo) {
 
 Column.prototype = Object.create(Entity.prototype)
 Column.prototype.entity_type = 'Column'
-
-Column.prototype.modify = function (newtype, callback) {
-    n_post(
-        [this.entity_type,this.objid,'modify'],
-        {'newtype':newtype},
-        callback
-    )
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 ////// XHR Wrappers ///////////////////////////////////////////////////////////

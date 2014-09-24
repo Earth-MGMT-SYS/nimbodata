@@ -82,10 +82,11 @@ class Entity(base_ent.Entity):
         if self.objid is None:
             where = [('owner','=',self.session['user'])]
         else:
-            where = [('parent_objid','=',self)]
+            where = [('parent_objid','=',self.objid)]
         where += [
             ('entitytype', '!=', 'Constraint'),
             ('entitytype', '!=', 'Column'),
+            ('name', '!=', 'temp')
         ]
         cols = self.attr_cols
         coltype = lambda x: x if x == 'dbid' else 'text'
@@ -115,6 +116,9 @@ class Entity(base_ent.Entity):
         for i in infos:
             retVal.append(dict(i))
         
+        if self.objid is not None:
+            retVal = [self.info] + retVal
+                
         return retVal
     
     def listing(self,child_type=None):
@@ -160,7 +164,7 @@ class Entity(base_ent.Entity):
             
         return retVal
     
-    def create(self,vals):
+    def create(self,vals,temporary=False):
         """ Register an entity in the metadata registry.
         
         Default create method for an entity - only used in conjunction with
@@ -171,7 +175,9 @@ class Entity(base_ent.Entity):
         """
         self.parent = vals['parent_objid']
         name = self._by_name(vals['name'])
-        if name is not None:
+        if name is not None and temporary:
+            pass
+        elif name is not None:
             raise errors.RelationExists
         vals['entitytype'] = type(self).__name__
         if isinstance(vals['parent_objid'],Entity):
@@ -216,6 +222,18 @@ class Entity(base_ent.Entity):
                 print e.pgerror,'\n'
                 raise e
         controllers['ddl'].conn.commit()
+    
+    def modify(self,params):
+        """Update the metadata params for the entity."""
+        if any(x in params for x in
+                ('objid','parent_objid','cols','methods','entitytype')):
+            raise errors.BadData
+        info = self.info
+        if self.session['user'] != info['owner']:
+            raise errors.NotAuthorized
+        info.update(params)
+        self._registry_insert(info)
+        return self.info
     
     def rename(self,newname):
         """Rename the entity.

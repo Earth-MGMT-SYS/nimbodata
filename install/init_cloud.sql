@@ -31,6 +31,36 @@ AS $$
     return 'row-'+str(uuid()).replace('-','')
 $$ LANGUAGE plpython2u;
 
+CREATE FUNCTION "to_Integer" (val text)
+    RETURNS integer
+AS $$
+    if len(str(val)) == 0:
+        return None
+    else:
+        try:
+            return int(val)
+        except:
+            return None
+$$ LANGUAGE plpython2u;
+
+CREATE FUNCTION "to_Text" (val text)
+    RETURNS text
+AS $$
+    return val
+$$ LANGUAGE plpython2u;
+
+CREATE FUNCTION "to_Float" (val text)
+    RETURNS float
+AS $$
+    if len(str(val)) == 0:
+        return None
+    else:
+        try:
+            return float(val)
+        except:
+            return None
+$$ LANGUAGE plpython2u;
+
 CREATE TABLE "_adm-entityregistry" (
     name text,
     owner text,
@@ -42,8 +72,15 @@ CREATE TABLE "_adm-entityregistry" (
     weight integer,
     alias text,
     cols text[],
+    dobj jsonb,
     creationtime timestamp with time zone DEFAULT clock_timestamp()
 );
+
+CREATE INDEX ON "_adm-entityregistry"(name);
+CREATE INDEX ON "_adm-entityregistry"(objid);
+CREATE INDEX ON "_adm-entityregistry"(parent_objid);
+CREATE INDEX ON "_adm-entityregistry"(entitytype);
+CREATE INDEX ON "_adm-entityregistry"(creationtime);
 
 CREATE TABLE "_adm-userregistry" (
     usrname text PRIMARY KEY,

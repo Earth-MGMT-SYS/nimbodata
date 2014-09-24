@@ -20,7 +20,7 @@ def subid():
     )
 
 class Select(engine.Engine):
-    """A customized Postgres engine providing various query capabilities."""
+    """A Postgres engine providing various query capabilities."""
     allowed_funcs = ['max','min','avg']
 
     def __init__(self):
@@ -130,33 +130,32 @@ class Select(engine.Engine):
         
         for i,colspec in enumerate(cols):
             if colspec == '_adm-rowid':
-                colid = '_adm-rowid'
+                colid = '%s"."_adm-rowid' % viewinfo['objid']
                 colname = '_adm-rowid'
                 funcname = None
-                continue
-            
-            # This is truly silly
-            try:
+            else:            
+                # This is truly silly
                 try:
-                    colid = decoder[colspec]
-                except TypeError:
-                    colspec = tuple(colspec)
-                    colid = decoder[colspec]
-                except KeyError:
                     try:
-                        colid = j_decoder[colspec]
+                        colid = decoder[colspec]
                     except TypeError:
                         colspec = tuple(colspec)
-                        colid = j_decoder[colspec]
-                colname = colspec
-                funcname = None
-            except KeyError:
-                if colspec[0] not in self.allowed_funcs:
-                    print colspec[0]
-                    raise errors.InvalidFunction
-                colid = decoder[colspec[1]]
-                colname = colspec[1]
-                funcname = colspec[0]
+                        colid = decoder[colspec]
+                    except KeyError:
+                        try:
+                            colid = j_decoder[colspec]
+                        except TypeError:
+                            colspec = tuple(colspec)
+                            colid = j_decoder[colspec]
+                    colname = colspec
+                    funcname = None
+                except KeyError:
+                    if colspec[0] not in self.allowed_funcs:
+                        print colspec[0]
+                        raise errors.InvalidFunction
+                    colid = decoder[colspec[1]]
+                    colname = colspec[1]
+                    funcname = colspec[0]
             
             if colname in geocols:
                 colStr = datatypes.Geographic().sql_target(colid,colname,alias,viewcreate)
@@ -174,7 +173,7 @@ class Select(engine.Engine):
     def _from(self,viewinfo):
         """Process the FROM component of the select query."""
         viewid = viewinfo['objid']
-        stub = 'FROM %(qtn)s AS "%(viewname)s" ' % {
+        stub = 'FROM %(qtn)s  ' % {
             'qtn':self._qtn(viewinfo),
             'viewname':viewinfo['name']
         }
@@ -277,14 +276,13 @@ class Select(engine.Engine):
                 whereStmt = whereStmt % where_sub
                 stmt = "WHERE" + whereStmt
                 return stmt, params
-        
-        
+            
         return "", params
         
-    def _group_by(self,group_by):
+    def _group_by(self,group_by,decoder):
         """Process the GROUP BY component of a select query."""
         if group_by is not None:
-            stmt = '''GROUP BY "''' + '", "'.join(group_by) + '"'
+            stmt = '''GROUP BY "''' + '", "'.join(decoder[x] for x in group_by) + '"'
         else:
             stmt = ""
         return stmt, {}
@@ -316,7 +314,7 @@ class Select(engine.Engine):
         return stmt, {}
     
     def _prepare_select(self,viewid=None,cols=None,join=None,where=None,
-               group_by=None,order_by=None,limit=None,alias=True,viewcreate=False):
+            group_by=None,order_by=None,limit=None,alias=True,viewcreate=False):
         """Takes all of the select parameters and returns SQL and sub params."""
         # First we get the prerequisite info to build the query
         viewinfo = api.get_byid(viewid)
@@ -339,7 +337,7 @@ class Select(engine.Engine):
         stmt += where_stmt + "\n"
         params.update(where_params)
                 
-        group_stmt, group_params = self._group_by(group_by)
+        group_stmt, group_params = self._group_by(group_by,decoder)
         stmt += group_stmt + "\n"
         params.update(group_params)
         
@@ -354,7 +352,7 @@ class Select(engine.Engine):
         return stmt,params,out_colinfo
     
     def get_array(self,viewid=None,col=None,join=None,where=None,
-               group_by=None,order_by=None,limit=None):
+            group_by=None,order_by=None,limit=None):
         """Returns an array of a single column from a select query."""
         stmt,params,out_colinfo = self._prepare_select(
             viewid,

@@ -22,11 +22,7 @@ def get_api():
 
 
 class Cloud(object):
-    """Encapsulates all Nimbodata functionality as a local object.
-    
-    Designed to act with a local PostgreSQL connection.
-    
-    """
+    """Encapsulates all Nimbodata functionality as a local object."""
     def __init__(self,user):
         """Get a cloud instance for the user."""
         self.api = get_api()
@@ -38,13 +34,6 @@ class Cloud(object):
         return self.api.get_entity('Select')().select(*args,**kwargs)
     
     def __getattr__(self, attr):
-        """Dynamic lookup for method calls.
-        
-        If a method starts with '_', it is a private method and can't be
-        callsed.  If the method starts with 'create', we return an entity
-        class of the appropriate type.  Should all else fail, route to
-        Select engine.
-        
-        """
+        """Route to the API get_attr engine."""
         return self.api.get_attr(attr)
 

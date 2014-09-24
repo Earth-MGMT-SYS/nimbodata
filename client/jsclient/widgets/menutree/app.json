@@ -1,0 +1,8 @@
+[
+    {
+        "id":"menu",
+        "widget":"MenuTree",
+        "datasource":"./examples/tree.json",
+        "overbox":true
+    }
+]

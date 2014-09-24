@@ -191,6 +191,10 @@ class CloudAPI(object):
                     urls[('PUT',get_url(basename,'<objid>','delete'))] = gm
                     urls[('PUT',get_url(basename.lower()+'s','<objid>','delete'))] = gm
                     continue
+                elif methodname == 'modify':
+                    urls[('PUT',get_url(basename,'<objid>','modify'))] = gm
+                    urls[('PUT',get_url(basename.lower()+'s','<objid>','modify'))] = gm
+                    continue
                                     
                 urls[(method['verb'],get_url(basename,'<objid>',methodname))] = gm
                 urls[(method['verb'],get_url(basename.lower()+'s','<objid>',methodname))] = gm
@@ -250,5 +254,7 @@ class CloudAPI(object):
         def inner(*args,**kwargs):
             ent = self.get_entity(entityname)()
             args = [parent] + list(args)
+            if 'temporary' in kwargs and kwargs['temporary'] == False:
+                del kwargs['temporary']
             return ent.create(*args,**kwargs)
         return inner

@@ -1,0 +1,577 @@
+{
+  "info": {
+    "name": "Salaries",
+    "weight": null,
+    "datatype": null,
+    "parent_objid": "dbi-86c44dedf7c94eb38f1c38f855302ba7",
+    "entitytype": "Table",
+    "cols": [
+      {
+        "name": "yearid",
+        "weight": 0,
+        "datatype": "Integer",
+        "parent_objid": "tbl-3a32b20fd3394f80a1c7131339707ff8",
+        "entitytype": "Column",
+        "cols": null,
+        "alias": null,
+        "objid": "col-027c21a08df344e2b96745d253a54912",
+        "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7",
+        "methods": [
+          "rename",
+          "tree",
+          "drop",
+          "modify",
+          "listing",
+          "select"
+        ]
+      },
+      {
+        "name": "teamid",
+        "weight": 1,
+        "datatype": "Text",
+        "parent_objid": "tbl-3a32b20fd3394f80a1c7131339707ff8",
+        "entitytype": "Column",
+        "cols": null,
+        "alias": null,
+        "objid": "col-769d310006b64b4ebfb264d8fc4ade42",
+        "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7",
+        "methods": [
+          "rename",
+          "tree",
+          "drop",
+          "modify",
+          "listing",
+          "select"
+        ]
+      },
+      {
+        "name": "lgid",
+        "weight": 2,
+        "datatype": "Text",
+        "parent_objid": "tbl-3a32b20fd3394f80a1c7131339707ff8",
+        "entitytype": "Column",
+        "cols": null,
+        "alias": null,
+        "objid": "col-0439600434134eb6b51f45d7208f9565",
+        "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7",
+        "methods": [
+          "rename",
+          "tree",
+          "drop",
+          "modify",
+          "listing",
+          "select"
+        ]
+      },
+      {
+        "name": "playerid",
+        "weight": 3,
+        "datatype": "Text",
+        "parent_objid": "tbl-3a32b20fd3394f80a1c7131339707ff8",
+        "entitytype": "Column",
+        "cols": null,
+        "alias": null,
+        "objid": "col-3275e50a80774c0e904ae0914680e5ac",
+        "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7",
+        "methods": [
+          "rename",
+          "tree",
+          "drop",
+          "modify",
+          "listing",
+          "select"
+        ]
+      },
+      {
+        "name": "salary",
+        "weight": 4,
+        "datatype": "Integer",
+        "parent_objid": "tbl-3a32b20fd3394f80a1c7131339707ff8",
+        "entitytype": "Column",
+        "cols": null,
+        "alias": null,
+        "objid": "col-8f6e73ccfc424779bc407445a4aa3e7d",
+        "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7",
+        "methods": [
+          "rename",
+          "tree",
+          "drop",
+          "modify",
+          "listing",
+          "select"
+        ]
+      }
+    ],
+    "alias": null,
+    "objid": "tbl-3a32b20fd3394f80a1c7131339707ff8",
+    "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7",
+    "methods": [
+      "rename",
+      "insert",
+      "insert_file",
+      "geo_columns",
+      "features",
+      "column",
+      "modify",
+      "drop",
+      "tree",
+      "update",
+      "add_columns",
+      "get_q_cols",
+      "columns",
+      "listing",
+      "tile",
+      "tile_rowids",
+      "select"
+    ]
+  },
+  "header": [
+    {
+      "name": "yearid",
+      "weight": 0,
+      "datatype": "Integer",
+      "parent_objid": "tbl-3a32b20fd3394f80a1c7131339707ff8",
+      "entitytype": "Column",
+      "cols": null,
+      "alias": null,
+      "objid": "col-027c21a08df344e2b96745d253a54912",
+      "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7",
+      "methods": [
+        "rename",
+        "tree",
+        "drop",
+        "modify",
+        "listing",
+        "select"
+      ]
+    },
+    {
+      "name": "teamid",
+      "weight": 1,
+      "datatype": "Text",
+      "parent_objid": "tbl-3a32b20fd3394f80a1c7131339707ff8",
+      "entitytype": "Column",
+      "cols": null,
+      "alias": null,
+      "objid": "col-769d310006b64b4ebfb264d8fc4ade42",
+      "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7",
+      "methods": [
+        "rename",
+        "tree",
+        "drop",
+        "modify",
+        "listing",
+        "select"
+      ]
+    },
+    {
+      "name": "lgid",
+      "weight": 2,
+      "datatype": "Text",
+      "parent_objid": "tbl-3a32b20fd3394f80a1c7131339707ff8",
+      "entitytype": "Column",
+      "cols": null,
+      "alias": null,
+      "objid": "col-0439600434134eb6b51f45d7208f9565",
+      "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7",
+      "methods": [
+        "rename",
+        "tree",
+        "drop",
+        "modify",
+        "listing",
+        "select"
+      ]
+    },
+    {
+      "name": "playerid",
+      "weight": 3,
+      "datatype": "Text",
+      "parent_objid": "tbl-3a32b20fd3394f80a1c7131339707ff8",
+      "entitytype": "Column",
+      "cols": null,
+      "alias": null,
+      "objid": "col-3275e50a80774c0e904ae0914680e5ac",
+      "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7",
+      "methods": [
+        "rename",
+        "tree",
+        "drop",
+        "modify",
+        "listing",
+        "select"
+      ]
+    },
+    {
+      "name": "salary",
+      "weight": 4,
+      "datatype": "Integer",
+      "parent_objid": "tbl-3a32b20fd3394f80a1c7131339707ff8",
+      "entitytype": "Column",
+      "cols": null,
+      "alias": null,
+      "objid": "col-8f6e73ccfc424779bc407445a4aa3e7d",
+      "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7",
+      "methods": [
+        "rename",
+        "tree",
+        "drop",
+        "modify",
+        "listing",
+        "select"
+      ]
+    }
+  ],
+  "rows": [
+    [
+      1985,
+      "BAL",
+      "AL",
+      "murraed02",
+      1472819
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "lynnfr01",
+      1090000
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "ripkeca01",
+      800000
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "lacyle01",
+      725000
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "flanami01",
+      641667
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "boddimi01",
+      625000
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "stewasa01",
+      581250
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "martide01",
+      560000
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "roeniga01",
+      558333
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "mcgresc01",
+      547143
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "dempsri01",
+      512500
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "grosswa01",
+      483333
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "dauerri01",
+      480000
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "fordda01",
+      450000
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "martiti01",
+      440000
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "davisst02",
+      437500
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "dwyerji01",
+      375000
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "nolanjo01",
+      341667
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "shelbjo01",
+      130000
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "rayfofl01",
+      128500
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "youngmi01",
+      121000
+    ],
+    [
+      1985,
+      "BAL",
+      "AL",
+      "sheetla01",
+      60000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "stanlbo01",
+      1075000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "boggswa01",
+      1000000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "armasto01",
+      915000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "evansdw01",
+      800000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "riceji01",
+      779227
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "bucknbi01",
+      747500
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "easlemi01",
+      650000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "clearma01",
+      580000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "remyje01",
+      483333
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "gedmari01",
+      477500
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "kisonbr01",
+      370000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "hoffmgl01",
+      335000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "staplda01",
+      325000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "hurstbr01",
+      300000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "milleri01",
+      275000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "barrema02",
+      272500
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "nichore01",
+      260000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "ojedabo01",
+      240000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "boydoi01",
+      177500
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "nippeal01",
+      165000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "crawfst01",
+      160000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "clemero02",
+      140000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "gutieja01",
+      130000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "juraked01",
+      125000
+    ],
+    [
+      1985,
+      "BOS",
+      "AL",
+      "bordiri01",
+      115000
+    ],
+    [
+      1985,
+      "CAL",
+      "AL",
+      "decindo01",
+      1100000
+    ],
+    [
+      1985,
+      "CAL",
+      "AL",
+      "jacksre01",
+      1058894
+    ],
+    [
+      1985,
+      "CAL",
+      "AL",
+      "boonebo01",
+      883000
+    ]
+  ]
+}

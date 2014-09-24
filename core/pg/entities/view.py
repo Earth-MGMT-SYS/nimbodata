@@ -1,6 +1,8 @@
 """Module implements the PostgreSQL view."""
 # Copyright (C) 2014  Bradley Alan Smith
 
+from pprint import pprint
+
 from .. import syntax, select
 from . import *
 from common import tilecalc
@@ -15,7 +17,7 @@ class View(base_view.View,Entity):
     view_cols = '_adm-viewcolumns'
     view_col_info = '_adm-viewcolinfo'
     
-    def create(self,parent_objid,name,select):
+    def create(self,parent_objid,name,select,temporary=False):
         """Create and register."""
         viewid = self._new_id()
         
@@ -24,10 +26,10 @@ class View(base_view.View,Entity):
             'name':name,
             'owner':self.session['user'],
             'objid':viewid
-        })
+        },temporary)
         
         select['alias'] = False
-        if 'cols' in select:
+        if 'cols' in select and select['cols'] is not None:
             select['cols'] = ['_adm-rowid'] + select['cols']
             select['viewcreate'] = True
             sel_stmt, sel_params, out_colinfo = _s._prepare_select(**select)
@@ -36,7 +38,7 @@ class View(base_view.View,Entity):
             select['cols'] = ['_adm-rowid'] + [x['name'] for x in out_colinfo]
             select['viewcreate'] = True
             sel_stmt, sel_params, out_colinfo = _s._prepare_select(**select)
-                
+        
         Entity.create(self.api.get_entity('Column')(),{
             'parent_objid':viewid,
             'weight':0,
@@ -48,7 +50,6 @@ class View(base_view.View,Entity):
             'alias':'Row ID'
         })
         
-        
         for col in out_colinfo:
             regVals = {
                 'viewid':viewid,
@@ -59,8 +60,6 @@ class View(base_view.View,Entity):
             self._registry_insert(regVals,self.view_cols)
         
         view_stmt = syntax.create_view(parent_objid,viewid,sel_stmt)
-        
-        print view_stmt
         
         controllers['ddl'].execute(view_stmt, sel_params)
         controllers['ddl'].conn.commit()
@@ -189,6 +188,7 @@ class View(base_view.View,Entity):
         tblinfo = Entity(str(self.objid))
         geocolid = geocols[0]['objid']
         geocolname = geocols[0]['name']
+        geocoltype = geocols[0]['datatype']
         features = []
         if z > 2:
             corners = tilecalc.tileBB(int(x),int(y),int(z))
@@ -198,14 +198,24 @@ class View(base_view.View,Entity):
         dbid = tblinfo['parent_objid']
         tblid = tblinfo['objid']
         
-        stmt = syntax.select_geography(
-            dbid,
-            tblid,
-            geocolid,
-            geocolname,
-            corners,
-            z=z
-        )
+        if geocoltype == 'Polygon' or geocoltype == 'MultiPolygon':
+            stmt = syntax.select_geography_poly(
+                dbid,
+                tblid,
+                geocolid,
+                geocolname,
+                corners,
+                z=z
+            )
+        else:
+            stmt = syntax.select_geography(
+                dbid,
+                tblid,
+                geocolid,
+                geocolname,
+                corners,
+                z=z
+            )
 
         r = controllers['dql'].execute(stmt)
         

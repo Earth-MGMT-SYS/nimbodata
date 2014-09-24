@@ -33,7 +33,7 @@ class UpdateFileTable(object):
     @property
     def columns(self):
         f = EncodedFile(open(self.fpath,'rb'),'utf-8','utf-8','ignore')
-        return [{'name':x.lower(),'datatype':Text} for x in csv.reader(f).next()]
+        return [{'name':x,'datatype':Text} for x in csv.reader(f).next()]
         
     def select(self):
         src_file = EncodedFile(open(self.fpath,'rb'),'utf-8','utf-8','ignore')

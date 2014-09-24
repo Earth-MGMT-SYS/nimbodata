@@ -39,6 +39,8 @@ class TestPoints(unittest.TestCase):
         ]
         
         self.table = cloud.create_table(self.db,'geotable',cols)
+        home, poi = self.table.columns()
+        self.table.add_index(poi)
         
         values = [
             ('Arizona',Point(-111,34)),

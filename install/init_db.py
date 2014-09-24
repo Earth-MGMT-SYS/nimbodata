@@ -1,6 +1,12 @@
 import subprocess
 from pprint import pprint
 
+command = r"""
+psql -U cloud_admin cloud_admin -t -c "select 'drop schema \"' || schema_name || '\" cascade;' from information_schema.schemata where schema_name like 'dbi-%'" | psql -U cloud_admin cloud_admin
+"""
+
+subprocess.call(command, shell=True)
+
 command = 'psql -U cloud_admin -d cloud_admin -f init_cloud.sql'
 
 subprocess.call(command, shell=True)

@@ -15,7 +15,7 @@ def _get_cqn(schemaid,tblid,colname):
 
 ###############################################################################
 ### DDL #######################################################################
-###############################################################################
+###############################################################################    
 
 def create_db(schemaid):
     stmt = """CREATE SCHEMA "%(schemaid)s" """
@@ -34,21 +34,29 @@ def create_managed_table(schemaid,tblid):
                  "_adm-rowid" text DEFAULT "_adm-registries".newrowid())
            """ % {'qtn':get_tqn(schemaid,tblid)}
 
-def create_view(schemaid,viewid,select):
-    return ("""
-        CREATE VIEW %(qtn)s
+def create_view(schemaid,viewid,select,temporary=False):
+    return ( """
+        CREATE %(temp)s VIEW  %(qtn)s
         AS
         
-    """ % {'qtn':get_tqn(schemaid,viewid)}) + select
+    """ % {
+            'qtn':get_tqn(schemaid,viewid),
+            'temp': ' TEMPORARY ' if temporary else ''
+          } 
+    ) + select
 
 def alter_column_type(schemaid,tblid,colid,newtype):
-    return """
+    stub = """
                 ALTER TABLE %(qtn)s
                 ALTER COLUMN "%(colid)s"
                 TYPE %(coltype)s
+           """
+    if newtype != 'Text':
+        stub += """
                 USING
-                    ("%(colid)s"::%(coltype)s)
-           """ % {
+                    "_adm-registries"."to_%(coltype)s"("%(colid)s")
+           """
+    return stub % {
                     'qtn':get_tqn(schemaid,tblid),
                     'colid':colid,
                     'coltype':newtype
@@ -70,6 +78,27 @@ def add_column(schemaid,tblid,colid,dtype,pk=None):
                 ADD CONSTRAINT %(const)s UNIQUE ("%(colid)s"),
                 ADD PRIMARY KEY ("%(colid)s")  """
     return stmt % subStr
+
+def add_index(schemaid,tblid,indid,colid,unique=False,index_type=None):
+    stub = """
+        CREATE %(uq)s INDEX "%(indid)s" ON "%(schemaid)s"."%(tblid)s" 
+    """ 
+    if index_type is not None:
+        stub += """
+            USING %(index_type)s ( "%(colid)s" )
+        """
+    else:
+        stub += """
+            ( "%(colid)s" )
+        """
+    return stub % {
+        'uq':'UNIQUE' if unique else '',
+        'indid':indid,
+        'tblid':tblid,
+        'colid':colid,
+        'schemaid':schemaid,
+        'index_type':index_type
+    }
 
 def add_constraint_check(schemaid, tblid, conid, const_stmt):
     l, o, r = const_stmt
@@ -251,7 +280,7 @@ def select(schemaid, tblid,
         else:
             subStr['where'] += process_where(schemaid,tblid,where)
             params['whereVal'] = where[2]
-        stmt += """%(where)s"""
+        stmt += """ %(where)s """
     
     if group_by is not None:
         subStr['group'] = ','.join(_get_cqn(schemaid,tblid,x)
@@ -268,7 +297,7 @@ def select(schemaid, tblid,
                                 for x in order_by)
         
         stmt += """
-                ORDER BY %(order)s
+                \nORDER BY %(order)s
                 """
     
     if limit is not None:
@@ -284,6 +313,7 @@ def select(schemaid, tblid,
 ###############################################################################   
 
 def select_geography(schemaid,tblid,colid,colname,bb=None,geotype=None,z=None):
+    z = int(z)
     stmt = """
             WITH data AS (
                 SELECT *
@@ -291,7 +321,7 @@ def select_geography(schemaid,tblid,colid,colname,bb=None,geotype=None,z=None):
             )
             SELECT "_adm-rowid" as rowid,
            """
-    if z < 12:
+    if z < 16:
         stmt += """
             %(output_func)s(ST_simplify("%(colid)s"::geometry,%(tolerance)s))
            """
@@ -304,6 +334,55 @@ def select_geography(schemaid,tblid,colid,colname,bb=None,geotype=None,z=None):
             FROM data
             
         """
+    if bb is not None:
+        stmt += """WHERE ST_Intersects(%(bb)s, "%(colid)s")"""
+    
+    output_func = 'ST_AsGeoJSON'
+    if geotype is not None:
+        if geotype == 'wkb':
+            output_func = 'ST_AsBinary'
+        elif geotype == 'wkt':
+            output_func = 'ST_AsEWKB'
+        
+    stmt = stmt % {
+        'bb':bb,
+        'colid':colid,
+        'colname':colname,
+        'schemaid':schemaid,
+        'tblid':tblid,
+        'output_func':output_func,
+        'tolerance':1/(3**float(z))
+    }
+    
+    return stmt
+    
+def select_geography_poly(schemaid,tblid,colid,colname,bb=None,geotype=None,z=None):
+    z = int(z)
+    stmt = """
+            WITH data AS (
+                SELECT *
+                FROM "%(schemaid)s"."%(tblid)s"
+            )
+            SELECT "_adm-rowid" as rowid,
+           """
+    if z < 8:
+        stmt += """
+            %(output_func)s(ST_PointOnSurface("%(colid)s"::geometry))
+           """
+    elif z < 16:
+        stmt += """
+            %(output_func)s(ST_Simplify("%(colid)s"::geometry,%(tolerance)s))
+           """
+    else:
+        stmt += """
+            %(output_func)s("%(colid)s")
+           """
+    stmt += """
+                as "%(colname)s"
+            FROM data
+            
+        """
+    
     if bb is not None:
         stmt += """WHERE ST_Intersects(%(bb)s, "%(colid)s")"""
     

@@ -4,40 +4,26 @@
     <meta name="copyright" content="&copy; 2014 Bradley Alan Smith" />
     <title>MenuTree Widget</title>
     
+    <link type="text/css" rel="stylesheet" href="../../nimbodata.css" />
     <link type="text/css" rel="stylesheet" href="./menutree.css" />
     
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+    <script>
+        var GLOBAL = {}, module = {} // Sneaky sneaky NodeJS compat
+    </script>
+        
     <script src="http://d3js.org/d3.v3.js"></script>
     <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
-    <script src="./d3.layout.indent.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+    <script src="../../nimbodata.js"></script>
     <script src="../../layout/layout.js"></script>
     <script src="../base/base.js"></script>
+    
+    <script src="./d3.layout.indent.js"></script>
     <script src="menutree.js"></script>
+    
 </head>
 <body>
 
-    <script>
-        
-var doc = [
-    {
-        'id':'menu',
-        'widget':'MenuTree',
-        'nest':[
-            function(d) { return d.parent_objid; },
-            function(d) { return d.parent_objid + " " + d.entitytype; },
-        ]
-    }
-]
-
-Layout.init(doc)
-
-menu = Layout.registry.menu
-
-
-d3.json('./examples/layers.json',function (e,d) {
-    menu.update(e,d)
-})
-    
-    </script>
+<script src="../../datamodel.js"></script>
     
 </body>

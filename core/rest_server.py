@@ -36,9 +36,46 @@ app = Flask(__name__)
 cors = CORS(
     app,
     headers=['Content-Type','Accept','Cookie'],
-    origins=['http://ubupgbeta:8000','http://andydev:8000','http://localhost:8000'],
+    origins=[
+        'http://ubupgbeta:8000',
+        'http://andydev:8000',
+        'http://localhost:8000',
+        'http://access.nimbodata.org:8000',
+        'http://earth-mgmt.com',
+        'http://www.earth-mgmt.com',
+    ],
     supports_credentials=True
 )
+
+index = open('./index.html','r').read()
+devindex = open('./dev_index.html','r').read()
+appspec = open('../apps/earth-mgmt/app.json').read()
+appatlas = open('../apps/atlas/app.json').read()
+appcatalog = open('../apps/catalog/app.json').read()
+
+@app.route('/favicon.ico',methods=['GET'])
+def nada():
+    return ""
+
+@app.route('/', methods=['GET'])
+def indexview():
+    return index
+    
+@app.route('/dev', methods=['GET'])
+def devview():
+    return devindex
+    
+@app.route('/app.json',methods=['GET'])
+def appview():
+    return appspec
+    
+@app.route('/app-atlas.json',methods=['GET'])
+def appatlasview():
+    return appatlas
+    
+@app.route('/app-catalog.json',methods=['GET'])
+def appcatalogview():
+    return appcatalog
 
 @app.route('/api/', methods=['GET'])
 def apiresponder():
@@ -144,13 +181,15 @@ def view_features_handler(objid):
     print [str(x) for x in rdat['rowids']]
     return dump(api.get_entity('View')(objid).features(rdat['rowids']))
 
-
-
-
 @app.route('/select/',defaults={'objid':None},methods=['POST'])
 @app.route('/select/<objid>/',methods=['POST'])
 def post_select_processor(objid):
     """Handle post select."""
+    lastaccess = open('lastaccess','w')
+    now = datetime.datetime.now()
+    now = dump((now.year,now.month,now.day,now.hour,now.minute))
+    lastaccess.write(now)
+    lastaccess.close()
     try:
         kwargs = load(request.data)
         if 'limit' not in kwargs:
@@ -159,6 +198,11 @@ def post_select_processor(objid):
     except errors.RelationDoesNotExist as e:
         print objid
         abort(410)
+
+
+@app.route('/<path:path>', methods=['OPTIONS'])
+def options():
+    return ""
 
 #@app.route('/', defaults={"path":""}, methods=['GET'])
 @app.route('/<path:path>', methods=['GET','POST','PUT','DELETE','OPTIONS'])
@@ -182,7 +226,7 @@ def respond(path):
 
 
 def process_entity_identified(entityname,objid,method=None,child=None,last=None):
-    """Remnants."""    
+    """Remnants."""  
     if request.method == 'GET' and (method is not None and child is not None and last is None):
         ent = api.get_entity(entityname)(objid)
         meth = getattr(ent,method)
@@ -206,10 +250,10 @@ def process_entity_identified(entityname,objid,method=None,child=None,last=None)
         entity = api.get_entity(entityname)(objid)
         try:
             if method == 'modify':
-                try:
-                    return dump(entity.modify(**load(request.data)))
-                except errors.DataError:
-                    abort(409)
+                #try:
+                return dump(entity.modify(**load(request.data)))
+                #except errors.DataError:
+                #    abort(409)
             if method == 'rename':
                 return dump(entity.rename(**load(request.data)))
         except errors.NotAuthorized:
@@ -218,6 +262,10 @@ def process_entity_identified(entityname,objid,method=None,child=None,last=None)
     elif request.method == 'POST' and method == 'add_columns':
         entity = api.get_entity(entityname)(objid)
         return dump(entity.add_columns(**load(request.data)))
+        
+    elif request.method == 'POST' and method == 'add_index':
+        entity = api.get_entity(entityname)(objid)
+        return dump(entity.add_index(**load(request.data)))
     
     elif method is not None and method.startswith('create_'):
         if request.method != 'POST':
@@ -245,17 +293,20 @@ app.add_url_rule(
     methods = ['POST']
 )
 
+login_view = auth.LoginAPI.as_view('login')
+app.secret_key = "GeorgeJetson"
+app.config.from_object(__name__)
+
+login_manager = login.LoginManager()
+@login_manager.user_loader
+def load_user(user_id):
+    return auth.User(user_id)
+
+login_manager.setup_app(app)
+login_manager.init_app(app)
+
 if __name__ == '__main__':
-    login_view = auth.LoginAPI.as_view('login')
-    app.secret_key = "GeorgeJetson"
-    app.config.from_object(__name__)
-    
-    login_manager = login.LoginManager()
-    @login_manager.user_loader
-    def load_user(user_id):
-        return auth.User(user_id)
-    
-    login_manager.setup_app(app)
-    login_manager.init_app(app)
-    
-    app.run(host='0.0.0.0',debug=True)
+    try:
+        app.run(host='0.0.0.0',debug=True)
+    except Exception:
+        app.logger.exception('Failed')

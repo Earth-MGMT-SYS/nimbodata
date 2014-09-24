@@ -1,0 +1,11 @@
+[
+    {
+        "id":"launcher",
+        "widget":"Launcher",
+        "title":"Launcher Demo",
+        "options":[
+            ["ResultViewer","../resultviewer/app.json"],
+            ["Map","../map/app.json"]
+        ]
+    }
+]

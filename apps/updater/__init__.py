@@ -65,7 +65,13 @@ class Updater(object):
             try:
                 src_file = src.asfile()
             except subprocess.CalledProcessError as e:
+                print e
                 errors.append(e)
             if src_file is not None:
                 ins_tbl.insert_file(src_file)
+        for table in self.tables.values():
+            geocols = table.geo_columns()
+            for col in geocols:
+                table.add_index(col)
+                print "Added spatial index to: " + col['name']
         print 'Number of errors vs total: ',len(errors), ' / ', i

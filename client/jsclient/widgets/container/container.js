@@ -45,7 +45,7 @@ extend(Container, function () {
         },
         
         refresh: function () {
-            if (this._spec.browserview.containermode == 'tabs') {
+            if (this._spec.browserview && this._spec.browserview.containermode == 'tabs') {
                 this.tab_update()
             }
             Widget.prototype.update.call(this)

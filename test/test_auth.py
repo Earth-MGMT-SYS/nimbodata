@@ -52,7 +52,7 @@ class TestAuth(unittest.TestCase):
         table.rename('frango')
         view.rename('spangy')
         col = self.db.Column(table2.columns()[0])
-        col.modify('Float')
+        col.modify({'datatype':'Float'})
         
         if target == 'rest':
             bad_cloud = cc.connect("http://localhost:5000",cfg.b)

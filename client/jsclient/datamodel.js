@@ -18,8 +18,9 @@ function Model () {
 
 Model.prototype = function () {
     
-    var responders= {},loadevents = []
+    var responders,loadevents;
     var self;
+    var override_datasource;
     
     return {
         
@@ -30,6 +31,9 @@ Model.prototype = function () {
         register: function(widget) {
             responders[widget._spec.id] = widget
             if (widget._spec.datasource) {
+                if (override_datasource) {
+                    widget._spec.datasource = override_datasource
+                }
                 loadevents.push(widget)
             }
         },
@@ -51,6 +55,7 @@ Model.prototype = function () {
                     
                     if (fresult === true) {
                         basicresponders.push(sink)
+                        if (sink.clear) sink.clear()
                     } else if (fresult == 'refresh') {
                         var src = sink._spec.datasource
                         if (src.slice(0,4) == 'http' || src.slice(0,1) == '.') {
@@ -58,11 +63,16 @@ Model.prototype = function () {
                                 sink.update(e,d)
                             })
                         } else {
-                            cloud[src](function (e,d) {
-                                sink.update(e,d)
-                            })
+                            if (src instanceof Array) {
+                                n_get(src,sink.update)
+                            } else {
+                                cloud[src](function (e,d) {
+                                    sink.update(e,d)
+                                })
+                            }
                         }
                     } else if (fresult && fresult[0] == 'select') {
+                        if (sink.clear) sink.clear()
                         cloud.select(fresult[1],function (e,d) {
                             sink.update(e,d)
                             Layout.refresh()
@@ -127,8 +137,15 @@ Model.prototype = function () {
                         })
                     })
             } else if (event == 'modify') {
+                var mod_params = {}
+                var id_params = ['entitytype','objid','parent_objid']
+                for (var x in details) {
+                    if (id_params.indexOf(x) < 0) {
+                        mod_params[x] = details[x]
+                    }
+                }
                 cloud[details.entitytype](details.objid)
-                    .modify(details.newtype, function (e,d) {
+                    .modify(mod_params, function (e,d) {
                         if (details.entitytype == 'Column') {
                             var selobjid = details.parent_objid
                         } else {
@@ -159,24 +176,39 @@ Model.prototype = function () {
                     })
             }
         },
+        
+        getmodel: function (url,datasource) {
+            if (datasource) override_datasource = datasource
+            if (!url) url = './app.json'
+            d3.json(url,self.loadmodel)
+        },
+        
+        loadmodel: function (e, doc) {
+            responders = {}
+            loadevents = []
+            
+            Layout.init(doc) // Populates loadevents
+            loadevents.forEach(function (sink) {
+                var src = sink._spec.datasource
+                if (src instanceof Array) {
+                    n_get(src,function (e,d) {
+                        sink.update(e,d)
+                    })
+                } else if (src.slice(0,4) == 'http' || src.slice(0,1) == '.') {
+                    d3.json(src,function (e,d) {
+                        sink.update(e,d)
+                    })
+                } else {
+                    cloud[src](function (e,d) {
+                        sink.update(e,d)
+                    })
+                }
+            })
+            Layout.refresh()
+        },
                 
         on_load: function () {
-            d3.json('./app.json',function (e,doc) {
-                Layout.init(doc)
-                loadevents.forEach(function (sink) {
-                    var src = sink._spec.datasource
-                    if (src.slice(0,4) == 'http' || src.slice(0,1) == '.') {
-                        d3.json(src,function (e,d) {
-                            sink.update(e,d)
-                        })
-                    } else {
-                        cloud[src](function (e,d) {
-                            sink.update(e,d)
-                        })
-                    }
-                })
-                Layout.refresh()
-            })
+            self.getmodel()
         },
     }
 }()

@@ -94,28 +94,49 @@ class Column(base_column.Column,Entity):
         
         return self
         
-    def modify(self,newtype):
+    def modify(self,params):
         """Change the type of a column."""
         if self['owner'] != self.session['user']:
             raise errors.NotAuthorized
-        colinfo = self.info
-        tblinfo = self.api.get_entity('Column')(objid=colinfo['parent_objid'])
         
-        # Need to validate `newtype`
-        mod_stmt = syntax.alter_column_type(
-            tblinfo['parent_objid'],
-            tblinfo['objid'],
-            colinfo['objid'],
-            newtype
-        )
+        if 'datatype' in params:
+            newtype = params['datatype']
+            colinfo = self.info
+            tblinfo = self.api.get_entity('Column')(objid=colinfo['parent_objid'])
+            
+            # Need to validate `newtype`
+            mod_stmt = syntax.alter_column_type(
+                tblinfo['parent_objid'],
+                tblinfo['objid'],
+                colinfo['objid'],
+                newtype
+            )
+            
+            try:
+                controllers['ddl'].execute(mod_stmt)
+            except errors.DataError:
+                table = self.api.get_entity('Table')(tblinfo['objid'])
+                result = table.select(['_adm-rowid',colinfo['objid']])
+                out = []
+                for row in result:
+                    if newtype == 'Integer':
+                        try:
+                            if str(row[1])[0] not in ('123456789'):
+                                out.append([row[0],None])
+                            else:
+                                out.append([row[0],int(row[1])])
+                        except IndexError:
+                            out.append([row[0],None])
+                return out
+            
+            colinfo['datatype'] = newtype
+            self._registry_insert(colinfo)
+            
+            controllers['ddl'].conn.commit()
+            return self.objid
         
-        controllers['ddl'].execute(mod_stmt)
-        
-        colinfo['datatype'] = newtype
-        self._registry_insert(colinfo)
-        
-        controllers['ddl'].conn.commit()
-        return self.objid
+        print params
+        return Entity.modify(self,params)
     
     def drop(self):
         """Drop the column from the table."""

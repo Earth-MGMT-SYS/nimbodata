@@ -16,6 +16,7 @@ Widget.prototype = {
             .attr('id',spec.id)
         
         this._node.classed(this._classes, true)
+        if (spec.overbox) this._node.classed('Overbox',true)
     },
     
     node: function () {

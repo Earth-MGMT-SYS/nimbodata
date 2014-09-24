@@ -5,6 +5,8 @@
 
 #left { 
     background: #75B5FF;
+    padding-right: 0;
+    overflow: hidden;
 }
 
 #menu {
@@ -13,16 +15,35 @@
 
 #right {
     overflow: hidden;
+    background: rgba(0,0,0,0.7);
 }
 
 #results {
     
 }
 
+#topmenu {
+    background: rgba(0,0,0,0.5);
+}
+
+#menutree {
+    margin: 1em;
+    position: absolute;
+    top: 1em;
+    left: 1em;
+}
+
+
 #dataarea {
     width: 100%;
     height: 100%;
     overflow: hidden;
+}
+
+#details {
+    position: absolute;
+    bottom: 2em;
+    right: 1em;
 }
 
 td.n_results {
@@ -34,7 +55,7 @@ th {
 }
 
 span.argo, div.argo {
-    
+    margin-bottom:0.5em;
     max-width: none;
     padding: 0;
 }
@@ -85,14 +106,4 @@ div.n_tabs > ul.n_tabs > li.n_tabs:hover {
     margin: 0.1em;
 }
 
-.n_expando_tab {
-    background: #656565;
-    color: #C2BDBD;
-}
-
-.n_expando_tab:hover {
-    background: #C2BDBD;
-    color: #656565;
-    cursor: pointer;
-}
 

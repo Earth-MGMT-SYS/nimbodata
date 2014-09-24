@@ -1,0 +1,22 @@
+[
+    {
+        "id":"map",
+        "widget":"Map",
+        "maxbutton":false,
+        "browserview":{
+            "width":"100%",
+            "height":"100%"
+        }
+    },
+    {
+        "id":"menutree",
+        "widget":"MenuTree",
+        "datasource":"tree",
+        "overbox":true
+    },
+    {
+        "id":"details",
+        "widget":"RowViewer",
+        "overbox":true
+    }
+]

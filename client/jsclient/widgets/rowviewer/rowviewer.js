@@ -14,8 +14,9 @@ return {
 
     init: function(root, spec) {
         self = this
-        this._classes = "Overbox"
+        this._classes = " Container "
         Widget.prototype.init.call(this, root, spec)
+        self._node.style('display','none')
     },
     
     event_filter: function(source,event,details) {
@@ -38,6 +39,8 @@ return {
             Widget.prototype.update.call(this)
             return
         }
+        
+        self._node.style('display','block')
         
         if (dataset[0][0]) {
             var data = d3.map()

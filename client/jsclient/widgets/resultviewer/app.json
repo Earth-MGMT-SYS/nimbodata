@@ -1,6 +1,7 @@
 [
     {
         "id":"results",
+        "title":"Results Demo",
         "widget":"ResultViewer",
         "datasource":"./examples/example.json"
     }

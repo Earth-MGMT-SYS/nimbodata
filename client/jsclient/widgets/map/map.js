@@ -155,7 +155,7 @@ return {
     },
     
     event_filter: function(source,event,details) {
-        var info = details.info ? details.info : details
+        var info = details._info ? details._info : details
         if (info.objid && info.entitytype) {
             var ent = cloud[info.entitytype](info.objid)
             if (ent.geo_columns) {
@@ -333,7 +333,10 @@ return {
                 pointToLayer:function (feature, latlng) {
                     var marker = L.circleMarker(latlng, geojsonMarkerOptions);
                     marker.on('click',function(e){
-                        map.on_click(e,tblid,feature)
+                        Model.respond(self,'selectrow',{
+                            'rowid':feature.properties.rowid,
+                            'objid':objid
+                        })
                     })
                     return marker
                 },

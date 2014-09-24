@@ -148,7 +148,7 @@ return {
     
     init: function(root, spec) {
         self = this
-        this._classes = "Container Overbox"
+        this._classes = " Container "
         Widget.prototype.init.call(this, root, spec)
         
         margins = {top: 10, right: 10, bottom: 40, left: 40};

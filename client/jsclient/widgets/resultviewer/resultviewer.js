@@ -27,7 +27,7 @@ return {
     },
             
     get_label: function(d) {
-        return d.name;
+        return d.alias ? d.alias : d.name;
     },
     
     get_dtype: function(d) {
@@ -37,6 +37,10 @@ return {
     event_filter: function(source,event,details) {
         if (details.entitytype) {
             if (details.entitytype == 'View' || details.entitytype == 'Table') {
+                return true
+            }
+        } else if (details._info) {
+            if (details._info.entitytype == 'View' || details._info.entitytype == 'Table') {
                 return true
             }
         } else if (details.viewid) {
@@ -51,6 +55,10 @@ return {
     
     refresh: function () {
         Widget.prototype.update.call(self)
+    },
+    
+    clear: function () {
+        self._node.selectAll("table").remove()
     },
     
     update: function(e,dataset) {

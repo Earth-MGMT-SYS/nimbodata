@@ -4,7 +4,7 @@ div.argo {
   border-color: gray;
   border-style: solid;
   padding: 1em;
-  text-align: center;
+  text-align: left;
   font-size: medium;
   font-weight: bold;
   overflow: hidden;
@@ -21,7 +21,7 @@ span.argo {
   border-color: gray;
   border-style: solid;
   padding: 1em;
-  text-align: center;
+  text-align: left;
   font-size: medium;
   font-weight: bold;
   overflow: hidden;
@@ -32,7 +32,7 @@ span.argo {
 }
 
 label.argo {
-  margin-left: 1em;
+  
 }
 
 .argo.argo_check_label {
@@ -42,6 +42,15 @@ label.argo {
 label.argo.vertical {
   display: block;
   padding: 0.2em;
+}
+
+form.pure-form > select {
+  margin: 0.5em;
+  text-align: left;
+}
+
+form.pure-form {
+  padding-left: 1em;
 }
 
 input.argo {
@@ -126,8 +135,21 @@ select.argo {
     margin-right: 0.3em;
 }
 
+.n_input_button {
+    margin-top: 0.7em;
+    margin-right: 0.2em;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
 .n_button {
     margin: 0.3em;
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.n_dropdown_button {
+    margin: 0.4em;
     font-weight: bold;
     font-size: 1.1em;
 }
@@ -147,13 +169,15 @@ select.argo {
 }
 
 .n_expando_tab {
-    background: orange;
+    background: #656565;
+    color: #C2BDBD;
     padding: 0.5em;
+    text-align: center;
 }
 
 .n_expando_tab:hover {
-    background: blue;
-    color: gray;
+    background: #C2BDBD;
+    color: #656565;
     cursor: pointer;
 }
 
@@ -166,6 +190,7 @@ select.argo {
 
 .n_expando_inner {
     margin-top: 0.5em;
+    margin-bottom: 0.5em;
     padding-left: 0.5em;
     padding-right: 0.5em;
 }

@@ -1,0 +1,31 @@
+[
+    {
+        "title":"Earth-MGMT Atlas",
+        "id":"map",
+        "widget":"Map",
+        "maxbutton":false,
+        "browserview":{
+            "width":"100%",
+            "height":"100%"
+        }
+    },
+    {
+        "id":"menutree",
+        "widget":"MenuTree",
+        "datasource":"tree",
+        "overbox":true
+    },
+    {
+        "id":"querybox",
+        "widget":"Select",
+        "overbox":true,
+        "column_control":false,
+        "order_control":false,
+        "create":false
+    },
+    {
+        "id":"details",
+        "widget":"RowViewer",
+        "overbox":true
+    }
+]

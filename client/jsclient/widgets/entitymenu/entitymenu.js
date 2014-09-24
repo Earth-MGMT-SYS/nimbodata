@@ -72,12 +72,17 @@ extend(EntityMenu, function () {
                     var action = d3.select(this).attr('action')
                     var container = d3.select('#'+self.relid('container'))
                     if (action == 'drop') {
-                        cloud.Entity(objid).drop(function(e,d) {
-                            var parent = cloud.Entity(info.parent_objid)
-                                .info(function(e,d) {
-                                    Model.respond(self,'select',d)
-                                })
-                        })
+                        var really = confirm("Really drop " + info.name + " ? ")
+                        if (really) {
+                            cloud.Entity(objid).drop(function(e,d) {
+                                var parent = cloud.Entity(info.parent_objid)
+                                    .info(function(e,d) {
+                                        Model.respond(self,'select',d)
+                                    })
+                            })
+                        } else {
+                            return
+                        }
                     } else if (action == 'rename') {
                         container
                             .style('display','none')
@@ -126,7 +131,7 @@ extend(EntityMenu, function () {
                         rename_control.selectAll('div')
                             .style('float','left')
                             .classed('n_entity_control',true)
-                    } else if (action == 'modify') {
+                    } else if (action == 'mod_type') {
                         container
                             .style('display','none')
                         
@@ -150,23 +155,17 @@ extend(EntityMenu, function () {
                         
                         var current_choice = revmap.get(info.datatype)
                                                     
-                        controls.dropdown(self.relid("modify_controls"),{
-                            "label":"loopins",
-                            "id":"loopins",
+                        controls.dropdown_button(self.relid("modify_controls"),{
+                            "label":"Datatype",
+                            "button_label":"Submit",
+                            "id":self.relid('datatype_dropdown'),
                             "default":current_choice,
                             "options":opts,
                             "on":{
                                 "change":function(){
                                     current_choice = this.value
-                                }
-                            }
-                        })
-                        
-                        controls.button(self.relid("modify_controls"),{
-                            "label":"Submit",
-                            "icon":"play",
-                            "id":self.relid('submit_button'),
-                            "on":{ click:function () {
+                                },
+                                click:function () {
                                     var newtype = optmap.get(current_choice)
                                     modify_control.remove()
                                     
@@ -184,10 +183,9 @@ extend(EntityMenu, function () {
                                     Model.respond(self,'modify',{
                                         objid:info.objid,
                                         parent_objid: info.parent_objid,
-                                        newtype: newtype,
+                                        datatype: newtype,
                                         entitytype: info.entitytype
                                     })
-                                                                                                            
                                 }
                             }
                         })
@@ -199,13 +197,40 @@ extend(EntityMenu, function () {
                         modify_control.selectAll('form')
                             .style('float','left')
                             .classed('n_entity_control',true)
+                    } else if (action == 'alias') {
+                        container
+                            .style('display','none')
+                        
+                        var alias_control = self._node.append('div')
+                            .attr('id',self.relid("alias_container"))
+                            .classed('n_entity_control_container',true)
+                        
+                        controls.input_button(self.relid("alias_container"),{
+                            "label":"New Alias",
+                            "id":self.relid('modify_alias'),
+                            "button_label":"Change",
+                            "icon":"play",
+                            "on":{ click:function () {
+                                    var newalias = d3.select('#'+self.relid('modify_alias'))
+                                        .node().value
+                                    alias_control.remove()
+                                    
+                                    var cont = d3.select('#'+self.relid('container'))
+                                        .style('display','block')
+                                    
+                                    Model.respond(self,'modify',{
+                                        objid:info.objid,
+                                        parent_objid: info.parent_objid,
+                                        alias: newalias,
+                                        entitytype: info.entitytype
+                                    })
+                                    
+                                }
+                            }
+                        })
                     }
-                    
-                    
                 }
             }
-            
-            
             
             if (info.entitytype == 'Database') {
                 menuitems = [
@@ -217,6 +242,11 @@ extend(EntityMenu, function () {
                     {
                         'label':'Drop',
                         'action':'drop',
+                        'on':on
+                    },
+                    {
+                        'label':'Alias',
+                        'action':'alias',
                         'on':on
                     },
                     {
@@ -233,6 +263,11 @@ extend(EntityMenu, function () {
                         'on':on
                     },
                     {
+                        'label':'Alias',
+                        'action':'alias',
+                        'on':on
+                    },
+                    {
                         'label':'Rename',
                         'action':'rename',
                         'on':on
@@ -243,6 +278,11 @@ extend(EntityMenu, function () {
                     {
                         'label':'Drop',
                         'action':'drop',
+                        'on':on
+                    },
+                    {
+                        'label':'Alias',
+                        'action':'alias',
                         'on':on
                     },
                     {
@@ -259,13 +299,18 @@ extend(EntityMenu, function () {
                         'on':on
                     },
                     {
+                        'label':'Alias',
+                        'action':'alias',
+                        'on':on
+                    },
+                    {
                         'label':'Rename',
                         'action':'rename',
                         'on':on
                     },
                     {
                         'label':'Modify Type',
-                        'action':'modify',
+                        'action':'mod_type',
                         'on':on
                     }
                 ]
@@ -288,10 +333,14 @@ extend(EntityMenu, function () {
             if (entitytype == 'Column') {
                 entitytype = 'Column (' + info.datatype + ')'
             }
+            
             objid = info.objid
             
+            var labeltext = entitytype + ": " + name
+            if (info.alias) labeltext = labeltext + ' (Alias: ' + info.alias + ') '
+            
             d3.select('#'+self.relid('label'))
-                .text(entitytype + ": " + name)
+                .text(labeltext)
                 .style('display','inline')
         }
     }   

@@ -3,6 +3,9 @@ import os
 import subprocess
 import StringIO
 import zipfile
+import tempfile
+
+import pycurl
 import osgeo.ogr
 
 from core.pg.datatypes import *
@@ -16,6 +19,8 @@ type_map = {
     'multilinestring':MultiLine,
 }
 
+
+
 class UpdateShapefileDatabase(object):
     """A database drawn from CSV files."""
     
@@ -26,17 +31,21 @@ class UpdateShapefileDatabase(object):
     def tables(self):
         if self.single_table:
             fname,fpath = self.infiles[0]
-            return [self.table_factory(self.single_table,fpath)]
-        
-        retVal = []
-        for fname,fpath in self.infiles:
-            retVal.append(self.table_factory(fname,fpath))
-        return retVal
-        
+            self._tables = [self.table_factory(self.single_table,fpath)]
+            return self._tables
+        else:
+            return self.sources()
+    
     def sources(self):
+        try:
+            return self._tables
+        except AttributeError:
+            pass
+        
         retVal = []
         for fname,fpath in self.infiles:
             retVal.append(self.table_factory(fname,fpath))
+        self._tables = retVal
         return retVal
 
 class UpdateShapefileTable(object):
@@ -73,9 +82,40 @@ class UpdateShapefileTable(object):
         return cols
         
     def asfile(self):
-        p = subprocess.check_output(['shp2pgsql','-D','-a','-s 4326',self.fpath])
+        try:
+            p = subprocess.check_output(['shp2pgsql','-D','-a','-s 4326',self.fpath])
+        except subprocess.CalledProcessError:
+            p = subprocess.check_output(['shp2pgsql','-D','-a','-W "latin1"','-s 4326',self.fpath])
         f = StringIO.StringIO()
         for x in p.split('\n')[4:-3]:
             f.write(x+'\n')
         f.seek(0)
         return f
+
+
+class UpdateShapefileZipURL(UpdateShapefileTable):
+    
+    def __init__(self,name,url):
+        print "Getting " + name + " ( " + url + " ) "
+        tempdir = tempfile.mkdtemp()
+        buf = StringIO.StringIO()
+        curl = pycurl.Curl()
+        curl.setopt(curl.URL, url)
+        curl.setopt(curl.WRITEDATA, buf)
+        curl.perform()
+        curl.close()
+        with zipfile.ZipFile(buf,'r') as myzip:
+            myzip.extractall(tempdir)
+        
+        fname = [ f for f in os.listdir(tempdir)
+            if os.path.splitext(f)[1] == '.shp'][0]
+                
+        self.fname = fname
+        self.fpath = os.path.join(tempdir,fname)
+        self.name = name
+
+
+
+
+
+

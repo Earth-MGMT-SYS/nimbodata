@@ -72,7 +72,21 @@ class Table(base_table.Table,View):
         controllers['ddl'].execute(stmt)
         
         return True
-        
+    
+    def add_index(self,col,unique=False):
+        geocolnames = [x['name'] for x in self.geo_columns()]
+        colinfo = self.api.get_entity('Column')(col).info
+        index_type = 'GIST' if colinfo['name'] in geocolnames else None
+        dbid,tblname = self.info['parent_objid'],self.info['name']
+        tblid = self.info['objid']
+        tblowner = self.info['owner']
+        stmt = syntax.add_index(
+            dbid,tblid,self._new_indid(),colinfo['objid'],unique,index_type
+        )
+        controllers['ddl'].execute(stmt)
+        controllers['ddl'].conn.commit()
+        return self.info
+    
     def add_columns(self,cols):
         """Add columns to the table."""
         dbid,tblname = self.info['parent_objid'],self.info['name'],
@@ -150,6 +164,10 @@ class Table(base_table.Table,View):
     def _new_rowid(self):
         """Gets a new rowid for an inserted row."""
         return 'row-'+str(uuid()).replace('-','')
+        
+    def _new_indid(self):
+        """Gets a new rowid for an inserted row."""
+        return 'ind-'+str(uuid()).replace('-','')
     
     def _insert_dict(self,tblid,values,rowid=None):
         """Insert a row where the input is a dict."""

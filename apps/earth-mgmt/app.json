@@ -1,20 +1,16 @@
 [
     {
-        "id":"map",
-        "widget":"Map",
-        "maxbutton":false,
-        "browserview":{
-            "width":"100%",
-            "height":"100%"
-        }
+        "title":"Earth-MGMT Launcher",
+        "id":"topmenu",
+        "widget":"MasterMenu"
     },
     {
-        "id":"menutree",
-        "widget":"MenuTree",
-        "datasource":"tree"
-    },
-    {
-        "id":"details",
-        "widget":"RowViewer"
+        "id":"launcher",
+        "widget":"Launcher",
+        "options":[
+            ["Atlas","./app-atlas.json",["databases","TigerLine","tree"]],
+            ["Catalog","./app-catalog.json",["tree"]],
+            ["Baseball Demo","./app-catalog.json",["databases","Baseball","tree"]]
+        ]
     }
 ]

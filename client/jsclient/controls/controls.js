@@ -110,12 +110,13 @@ return {
         var selector = controls._selector(parent_node)
 
         var node = d3.select(selector)
-            .append('span')
-            .append('form')
-            .classed('pure-form',true)
+            .append('div')
+            .classed("argo",true)
+                .append('form')
+                .classed('pure-form',true)
         
         node.text(params.label)
-            .classed("argo",true)
+            
                 .append("select")
                 .on("change",params.on.change)
                 .data([params.options])
@@ -266,7 +267,7 @@ return {
                     
         var button = form.append('a')
             .classed('pure-button',true)
-            .classed('n_button',true)
+            .classed('n_input_button',true)
             .on('click',params.on.click)
             
         if (params.icon) {
@@ -311,7 +312,7 @@ return {
                     
         var button = form.append('a')
             .classed('pure-button',true)
-            .classed('n_button',true)
+            .classed('n_dropdown_button',true)
             .on('click',params.on.click)
             
         if (params.icon) {

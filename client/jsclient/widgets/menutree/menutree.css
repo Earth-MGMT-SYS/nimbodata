@@ -1,28 +1,43 @@
 
-.Overbox {
-  position: absolute;
-  background-color:rgba(0,0,0,0.5);
-  padding: 20px;
-  border-radius: 5px;
-  z-index: 5;
-  -webkit-padding-start: 20px;
+.node rect {
+  cursor: pointer;
+  fill: none;
+  stroke: none;
 }
 
-.Overbox:hover {
-  background-color:rgba(0,0,0,0.7);
+.node text {
+  font: 1em Inconsolata;
+  pointer-events: none;
+  fill: black;
 }
 
-.menu_category {
-    cursor: pointer;
-    fill: lightgray;
-    font-weight: bold;
+div.Overbox .node text {
+  fill: white;
 }
 
-.menu_item {
-    fill: lightgray;
-    cursor: pointer;
+div.Overbox:hover .node text {
+  fill: white;
 }
 
-.menu_item:hover {
-    fill: darkgray;
+rect.n_open_branch {
+    fill: initial;
+    fill-opacity: 0.0;
+}
+
+rect.n_closed_branch {
+    fill: initial;
+    fill-opacity: 0.0;
+}
+
+text.n_closed_branch {
+    font-style: italic;
+}
+
+rect.n_leaf {
+    fill: initial;
+    fill-opacity: 0.0;
+}
+
+.node text.n_tree_icon {
+    font-family: FontAwesome
 }
