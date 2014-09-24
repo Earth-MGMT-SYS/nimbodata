@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nimbodata.core.pg.entities package &mdash; Nimbodata alpha documentation</title>
+    <title>nimbodata.core.pg.entities package &mdash; Nimbodata 1^-10 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     'alpha',
+        VERSION:     '1^-10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Nimbodata alpha documentation" href="../index.html" />
+    <link rel="top" title="Nimbodata 1^-10 documentation" href="../index.html" />
     <link rel="up" title="nimbodata.core.pg package" href="nimbodata.core.pg.html" />
     <link rel="prev" title="nimbodata.core.pg.datatypes package" href="nimbodata.core.pg.datatypes.html" /> 
   </head>
@@ -40,7 +40,7 @@
         <li class="right" >
           <a href="nimbodata.core.pg.datatypes.html" title="nimbodata.core.pg.datatypes package"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+        <li><a href="../index.html">Nimbodata 1^-10 documentation</a> &raquo;</li>
           <li><a href="nimbodata.html" >nimbodata package</a> &raquo;</li>
           <li><a href="nimbodata.core.html" >nimbodata.core package</a> &raquo;</li>
           <li><a href="nimbodata.core.pg.html" accesskey="U">nimbodata.core.pg package</a> &raquo;</li> 
@@ -79,7 +79,7 @@
 
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.column.Column.modify">
-<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/column.html#Column.modify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.column.Column.modify" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">modify</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/column.html#Column.modify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.column.Column.modify" title="Permalink to this definition">¶</a></dt>
 <dd><p>Change the type of a column.</p>
 </dd></dl>
 
@@ -126,8 +126,9 @@
 
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.constraint.Constraint.modify">
-<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.constraint.Constraint.modify" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">modify</tt><big>(</big><em>params</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.constraint.Constraint.modify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the metadata params for the entity.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.constraint.Constraint.rename">
@@ -167,8 +168,9 @@
 
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.database.Database.modify">
-<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.database.Database.modify" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">modify</tt><big>(</big><em>params</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.database.Database.modify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the metadata params for the entity.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.database.Database.rename">
@@ -196,7 +198,7 @@
 <p>Base class for an entity in a PostgreSQL database (in PG terms).</p>
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.prototype.Entity.create">
-<tt class="descname">create</tt><big>(</big><em>vals</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/prototype.html#Entity.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.create" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">create</tt><big>(</big><em>vals</em>, <em>temporary=False</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/prototype.html#Entity.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Register an entity in the metadata registry.</p>
 <p>Default create method for an entity - only used in conjunction with
 an actual implementation of an Entity - because this only registers
@@ -241,8 +243,9 @@ converted from the <cite>attr</cite> argument.</p>
 
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.prototype.Entity.modify">
-<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.modify" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">modify</tt><big>(</big><em>params</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/prototype.html#Entity.modify"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.prototype.Entity.modify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the metadata params for the entity.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.prototype.Entity.rename">
@@ -286,6 +289,11 @@ converted from the <cite>attr</cite> argument.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="nimbodata.core.pg.entities.table.Table.add_index">
+<tt class="descname">add_index</tt><big>(</big><em>col</em>, <em>unique=False</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/table.html#Table.add_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.add_index" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
 <dt id="nimbodata.core.pg.entities.table.Table.columns">
 <tt class="descname">columns</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/table.html#Table.columns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.columns" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get a listing of columns for the table.</p>
@@ -316,8 +324,9 @@ converted from the <cite>attr</cite> argument.</p>
 
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.table.Table.modify">
-<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.modify" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">modify</tt><big>(</big><em>params</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.table.Table.modify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the metadata params for the entity.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.table.Table.rename">
@@ -365,7 +374,7 @@ converted from the <cite>attr</cite> argument.</p>
 
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.view.View.create">
-<tt class="descname">create</tt><big>(</big><em>parent_objid</em>, <em>name</em>, <em>select</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/view.html#View.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.create" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">create</tt><big>(</big><em>parent_objid</em>, <em>name</em>, <em>select</em>, <em>temporary=False</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/pg/entities/view.html#View.create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create and register.</p>
 </dd></dl>
 
@@ -390,8 +399,9 @@ drops the entity from the registry.</p>
 
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.view.View.modify">
-<tt class="descname">modify</tt><big>(</big><em>newtype</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.modify" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">modify</tt><big>(</big><em>params</em><big>)</big><a class="headerlink" href="#nimbodata.core.pg.entities.view.View.modify" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update the metadata params for the entity.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="nimbodata.core.pg.entities.view.View.rename">
@@ -494,7 +504,7 @@ drops the entity from the registry.</p>
         <li class="right" >
           <a href="nimbodata.core.pg.datatypes.html" title="nimbodata.core.pg.datatypes package"
              >previous</a> |</li>
-        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+        <li><a href="../index.html">Nimbodata 1^-10 documentation</a> &raquo;</li>
           <li><a href="nimbodata.html" >nimbodata package</a> &raquo;</li>
           <li><a href="nimbodata.core.html" >nimbodata.core package</a> &raquo;</li>
           <li><a href="nimbodata.core.pg.html" >nimbodata.core.pg package</a> &raquo;</li> 

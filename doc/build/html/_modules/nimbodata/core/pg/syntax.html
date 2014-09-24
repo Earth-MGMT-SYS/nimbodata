@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nimbodata.core.pg.syntax &mdash; Nimbodata alpha documentation</title>
+    <title>nimbodata.core.pg.syntax &mdash; Nimbodata 1^-10 documentation</title>
     
     <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../',
-        VERSION:     'alpha',
+        VERSION:     '1^-10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../_static/doctools.js"></script>
-    <link rel="top" title="Nimbodata alpha documentation" href="../../../../index.html" />
+    <link rel="top" title="Nimbodata 1^-10 documentation" href="../../../../index.html" />
     <link rel="up" title="Module code" href="../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Nimbodata 1^-10 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -64,7 +64,7 @@
 
 <span class="c">###############################################################################</span>
 <span class="c">### DDL #######################################################################</span>
-<span class="c">###############################################################################</span>
+<span class="c">###############################################################################    </span>
 
 <div class="viewcode-block" id="create_db"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.syntax.create_db">[docs]</a><span class="k">def</span> <span class="nf">create_db</span><span class="p">(</span><span class="n">schemaid</span><span class="p">):</span>
     <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;CREATE SCHEMA &quot;</span><span class="si">%(schemaid)s</span><span class="s">&quot; &quot;&quot;&quot;</span>
@@ -83,21 +83,29 @@
 <span class="s">                 &quot;_adm-rowid&quot; text DEFAULT &quot;_adm-registries&quot;.newrowid())</span>
 <span class="s">           &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span><span class="s">&#39;qtn&#39;</span><span class="p">:</span><span class="n">get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">)}</span>
 </div>
-<div class="viewcode-block" id="create_view"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.syntax.create_view">[docs]</a><span class="k">def</span> <span class="nf">create_view</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">viewid</span><span class="p">,</span><span class="n">select</span><span class="p">):</span>
-    <span class="k">return</span> <span class="p">(</span><span class="s">&quot;&quot;&quot;</span>
-<span class="s">        CREATE VIEW </span><span class="si">%(qtn)s</span><span class="s"></span>
+<div class="viewcode-block" id="create_view"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.syntax.create_view">[docs]</a><span class="k">def</span> <span class="nf">create_view</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">viewid</span><span class="p">,</span><span class="n">select</span><span class="p">,</span><span class="n">temporary</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">(</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">        CREATE </span><span class="si">%(temp)s</span><span class="s"> VIEW  </span><span class="si">%(qtn)s</span><span class="s"></span>
 <span class="s">        AS</span>
 <span class="s">        </span>
-<span class="s">    &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span><span class="s">&#39;qtn&#39;</span><span class="p">:</span><span class="n">get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">viewid</span><span class="p">)})</span> <span class="o">+</span> <span class="n">select</span>
+<span class="s">    &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span>
+            <span class="s">&#39;qtn&#39;</span><span class="p">:</span><span class="n">get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">viewid</span><span class="p">),</span>
+            <span class="s">&#39;temp&#39;</span><span class="p">:</span> <span class="s">&#39; TEMPORARY &#39;</span> <span class="k">if</span> <span class="n">temporary</span> <span class="k">else</span> <span class="s">&#39;&#39;</span>
+          <span class="p">}</span> 
+    <span class="p">)</span> <span class="o">+</span> <span class="n">select</span>
 </div>
 <div class="viewcode-block" id="alter_column_type"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.syntax.alter_column_type">[docs]</a><span class="k">def</span> <span class="nf">alter_column_type</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">colid</span><span class="p">,</span><span class="n">newtype</span><span class="p">):</span>
-    <span class="k">return</span> <span class="s">&quot;&quot;&quot;</span>
+    <span class="n">stub</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
 <span class="s">                ALTER TABLE </span><span class="si">%(qtn)s</span><span class="s"></span>
 <span class="s">                ALTER COLUMN &quot;</span><span class="si">%(colid)s</span><span class="s">&quot;</span>
 <span class="s">                TYPE </span><span class="si">%(coltype)s</span><span class="s"></span>
+<span class="s">           &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">newtype</span> <span class="o">!=</span> <span class="s">&#39;Text&#39;</span><span class="p">:</span>
+        <span class="n">stub</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
 <span class="s">                USING</span>
-<span class="s">                    (&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;::</span><span class="si">%(coltype)s</span><span class="s">)</span>
-<span class="s">           &quot;&quot;&quot;</span> <span class="o">%</span> <span class="p">{</span>
+<span class="s">                    &quot;_adm-registries&quot;.&quot;to_</span><span class="si">%(coltype)s</span><span class="s">&quot;(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;)</span>
+<span class="s">           &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">stub</span> <span class="o">%</span> <span class="p">{</span>
                     <span class="s">&#39;qtn&#39;</span><span class="p">:</span><span class="n">get_tqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">),</span>
                     <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span><span class="p">,</span>
                     <span class="s">&#39;coltype&#39;</span><span class="p">:</span><span class="n">newtype</span>
@@ -119,6 +127,27 @@
 <span class="s">                ADD CONSTRAINT </span><span class="si">%(const)s</span><span class="s"> UNIQUE (&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;),</span>
 <span class="s">                ADD PRIMARY KEY (&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;)  &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">stmt</span> <span class="o">%</span> <span class="n">subStr</span>
+</div>
+<div class="viewcode-block" id="add_index"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.syntax.add_index">[docs]</a><span class="k">def</span> <span class="nf">add_index</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">indid</span><span class="p">,</span><span class="n">colid</span><span class="p">,</span><span class="n">unique</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span><span class="n">index_type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">stub</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">        CREATE </span><span class="si">%(uq)s</span><span class="s"> INDEX &quot;</span><span class="si">%(indid)s</span><span class="s">&quot; ON &quot;</span><span class="si">%(schemaid)s</span><span class="s">&quot;.&quot;</span><span class="si">%(tblid)s</span><span class="s">&quot; </span>
+<span class="s">    &quot;&quot;&quot;</span> 
+    <span class="k">if</span> <span class="n">index_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">stub</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            USING </span><span class="si">%(index_type)s</span><span class="s"> ( &quot;</span><span class="si">%(colid)s</span><span class="s">&quot; )</span>
+<span class="s">        &quot;&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stub</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            ( &quot;</span><span class="si">%(colid)s</span><span class="s">&quot; )</span>
+<span class="s">        &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">stub</span> <span class="o">%</span> <span class="p">{</span>
+        <span class="s">&#39;uq&#39;</span><span class="p">:</span><span class="s">&#39;UNIQUE&#39;</span> <span class="k">if</span> <span class="n">unique</span> <span class="k">else</span> <span class="s">&#39;&#39;</span><span class="p">,</span>
+        <span class="s">&#39;indid&#39;</span><span class="p">:</span><span class="n">indid</span><span class="p">,</span>
+        <span class="s">&#39;tblid&#39;</span><span class="p">:</span><span class="n">tblid</span><span class="p">,</span>
+        <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span><span class="p">,</span>
+        <span class="s">&#39;schemaid&#39;</span><span class="p">:</span><span class="n">schemaid</span><span class="p">,</span>
+        <span class="s">&#39;index_type&#39;</span><span class="p">:</span><span class="n">index_type</span>
+    <span class="p">}</span>
 </div>
 <div class="viewcode-block" id="add_constraint_check"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.syntax.add_constraint_check">[docs]</a><span class="k">def</span> <span class="nf">add_constraint_check</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span> <span class="n">tblid</span><span class="p">,</span> <span class="n">conid</span><span class="p">,</span> <span class="n">const_stmt</span><span class="p">):</span>
     <span class="n">l</span><span class="p">,</span> <span class="n">o</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">const_stmt</span>
@@ -300,7 +329,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;where&#39;</span><span class="p">]</span> <span class="o">+=</span> <span class="n">process_where</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">where</span><span class="p">)</span>
             <span class="n">params</span><span class="p">[</span><span class="s">&#39;whereVal&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">where</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span><span class="si">%(where)s</span><span class="s">&quot;&quot;&quot;</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot; </span><span class="si">%(where)s</span><span class="s"> &quot;&quot;&quot;</span>
     
     <span class="k">if</span> <span class="n">group_by</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">subStr</span><span class="p">[</span><span class="s">&#39;group&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_get_cqn</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">x</span><span class="p">)</span>
@@ -317,7 +346,7 @@
                                 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">order_by</span><span class="p">)</span>
         
         <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
-<span class="s">                ORDER BY </span><span class="si">%(order)s</span><span class="s"></span>
+<span class="s">                </span><span class="se">\n</span><span class="s">ORDER BY </span><span class="si">%(order)s</span><span class="s"></span>
 <span class="s">                &quot;&quot;&quot;</span>
     
     <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -333,6 +362,7 @@
 <span class="c">###############################################################################   </span>
 </div>
 <div class="viewcode-block" id="select_geography"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.syntax.select_geography">[docs]</a><span class="k">def</span> <span class="nf">select_geography</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">colid</span><span class="p">,</span><span class="n">colname</span><span class="p">,</span><span class="n">bb</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">geotype</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
     <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
 <span class="s">            WITH data AS (</span>
 <span class="s">                SELECT *</span>
@@ -340,7 +370,7 @@
 <span class="s">            )</span>
 <span class="s">            SELECT &quot;_adm-rowid&quot; as rowid,</span>
 <span class="s">           &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="mi">12</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="mi">16</span><span class="p">:</span>
         <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
 <span class="s">            </span><span class="si">%(output_func)s</span><span class="s">(ST_simplify(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;::geometry,</span><span class="si">%(tolerance)s</span><span class="s">))</span>
 <span class="s">           &quot;&quot;&quot;</span>
@@ -353,6 +383,55 @@
 <span class="s">            FROM data</span>
 <span class="s">            </span>
 <span class="s">        &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">bb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;WHERE ST_Intersects(</span><span class="si">%(bb)s</span><span class="s">, &quot;</span><span class="si">%(colid)s</span><span class="s">&quot;)&quot;&quot;&quot;</span>
+    
+    <span class="n">output_func</span> <span class="o">=</span> <span class="s">&#39;ST_AsGeoJSON&#39;</span>
+    <span class="k">if</span> <span class="n">geotype</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">geotype</span> <span class="o">==</span> <span class="s">&#39;wkb&#39;</span><span class="p">:</span>
+            <span class="n">output_func</span> <span class="o">=</span> <span class="s">&#39;ST_AsBinary&#39;</span>
+        <span class="k">elif</span> <span class="n">geotype</span> <span class="o">==</span> <span class="s">&#39;wkt&#39;</span><span class="p">:</span>
+            <span class="n">output_func</span> <span class="o">=</span> <span class="s">&#39;ST_AsEWKB&#39;</span>
+        
+    <span class="n">stmt</span> <span class="o">=</span> <span class="n">stmt</span> <span class="o">%</span> <span class="p">{</span>
+        <span class="s">&#39;bb&#39;</span><span class="p">:</span><span class="n">bb</span><span class="p">,</span>
+        <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span><span class="p">,</span>
+        <span class="s">&#39;colname&#39;</span><span class="p">:</span><span class="n">colname</span><span class="p">,</span>
+        <span class="s">&#39;schemaid&#39;</span><span class="p">:</span><span class="n">schemaid</span><span class="p">,</span>
+        <span class="s">&#39;tblid&#39;</span><span class="p">:</span><span class="n">tblid</span><span class="p">,</span>
+        <span class="s">&#39;output_func&#39;</span><span class="p">:</span><span class="n">output_func</span><span class="p">,</span>
+        <span class="s">&#39;tolerance&#39;</span><span class="p">:</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">3</span><span class="o">**</span><span class="nb">float</span><span class="p">(</span><span class="n">z</span><span class="p">))</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="n">stmt</span>
+    </div>
+<div class="viewcode-block" id="select_geography_poly"><a class="viewcode-back" href="../../../../apidoc/nimbodata.core.pg.html#nimbodata.core.pg.syntax.select_geography_poly">[docs]</a><span class="k">def</span> <span class="nf">select_geography_poly</span><span class="p">(</span><span class="n">schemaid</span><span class="p">,</span><span class="n">tblid</span><span class="p">,</span><span class="n">colid</span><span class="p">,</span><span class="n">colname</span><span class="p">,</span><span class="n">bb</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">geotype</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span><span class="n">z</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="n">z</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
+    <span class="n">stmt</span> <span class="o">=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            WITH data AS (</span>
+<span class="s">                SELECT *</span>
+<span class="s">                FROM &quot;</span><span class="si">%(schemaid)s</span><span class="s">&quot;.&quot;</span><span class="si">%(tblid)s</span><span class="s">&quot;</span>
+<span class="s">            )</span>
+<span class="s">            SELECT &quot;_adm-rowid&quot; as rowid,</span>
+<span class="s">           &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            </span><span class="si">%(output_func)s</span><span class="s">(ST_PointOnSurface(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;::geometry))</span>
+<span class="s">           &quot;&quot;&quot;</span>
+    <span class="k">elif</span> <span class="n">z</span> <span class="o">&lt;</span> <span class="mi">16</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            </span><span class="si">%(output_func)s</span><span class="s">(ST_Simplify(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;::geometry,</span><span class="si">%(tolerance)s</span><span class="s">))</span>
+<span class="s">           &quot;&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">            </span><span class="si">%(output_func)s</span><span class="s">(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;)</span>
+<span class="s">           &quot;&quot;&quot;</span>
+    <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;</span>
+<span class="s">                as &quot;</span><span class="si">%(colname)s</span><span class="s">&quot;</span>
+<span class="s">            FROM data</span>
+<span class="s">            </span>
+<span class="s">        &quot;&quot;&quot;</span>
+    
     <span class="k">if</span> <span class="n">bb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">stmt</span> <span class="o">+=</span> <span class="s">&quot;&quot;&quot;WHERE ST_Intersects(</span><span class="si">%(bb)s</span><span class="s">, &quot;</span><span class="si">%(colid)s</span><span class="s">&quot;)&quot;&quot;&quot;</span>
     
@@ -475,7 +554,7 @@
         <li class="right" >
           <a href="../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+        <li><a href="../../../../index.html">Nimbodata 1^-10 documentation</a> &raquo;</li>
           <li><a href="../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

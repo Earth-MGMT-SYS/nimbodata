@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Introduction &mdash; Nimbodata alpha documentation</title>
+    <title>Introduction &mdash; Nimbodata 1^-10 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     'alpha',
+        VERSION:     '1^-10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Nimbodata alpha documentation" href="index.html" />
+    <link rel="top" title="Nimbodata 1^-10 documentation" href="index.html" />
     <link rel="next" title="Architecture" href="architecture.html" />
     <link rel="prev" title="Welcome to Nimbodata’s documentation!" href="index.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="index.html" title="Welcome to Nimbodata’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+        <li><a href="index.html">Nimbodata 1^-10 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -54,19 +54,13 @@
             
   <div class="section" id="introduction">
 <h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
-<p>The initial goals of Nimbodata are to provide relational capabilities in a terse
-and Pythonic syntax, allowing rich support for the analytical power of a relational
-database as if it were a native capability of Python.</p>
-<p>Since Nimbodata is still in the early phases of development, this section is
-basically as important as the rest.  Nimbodata aims to support a modern
-approach to the development, deployment and use of management information
-systems.  The tremendous power inherent in collecting, organizing, and analyzing
-information in a continuous improvement approach is hampered by our 20th
-century tools.  In the hubub over &#8220;big data&#8221;, people seem to have forgotten
-that for many organizations regular data is enouch of a challenge - and if
-our tools aren&#8217;t up to snuff for regular data, big data is still in many ways
-an illusion.</p>
-<p>Nimbodata will support a platform inspired by Python, Zope, ArcGIS and infuriated
+<p>Nimbodata aims to enable distributed management systems.  The core capabilities
+of any management system include the collection, validation, management,
+analysis, communication of structured information in the furtherance of an
+objective.  Nimbodata expands upon the now age-old concepts of a relational
+database and GIS, but makes them Python, REST and Javascript native, with
+a sprinking of modern goodness like an object store thrown in.</p>
+<p>Nimbodata is a platform inspired by Python, Zope, ArcGIS and infuriated
 by SharePoint; aimed at producing a cross-platform, standards-based approach
 to developing and deploying applications that exist beyond a particular device
 or machine.</p>
@@ -78,8 +72,9 @@ data platform that provides revision control and cloning capabilities.</li>
 <li>Provide quick and easy access to the world&#8217;s free data, enabling users to
 develop and share applications to evaluate and act upon the mountains of data
 that are available.</li>
-<li>Enable developers to create domain-specific management systems that are
-easy to deploy, maintain and customize.</li>
+<li>Enable people ranging from analysts to developers to create domain-specific
+and cross-domain management systems that are easy to deploy, maintain and
+customize.</li>
 <li>Provide a cloud platform to store and share data and applications, which
 is masterless and decentralized.</li>
 </ul>
@@ -123,13 +118,13 @@ just needs to be exposed properly.</li>
 <p>Longer term goals:</p>
 <ul class="simple">
 <li>Workflows and global event manager.</li>
-<li>Conflict manager for managing merges.</li>
+<li>Conflict manager for managing merges in structural context.</li>
 </ul>
 </div>
 <div class="section" id="vision">
 <h2>Vision<a class="headerlink" href="#vision" title="Permalink to this headline">¶</a></h2>
 <p>We reject the notion of domain-specific platforms, the challenges of the 21st
-century are not just operations or resource planning (for instance), but rather
+century are not specific to any given specialty or domain, instead, they
 require cooperation amongst a variety of fields to acheive successful outcomes.</p>
 <p>The Python ecosystem provides the ability to effectively interact with nearly
 any form of digital information with an idiom that encourages easy-to-read
@@ -145,6 +140,9 @@ platform independence is feasible using simple techniques.</li>
 <li>A distributed cloud architecture will allow users to take advantage of
 public data sources as well as private-cloud and private-local data in
 a seamless manner.</li>
+<li>Encapsulate the application logic, design, structure, documentation and
+data into a single distributed, revision-managed platform built on simple
+rudiments.</li>
 </ul>
 <p>Other aspects of the vision which aren&#8217;t really enabled by technology, but
 don&#8217;t seem to have been picked up by others:</p>
@@ -165,16 +163,24 @@ Python, we hope to expand the power and reach of the Python ecosystem.</li>
 <p>While superficially similar concepts exist (such as SQLAlchemy and
 Flask-Restless), Nimbodata strives to develop a full-stack platform inspired by
 Zope and infuriated by SharePoint and ArcGIS.</p>
-<p>Currently the key unique concepts implemented in Nimbodata are:</p>
+<p>Currently the key unique concepts fully implemented in Nimbodata are:</p>
 <blockquote>
 <div><ul class="simple">
 <li>Append-only modification mode for data and metadata (not including
 structure currently)</li>
 <li>Metadata-mediated queries which reduce the risk of allowing ad hoc
-queries to untrusted users</li>
+queries to untrusted users (all database input is either parameterized,
+or for identifiers, fulfilled via catalog not user input).</li>
 <li>Full functionality via REST/JSON</li>
-<li>Tiling GeoJSON query functionality</li>
+<li>Tiling, simplifying GeoJSON query functionality integrated with
+view-of-view and full relational query capabilities.</li>
 <li>All relationships are by ID not name, allowing side-effect-free renames</li>
+<li>Python (geo)data analysis engine with Catalog and Atlas GUI which is
+completely FOSS.</li>
+<li>Automatically ingest Shapefiles from URL of a zip archive.</li>
+<li>Widget-based Javascript MVC which directly fits the core data model
+with over 10 widgets including forms automatically generated from
+table schema, a slippy map, and more (more added regularly).</li>
 </ul>
 </div></blockquote>
 <p>Ongoing development is aimed at the following unique capabilities:</p>
@@ -184,6 +190,7 @@ queries to untrusted users</li>
 (inserts/updates/deletes/renames/create_*)</li>
 <li>Macro-versioning to reproduce state for each database structurural
 change not encapsulated by microversioning</li>
+<li>Push/Pull ala git</li>
 <li>Ability to control versioning behavior on a default and per-table basis</li>
 <li>Platform applications self-hosted from database - versioning covers apps</li>
 <li>Inherent streaming replication to support read-isolation for queries</li>
@@ -261,7 +268,7 @@ condensed (i.e. LineString and MultiLineString are now just Line).</p>
         <li class="right" >
           <a href="index.html" title="Welcome to Nimbodata’s documentation!"
              >previous</a> |</li>
-        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+        <li><a href="index.html">Nimbodata 1^-10 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

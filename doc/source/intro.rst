@@ -4,21 +4,14 @@
 Introduction
 **************
 
-The initial goals of Nimbodata are to provide relational capabilities in a terse
-and Pythonic syntax, allowing rich support for the analytical power of a relational
-database as if it were a native capability of Python.
+Nimbodata aims to enable distributed management systems.  The core capabilities
+of any management system include the collection, validation, management,
+analysis, communication of structured information in the furtherance of an
+objective.  Nimbodata expands upon the now age-old concepts of a relational
+database and GIS, but makes them Python, REST and Javascript native, with
+a sprinking of modern goodness like an object store thrown in.
 
-Since Nimbodata is still in the early phases of development, this section is
-basically as important as the rest.  Nimbodata aims to support a modern
-approach to the development, deployment and use of management information
-systems.  The tremendous power inherent in collecting, organizing, and analyzing
-information in a continuous improvement approach is hampered by our 20th
-century tools.  In the hubub over "big data", people seem to have forgotten
-that for many organizations regular data is enouch of a challenge - and if
-our tools aren't up to snuff for regular data, big data is still in many ways
-an illusion.
-
-Nimbodata will support a platform inspired by Python, Zope, ArcGIS and infuriated
+Nimbodata is a platform inspired by Python, Zope, ArcGIS and infuriated
 by SharePoint; aimed at producing a cross-platform, standards-based approach 
 to developing and deploying applications that exist beyond a particular device
 or machine.
@@ -31,8 +24,9 @@ We will:
 -  Provide quick and easy access to the world's free data, enabling users to
    develop and share applications to evaluate and act upon the mountains of data
    that are available.
--  Enable developers to create domain-specific management systems that are
-   easy to deploy, maintain and customize.
+-  Enable people ranging from analysts to developers to create domain-specific
+   and cross-domain management systems that are easy to deploy, maintain and
+   customize.
 -  Provide a cloud platform to store and share data and applications, which
    is masterless and decentralized.
 
@@ -78,14 +72,14 @@ Rudiments in place, More Dev Planned:
 Longer term goals:
 
 -   Workflows and global event manager.
--   Conflict manager for managing merges.
+-   Conflict manager for managing merges in structural context.
 
 
 Vision
 ========
 
 We reject the notion of domain-specific platforms, the challenges of the 21st
-century are not just operations or resource planning (for instance), but rather
+century are not specific to any given specialty or domain, instead, they
 require cooperation amongst a variety of fields to acheive successful outcomes.
 
 The Python ecosystem provides the ability to effectively interact with nearly 
@@ -103,6 +97,9 @@ features previously infeasible:
 *   A distributed cloud architecture will allow users to take advantage of
     public data sources as well as private-cloud and private-local data in
     a seamless manner.
+*   Encapsulate the application logic, design, structure, documentation and
+    data into a single distributed, revision-managed platform built on simple
+    rudiments.
     
 Other aspects of the vision which aren't really enabled by technology, but
 don't seem to have been picked up by others:
@@ -125,15 +122,23 @@ While superficially similar concepts exist (such as SQLAlchemy and
 Flask-Restless), Nimbodata strives to develop a full-stack platform inspired by
 Zope and infuriated by SharePoint and ArcGIS.
 
-Currently the key unique concepts implemented in Nimbodata are:
+Currently the key unique concepts fully implemented in Nimbodata are:
 
     *   Append-only modification mode for data and metadata (not including 
         structure currently)
     *   Metadata-mediated queries which reduce the risk of allowing ad hoc
-        queries to untrusted users
+        queries to untrusted users (all database input is either parameterized,
+        or for identifiers, fulfilled via catalog not user input).
     *   Full functionality via REST/JSON
-    *   Tiling GeoJSON query functionality
+    *   Tiling, simplifying GeoJSON query functionality integrated with
+        view-of-view and full relational query capabilities.
     *   All relationships are by ID not name, allowing side-effect-free renames
+    *   Python (geo)data analysis engine with Catalog and Atlas GUI which is
+        completely FOSS.
+    *   Automatically ingest Shapefiles from URL of a zip archive.
+    *   Widget-based Javascript MVC which directly fits the core data model
+        with over 10 widgets including forms automatically generated from
+        table schema, a slippy map, and more (more added regularly).
 
 Ongoing development is aimed at the following unique capabilities:
 
@@ -141,6 +146,7 @@ Ongoing development is aimed at the following unique capabilities:
         (inserts/updates/deletes/renames/create_*)
     *   Macro-versioning to reproduce state for each database structurural
         change not encapsulated by microversioning
+    *   Push/Pull ala git
     *   Ability to control versioning behavior on a default and per-table basis
     *   Platform applications self-hosted from database - versioning covers apps
     *   Inherent streaming replication to support read-isolation for queries

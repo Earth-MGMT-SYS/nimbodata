@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Architecture &mdash; Nimbodata alpha documentation</title>
+    <title>Architecture &mdash; Nimbodata 1^-10 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     'alpha',
+        VERSION:     '1^-10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="Nimbodata alpha documentation" href="index.html" />
+    <link rel="top" title="Nimbodata 1^-10 documentation" href="index.html" />
     <link rel="next" title="Entities" href="entities.html" />
     <link rel="prev" title="Introduction" href="intro.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="intro.html" title="Introduction"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+        <li><a href="index.html">Nimbodata 1^-10 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -60,8 +60,8 @@ PostgreSQL via unix sockets on the localhost.  The application mediates all
 access to the database.  It is expected that <cite>SELECT</cite> functionality will be
 granted via direct driver access in the future, but all DDL and DML actions
 will be mediated by the application for the foreseeable future.</p>
-<div class="section" id="nimbodata-server">
-<h2>Nimbodata Server<a class="headerlink" href="#nimbodata-server" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="nimbodata-core-server">
+<h2>Nimbodata Core Server<a class="headerlink" href="#nimbodata-core-server" title="Permalink to this headline">¶</a></h2>
 <p>Currently targeting Python 2.7.  Numerous dependencies, see the install
 documentation for more detail.</p>
 <p>The Nimbodata server uses psycopg2, a syntax engine, a metadata catalog
@@ -71,6 +71,15 @@ relational (i.e. not SQL compliant) database, with geospatial and object store
 support.</p>
 <p>The server logic and the client access patterns are both oriented around the
 API.</p>
+</div>
+<div class="section" id="nimbodata-application-server">
+<h2>Nimbodata Application Server<a class="headerlink" href="#nimbodata-application-server" title="Permalink to this headline">¶</a></h2>
+<p>Currently half-exists.  The existing Python client will provide the core API
+to all manner of apps, ranging from analysis engines to front-end apps.  Uses
+the Nimbodata API generation capabilities to generate a REST API from user code
+which follows a reasonable convention and serves front-end assets such as the
+<cite>app.json</cite> and <cite>app.css</cite>.  The Nimbodata API generation needs to step up its
+parameter handling game (query string support), but this is not too far off.</p>
 </div>
 <div class="section" id="nimbodata-clients">
 <h2>Nimbodata Clients<a class="headerlink" href="#nimbodata-clients" title="Permalink to this headline">¶</a></h2>
@@ -105,7 +114,8 @@ platform app, with an adaptive UI and advanced cloud-driven capabilities.</p>
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Architecture</a><ul>
-<li><a class="reference internal" href="#nimbodata-server">Nimbodata Server</a></li>
+<li><a class="reference internal" href="#nimbodata-core-server">Nimbodata Core Server</a></li>
+<li><a class="reference internal" href="#nimbodata-application-server">Nimbodata Application Server</a></li>
 <li><a class="reference internal" href="#nimbodata-clients">Nimbodata Clients</a></li>
 <li><a class="reference internal" href="#nimbodata-apps">Nimbodata Apps</a></li>
 </ul>
@@ -155,7 +165,7 @@ platform app, with an adaptive UI and advanced cloud-driven capabilities.</p>
         <li class="right" >
           <a href="intro.html" title="Introduction"
              >previous</a> |</li>
-        <li><a href="index.html">Nimbodata alpha documentation</a> &raquo;</li> 
+        <li><a href="index.html">Nimbodata 1^-10 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

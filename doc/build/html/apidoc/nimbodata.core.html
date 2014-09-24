@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nimbodata.core package &mdash; Nimbodata alpha documentation</title>
+    <title>nimbodata.core package &mdash; Nimbodata 1^-10 documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     'alpha',
+        VERSION:     '1^-10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <link rel="top" title="Nimbodata alpha documentation" href="../index.html" />
+    <link rel="top" title="Nimbodata 1^-10 documentation" href="../index.html" />
     <link rel="up" title="nimbodata package" href="nimbodata.html" />
     <link rel="next" title="nimbodata.core.auth package" href="nimbodata.core.auth.html" />
     <link rel="prev" title="nimbodata.common.tilecalc package" href="nimbodata.common.tilecalc.html" /> 
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="nimbodata.common.tilecalc.html" title="nimbodata.common.tilecalc package"
              accesskey="P">previous</a> |</li>
-        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+        <li><a href="../index.html">Nimbodata 1^-10 documentation</a> &raquo;</li>
           <li><a href="nimbodata.html" accesskey="U">nimbodata package</a> &raquo;</li> 
       </ul>
     </div>  
@@ -108,91 +108,8 @@
 <div class="section" id="nimbodata-core-cloud-module">
 <h2>nimbodata.core.cloud module<a class="headerlink" href="#nimbodata-core-cloud-module" title="Permalink to this headline">¶</a></h2>
 </div>
-<div class="section" id="module-nimbodata.core.rest_server">
-<span id="nimbodata-core-rest-server-module"></span><h2>nimbodata.core.rest_server module<a class="headerlink" href="#module-nimbodata.core.rest_server" title="Permalink to this headline">¶</a></h2>
-<p>Module implements a dynamic REST API for Nimbodata using Flask.</p>
-<dl class="function">
-<dt id="nimbodata.core.rest_server.apiresponder">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">apiresponder</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#apiresponder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.apiresponder" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.get_select_processor">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">get_select_processor</tt><big>(</big><em>objid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#get_select_processor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.get_select_processor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle get select.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.getbyrowid">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">getbyrowid</tt><big>(</big><em>objid</em>, <em>rowid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#getbyrowid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.getbyrowid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle get select.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.post_select_processor">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">post_select_processor</tt><big>(</big><em>objid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#post_select_processor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.post_select_processor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle post select.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.process_entity_identified">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">process_entity_identified</tt><big>(</big><em>entityname</em>, <em>objid</em>, <em>method=None</em>, <em>child=None</em>, <em>last=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#process_entity_identified"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.process_entity_identified" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remnants.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.respond">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">respond</tt><big>(</big><em>path</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#respond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.respond" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generic path responder, on its way out.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.responder">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">responder</tt><big>(</big><em>method</em>, <em>rfunc</em>, <em>objid=None</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#responder"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.responder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle I/O and Error translation between API and REST.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.table_features_handler">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">table_features_handler</tt><big>(</big><em>objid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#table_features_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.table_features_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle get select.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.table_rowids_handler">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">table_rowids_handler</tt><big>(</big><em>objid</em>, <em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#table_rowids_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.table_rowids_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle get select.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.table_tile_handler">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">table_tile_handler</tt><big>(</big><em>objid</em>, <em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#table_tile_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.table_tile_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle get select.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.tree">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">tree</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#tree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.tree" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.view_features_handler">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">view_features_handler</tt><big>(</big><em>objid</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#view_features_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.view_features_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle get select.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.view_rowids_handler">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">view_rowids_handler</tt><big>(</big><em>objid</em>, <em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#view_rowids_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.view_rowids_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle get select.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="nimbodata.core.rest_server.view_tile_handler">
-<tt class="descclassname">nimbodata.core.rest_server.</tt><tt class="descname">view_tile_handler</tt><big>(</big><em>objid</em>, <em>x</em>, <em>y</em>, <em>z</em><big>)</big><a class="reference internal" href="../_modules/nimbodata/core/rest_server.html#view_tile_handler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#nimbodata.core.rest_server.view_tile_handler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Handle get select.</p>
-</dd></dl>
-
+<div class="section" id="nimbodata-core-rest-server-module">
+<h2>nimbodata.core.rest_server module<a class="headerlink" href="#nimbodata-core-rest-server-module" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-nimbodata.core">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-nimbodata.core" title="Permalink to this headline">¶</a></h2>
@@ -212,7 +129,7 @@
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#nimbodata-core-cloud-module">nimbodata.core.cloud module</a></li>
-<li><a class="reference internal" href="#module-nimbodata.core.rest_server">nimbodata.core.rest_server module</a></li>
+<li><a class="reference internal" href="#nimbodata-core-rest-server-module">nimbodata.core.rest_server module</a></li>
 <li><a class="reference internal" href="#module-nimbodata.core">Module contents</a></li>
 </ul>
 </li>
@@ -261,7 +178,7 @@
         <li class="right" >
           <a href="nimbodata.common.tilecalc.html" title="nimbodata.common.tilecalc package"
              >previous</a> |</li>
-        <li><a href="../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+        <li><a href="../index.html">Nimbodata 1^-10 documentation</a> &raquo;</li>
           <li><a href="nimbodata.html" >nimbodata package</a> &raquo;</li> 
       </ul>
     </div>

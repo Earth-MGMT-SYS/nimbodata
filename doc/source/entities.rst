@@ -72,7 +72,6 @@ example::
     ... ]
     >>> db = cloud.create_database('organization')
     >>> table = db.create_table('people',cols)
-    >>> table
     >>> fullname, age = table.columns() # Useful for queries.
     >>> table.insert(['Jane',38])
     >>> table.insert({'age':83,'fullname':'John'}) # Also works

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>nimbodata.core.pg.datatypes.geographic &mdash; Nimbodata alpha documentation</title>
+    <title>nimbodata.core.pg.datatypes.geographic &mdash; Nimbodata 1^-10 documentation</title>
     
     <link rel="stylesheet" href="../../../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../../../',
-        VERSION:     'alpha',
+        VERSION:     '1^-10',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../../../_static/doctools.js"></script>
-    <link rel="top" title="Nimbodata alpha documentation" href="../../../../../index.html" />
+    <link rel="top" title="Nimbodata 1^-10 documentation" href="../../../../../index.html" />
     <link rel="up" title="Module code" href="../../../../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">Nimbodata 1^-10 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -60,15 +60,17 @@
 <div class="viewcode-block" id="Geographic"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.Geographic">[docs]</a><span class="k">class</span> <span class="nc">Geographic</span><span class="p">(</span><span class="n">Datatype</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generic geographic type.&quot;&quot;&quot;</span>
         
-<div class="viewcode-block" id="Geographic.sql_target"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.Geographic.sql_target">[docs]</a>    <span class="k">def</span> <span class="nf">sql_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">colid</span><span class="p">,</span><span class="n">colname</span><span class="p">,</span><span class="n">alias</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="Geographic.sql_target"><a class="viewcode-back" href="../../../../../apidoc/nimbodata.core.pg.datatypes.html#nimbodata.core.pg.datatypes.geographic.Geographic.sql_target">[docs]</a>    <span class="k">def</span> <span class="nf">sql_target</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">colid</span><span class="p">,</span><span class="n">colname</span><span class="p">,</span><span class="n">alias</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">viewcreate</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Return the column results as GeoJSON string&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">alias</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">viewcreate</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&#39;&#39;&#39; &quot;</span><span class="si">%(colid)s</span><span class="s">&quot; &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">{</span> <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span> <span class="p">}</span>
+        <span class="k">elif</span> <span class="n">alias</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&#39;&#39;&#39; ST_AsGeoJSON(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;) AS &quot;</span><span class="si">%(colname)s</span><span class="s">&quot; &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">{</span>
                 <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span><span class="p">,</span>
                 <span class="s">&#39;colname&#39;</span><span class="p">:</span><span class="n">colname</span>
             <span class="p">}</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="s">&#39;&#39;&#39; ST_AsGeoJSON(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;) &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="s">&#39;&#39;&#39; ST_AsGeoJSON(&quot;</span><span class="si">%(colid)s</span><span class="s">&quot;) AS &quot;</span><span class="si">%(colid)s</span><span class="s">&quot; &#39;&#39;&#39;</span> <span class="o">%</span> <span class="p">{</span>
                 <span class="s">&#39;colid&#39;</span><span class="p">:</span><span class="n">colid</span>
             <span class="p">}</span>    
 </div></div>
@@ -160,7 +162,7 @@
         <li class="right" >
           <a href="../../../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../../../index.html">Nimbodata alpha documentation</a> &raquo;</li>
+        <li><a href="../../../../../index.html">Nimbodata 1^-10 documentation</a> &raquo;</li>
           <li><a href="../../../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

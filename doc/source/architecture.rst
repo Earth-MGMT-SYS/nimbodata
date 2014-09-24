@@ -12,8 +12,8 @@ granted via direct driver access in the future, but all DDL and DML actions
 will be mediated by the application for the foreseeable future.
 
 
-Nimbodata Server
-=================
+Nimbodata Core Server
+=======================
 
 Currently targeting Python 2.7.  Numerous dependencies, see the install
 documentation for more detail.
@@ -26,6 +26,17 @@ support.
 
 The server logic and the client access patterns are both oriented around the 
 API.
+
+
+Nimbodata Application Server
+==============================
+
+Currently half-exists.  The existing Python client will provide the core API
+to all manner of apps, ranging from analysis engines to front-end apps.  Uses
+the Nimbodata API generation capabilities to generate a REST API from user code
+which follows a reasonable convention and serves front-end assets such as the
+`app.json` and `app.css`.  The Nimbodata API generation needs to step up its
+parameter handling game (query string support), but this is not too far off.
 
 
 Nimbodata Clients
@@ -53,3 +64,6 @@ is built on the rudiments provided only by the relational datastore and entity-
 model, with more creature comforts planned.  Nimbodata apps can be developed to
 run in either a pure Python environment, as an api-only toolkit or as a full
 platform app, with an adaptive UI and advanced cloud-driven capabilities.
+
+
+
