@@ -33,31 +33,43 @@ Widget.prototype = {
     
     update: function() {
         
-        if (this._spec.browserview && this._spec.browserview.height) {
-            Layout.set_size(
-                this._node,
-                this._spec.browserview.width,
-                this._spec.browserview.height
-            )
-        } else if (this._spec.browserview && this._spec.browserview.containermode) {
-            var width = $(this._node.node()).innerWidth()
-            var height = $(this._node.node()).innerHeight()
-            Layout.set_size(
-                this._node,
-                width,
-                height
-            )
-            var tabheight = $(this._node.select('div.n_tabs').node()).outerHeight()
-            var shownheight = height - tabheight
-            this._node.selectAll('.Container')
-                .style('height',shownheight+'px')
-                .style('width',width+'px')
+        if (this._spec.browserview) {
+            if (this._spec.browserview.height) {
+                Layout.set_height_pct(
+                    this._node,
+                    this._spec.browserview.height
+                )
+            }
+            
+            if (this._spec.browserview.width) {
+                Layout.set_width_pct(
+                    this._node,
+                    this._spec.browserview.width
+                )
+            }
+            
+            if (this._spec.browserview.containermode) {
+                var width = $(this._node.node()).innerWidth()
+                var height = $(this._node.node()).innerHeight()
+                Layout.set_width_pct(
+                    this._node,
+                    width
+                )
+                Layout.set_height_pct(
+                    this._node,
+                    height
+                )
+                var tabheight = $(this._node.select('div.n_tabs').node()).outerHeight()
+                var shownheight = height - tabheight
+                this._node.selectAll('.Container')
+                    .style('height',shownheight+'px')
+                    .style('width',width+'px')
+            }
         }
         
         if (this._spec.children) {
-            if (this._spec.children[0].browserview) {}
-            if (this._spec.browserview.containermode) {}
-            else {
+            if (this._spec.browserview && this._spec.browserview.containermode) {
+            } else if (!this._spec.browserview.height)  {
                 var heights = []
                 this._spec.children.forEach(function (d) {
                     heights.push($('#'+d.id).outerHeight())
@@ -68,6 +80,20 @@ Widget.prototype = {
                     var lastchild = this._spec.children.slice(-1)[0].id
                     var lastheight = inner - offset + 'px'
                     d3.select('#'+lastchild).style('height',lastheight)
+                } catch (e) {
+                    /* There are no other siblings in this container */
+                }
+            } else if (!this._spec.browserview.width) {
+                var widths = []
+                this._spec.children.forEach(function (d) {
+                    widths.push($('#'+d.id).outerWidth())
+                })
+                try {
+                    var offset = widths.slice(0,-1).reduce(function(a,b) { return a + b })
+                    var inner = $(this._node.node()).innerWidth()
+                    var lastchild = this._spec.children.slice(-1)[0].id
+                    var lastwidth = inner - offset + 'px'
+                    d3.select('#'+lastchild).style('width',lastwidth)
                 } catch (e) {
                     /* There are no other siblings in this container */
                 }

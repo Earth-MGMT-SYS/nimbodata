@@ -15,7 +15,7 @@
 
 #right {
     overflow: hidden;
-    background: rgba(0,0,0,0.7);
+    background: #DCEDFF;
 }
 
 #results {
@@ -33,6 +33,9 @@
     left: 1em;
 }
 
+#formview {
+    color: #3D3D3D;
+}
 
 #dataarea {
     width: 100%;

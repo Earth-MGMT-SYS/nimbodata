@@ -7,7 +7,7 @@ import sys
 sys.path.append('../')
 
 import config_cloud as cfg
-from core.pg.datatypes import Text,Point
+from core.pg.datatypes import Text,Point,Float
 
 from common import tilecalc
 
@@ -28,10 +28,10 @@ class TestPoints(unittest.TestCase):
     def setUp(self):
         """Create the database, table and insert some values."""
         try:
-            self.db = cloud.create_database('selectdb')
+            self.db = cloud.create_database('geodb')
         except (cc.RelationExists,cc.IntegrityError):
-            cloud.Database('selectdb').drop()
-            self.db = cloud.create_database('selectdb')
+            cloud.Database('geodb').drop()
+            self.db = cloud.create_database('geodb')
         
         cols = [
             {'name':'home','datatype':Text},
@@ -106,7 +106,51 @@ class TestPoints(unittest.TestCase):
         
         features = geotable.features(self.rowids)
         self.assertEqual(len(features['features']),4)
+
+
+#@unittest.skip('skip')
+class TestCasts(unittest.TestCase):
+    
+    def setUp(self):
+        try:
+            self.db = cloud.create_database('castdb')
+        except (cc.RelationExists,cc.IntegrityError):
+            cloud.Database('castdb').drop()
+            self.db = cloud.create_database('castdb')
         
+    def tearDown(self):
+        self.db.drop()
+    
+    #@unittest.skip('skip')
+    def test_cast_to_point(self):
+        """Can we take a lat/long and turn it into a geographic point?"""
+        cols = [
+            {'name':'a','datatype':Text},
+            {'name':'lat','datatype':Float},
+            {'name':'lon','datatype':Float}
+        ]
+        
+        self.table = cloud.create_table(self.db,'geotable',cols)
+        
+        a,lat,lon = self.table.columns()
+        
+        vals = [
+            ('1',70.2,-140.2),
+            ('2',-68.1,135.4),
+            ('3',63.3,120.6),
+            ('3',-63.7,-120.7),
+        ]
+        
+        self.table.insert(vals)
+        
+        self.table.add_columns([
+            {'name':'geom','datatype':Point,'exp':Point(lon,lat)},
+        ])
+        
+        results = self.table.select()
+        for row in results:
+            self.assertEquals(row['geom'].y,row['lat'])
+            self.assertEquals(row['geom'].x,row['lon'])
         
 
 

@@ -3,6 +3,9 @@
 
 import psycopg2.extensions
 
+from common.entities.prototype import Entity
+from common.comparable import UnaryExpression, TwoValExpression
+
 class Datatype(object):
     """The base class for a PostgreSQL datatype in Nimbodata.
     
@@ -31,9 +34,17 @@ class Datatype(object):
         declaration and value instantiation from the same object.
         
         """
+        try:
+            if isinstance(args[0],Entity):
+                if len(args) == 1:
+                    return UnaryExpression(type(self).__name__,args[0])
+                elif len(args) == 2:
+                    return TwoValExpression(type(self).__name__,args[0],args[1])
+        except IndexError:
+            pass
+        
         return self.from_literal(*args,**kwargs)
     
     def from_literal(self,*args,**kwargs):
         """Instantiates the value from parameters provided."""
         raise NotImplementedError
-    

@@ -22,6 +22,7 @@ def subid():
 class Select(engine.Engine):
     """A Postgres engine providing various query capabilities."""
     allowed_funcs = ['max','min','avg']
+    casts = datatypes.casts
 
     def __init__(self):
         """Instantiate the PG engine as dql_agent and set session read-only."""
@@ -122,11 +123,19 @@ class Select(engine.Engine):
                 except KeyError:
                     out_colinfo.append(entities.Column(col.replace('"','')).row_dict)
                 except TypeError:
-                    col = tuple(col)
-                    out_colinfo.append(colinfo_by_colname[col[1]].row_dict)
+                    try:
+                        if len(col) == 2:
+                            colinfo = self.api.get_byid(col[1]).info
+                            colinfo['datatype'] = col[0] # Validate/Instantiate?
+                            out_colinfo.append(colinfo)
+                        else:
+                            raise NotImplementedError
+                    except (errors.RelationDoesNotExist,AttributeError):
+                        out_colinfo.append(colinfo_by_colname[col[1]].row_dict)
                 
         # Now, we dance.  With the columns... to build the target for select
         col_sub = []
+        
         
         for i,colspec in enumerate(cols):
             if colspec == '_adm-rowid':
@@ -147,15 +156,23 @@ class Select(engine.Engine):
                         except TypeError:
                             colspec = tuple(colspec)
                             colid = j_decoder[colspec]
+                        except UnboundLocalError:
+                            raise errors.QueryError
                     colname = colspec
                     funcname = None
                 except KeyError:
-                    if colspec[0] not in self.allowed_funcs:
+                    # It is an expression
+                    if colspec[0] in self.allowed_funcs:                        
+                        colid = decoder[colspec[1]]
+                        colname = colspec[1]
+                        funcname = colspec[0]
+                    elif colspec[0] in self.casts:
+                        colid = colspec[1]
+                        colname = colspec[1]
+                        funcname = self.casts[colspec[0]]
+                    else:
                         print colspec[0]
                         raise errors.InvalidFunction
-                    colid = decoder[colspec[1]]
-                    colname = colspec[1]
-                    funcname = colspec[0]
             
             if colname in geocols:
                 colStr = datatypes.Geographic().sql_target(colid,colname,alias,viewcreate)
@@ -185,7 +202,9 @@ class Select(engine.Engine):
         w_params = {}
         if where is not None and where != [] and where != {}:
             
-            def process_clause(whereClause):                
+            print where
+            
+            def process_clause(whereClause):
                 if isinstance(whereClause,basestring):
                     whereCol, whereCmp, whereCond = whereClause.split(' ')
                 else:
@@ -296,8 +315,11 @@ class Select(engine.Engine):
                 order_by = [order_by]
             
             for orderClause in order_by:
-                split = orderClause.split(' ')
-                if len(split) == 2 and split[1].lower() not in ('asc','desc','dsc'):
+                try:
+                    split = orderClause.split(' ')
+                except AttributeError:
+                    split = orderClause
+                if len(split) == 2 and split[1].lower() not in ('asc','desc'):
                     raise ValueError("Invalid sort directive")
                 split[0] = '"' + decoder[split[0]] + '"'
                 order_parts.append(' '.join(split))
@@ -336,6 +358,8 @@ class Select(engine.Engine):
         where_stmt, where_params = self._where(where,decoder)
         stmt += where_stmt + "\n"
         params.update(where_params)
+        
+        print where_stmt, where_params
                 
         group_stmt, group_params = self._group_by(group_by,decoder)
         stmt += group_stmt + "\n"

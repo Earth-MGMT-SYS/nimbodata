@@ -100,6 +100,54 @@ class TestSelect(unittest.TestCase):
         
         self.table2 = cloud.create_table(self.db,'aggtable',cols2)
         self.table2.insert(val2)
+        
+    def _castInteger(self):
+        cols = [
+            {'name':'pk','datatype':Text},
+            {'name':'a','datatype':Integer},
+            {'name':'b','datatype':Text}
+        ]
+        
+        vals = [
+            ('a',1,'1'),
+            ('b',2,'2'),
+            ('c',3,'3')
+        ]
+        
+        self.cast_table = self.db.create_table('cast_table',cols)
+        self.cast_table.insert(vals)
+        
+    def _castFloat(self):
+        cols = [
+            {'name':'pk','datatype':Text},
+            {'name':'a','datatype':Float},
+            {'name':'b','datatype':Text}
+        ]
+        
+        vals = [
+            ('a',1.1,'1.1'),
+            ('b',2.2,'2.2'),
+            ('c',3.3,'3.3')
+        ]
+        
+        self.cast_table = self.db.create_table('cast_table',cols)
+        self.cast_table.insert(vals)
+        
+    def _castText(self):
+        cols = [
+            {'name':'pk','datatype':Text},
+            {'name':'a','datatype':Text},
+            {'name':'b','datatype':Text}
+        ]
+        
+        vals = [
+            ('a','1',1),
+            ('b','2',2),
+            ('c','3',3)
+        ]
+        
+        self.cast_table = self.db.create_table('cast_table',cols)
+        self.cast_table.insert(vals)
     
     def _aliasTable(self):
         """Create a table with columns with aliases."""
@@ -458,6 +506,36 @@ class TestSelect(unittest.TestCase):
         cols = [('avg','ordertotal')]
         result = cloud.select(self.table2,cols)
         self.assertEqual(result[0][0],25.9011111111111)
+        
+    #@unittest.skip('skip')
+    def test_asinteger(self):
+        """Can we select column of Integers typed as Text cast as Integer?"""
+        self._castInteger()
+        pk,a,b = self.cast_table.columns()
+        cols = [pk,a,Integer(b)]
+        result = cloud.select(self.cast_table,cols)
+        for row in result:
+            self.assertEquals(row[1],row[2])
+            
+    #@unittest.skip('skip')
+    def test_asfloat(self):
+        """Can we select column of Integers typed as Text cast as Integer?"""
+        self._castFloat()
+        pk,a,b = self.cast_table.columns()
+        cols = [pk,a,Float(b)]
+        result = cloud.select(self.cast_table,cols)
+        for row in result:
+            self.assertEquals(row[1],row[2])
+            
+    #@unittest.skip('skip')
+    def test_astext(self):
+        """Can we select column of Integers typed as Text cast as Integer?"""
+        self._castText()
+        pk,a,b = self.cast_table.columns()
+        cols = [pk,a,Text(b)]
+        result = cloud.select(self.cast_table,cols)
+        for row in result:
+            self.assertEquals(row[1],row[2])
     
     #@unittest.skip('skip')
     def test_byid(self):

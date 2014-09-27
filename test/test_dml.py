@@ -60,16 +60,16 @@ class TestInsert(unittest.TestCase):
                 ]
         table = cloud.create_table(self.db,'testTable',cols)
         vals = ['george',3,'pigskin']
-        rowids = cloud.insert(table,vals)
+        rowids = table.insert(vals)
         values = [
                 ('frank',2,'apple'),
                 ('jerry',5,'orange'),
                 ('ann',7,'fig'),
                 ('francine',9,'tomato'),
                 ]
-        rowids = cloud.insert(table,values)
-        cloud.update(table,rowids[0],{'pk':'peewee'})
-        updated = cloud.getby_id(table,rowids[0])
+        rowids = table.insert(values)
+        table.update(rowids[0],{'pk':'peewee'})
+        updated = cloud.get_byrowid(table,rowids[0])
         self.assertEquals(updated[0],'peewee')
     
     #@unittest.skip('skip')

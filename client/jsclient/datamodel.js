@@ -174,6 +174,12 @@ Model.prototype = function () {
                     .create_view(details.name,details.params,function (e,d) {
                         Model.respond(source,'select',d)
                     })
+            } else if (event == 'style') {
+                d3.values(responders).forEach(function(sink) {
+                    if (sink.event_filter && sink.event_filter(source,event,details)) {
+                        if (sink.style) sink.style(details)
+                    }
+                })
             }
         },
         

@@ -1,0 +1,11 @@
+
+.n_select_inner_container {
+    margin: 1em;
+    background-color:rgba(69,99,135,0.5);
+}
+
+div.Overbox div.n_gobox {
+    background: none;
+    border: none;
+    width: initial;
+}

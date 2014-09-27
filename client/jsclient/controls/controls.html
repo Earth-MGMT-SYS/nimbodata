@@ -87,6 +87,23 @@
                 "id":"plantatia",
             })
             
+            controls.color("input_container",{
+                'label':'Colorado',
+                'id':'colorpicker'
+            })
+            
+            controls.color_button("input_container",{
+                'label':'ColoradoButtone',
+                'id':'colorbutt',
+                'button_label':'Fantasia',
+                'on':{
+                    click:function () {
+                        var inp = d3.select('#colorbutt').node()
+                        alert(inp.value)
+                    }
+                }
+            })
+            
             d3.select("#main")
                 .append("div")
                 .attr("id","dropdown_container")
@@ -241,6 +258,8 @@
             d3.select("#main")
                 .append("div")
                 .attr("id","multi_container")
+                
+            
                 
             var multi = controls.multi("multi_container",{
                 "label":"Multiplicitive capabilitize",

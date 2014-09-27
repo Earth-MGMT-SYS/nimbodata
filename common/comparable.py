@@ -26,6 +26,23 @@ class WhereClause(object):
         except TypeError:
             return str(self.data)
 
+class UnaryExpression(object):
+    """Encapsulates SQL/Nimbodata unary expression."""
+    
+    def __init__(self,exp,a):
+        self.data = (exp,a)
+
+class BinaryExpression(object):
+    """Encapsulates SQL/Nimbodata expressions."""
+    
+    def __init__(self,a,exp,b):
+        self.data = (a,exp,b)
+        
+class TwoValExpression(object):
+    """Encapsulates SQL/Nimbodata expressions."""
+    
+    def __init__(self,exp,a,b):
+        self.data = (exp,a,b)
 
 class Comparable(object):
     """Override comparison operators for relational use."""
@@ -47,3 +64,17 @@ class Comparable(object):
         
     def __ge__(self,other):
         return WhereClause(self['name'],'>=',other)
+
+    def __add__(self,other):
+        return BinaryExpression(self['name'],'+',other)
+    
+    def __sub__(self,other):
+        return BinaryExpression(self['name'],'-',other)
+        
+    def __mul__(self,other):
+        return BinaryExpression(self['name'],'*',other)
+        
+    def __div__(self,other):
+        return BinaryExpression(self['name'],'/',other)
+        
+    

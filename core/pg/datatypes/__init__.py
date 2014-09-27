@@ -43,3 +43,11 @@ DataObject = DataObject()
 
 import _register_lunatics
 
+casts = {
+    'Integer':'_adm-registries"."to_Integer',
+    'Float':'_adm-registries"."to_Float',
+    'Text':'_adm-registries"."to_Text',
+    'Point':'ST_Point',
+}
+
+function.casts = casts

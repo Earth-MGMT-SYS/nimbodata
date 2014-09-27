@@ -6,6 +6,9 @@
 -------------------------------------------------------------------------------
 
 CREATE EXTENSION postgis;
+CREATE LANGUAGE plpython2u;
+
+
 
 DROP SCHEMA "_adm-registries" CASCADE;
 
@@ -13,7 +16,7 @@ CREATE SCHEMA "_adm-registries";
 
 SET search_path TO "_adm-registries";
 
-CREATE LANGUAGE plpython2u;
+
 
 CREATE TABLE "_adm-entitymethods" (
     entitytype text PRIMARY KEY,
@@ -47,6 +50,18 @@ CREATE FUNCTION "to_Text" (val text)
     RETURNS text
 AS $$
     return val
+$$ LANGUAGE plpython2u;
+
+CREATE FUNCTION "to_Text" (val float)
+    RETURNS text
+AS $$
+    return str(val)
+$$ LANGUAGE plpython2u;
+
+CREATE FUNCTION "to_Text" (val integer)
+    RETURNS text
+AS $$
+    return str(val)
 $$ LANGUAGE plpython2u;
 
 CREATE FUNCTION "to_Float" (val text)

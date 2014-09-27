@@ -23,33 +23,30 @@ These instructions will assume Ubuntu 14.04, you Archers are an industrious bunc
 and I'm sure you can manage.
 
 First, you'll need PostgreSQL 9.4.  For now, since it is beta, you'll need to
-go about it the hard way, add this you your /etc/apt/sources.list
+go about it the "hard" way, add this you your /etc/apt/sources.list
 
     deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main 9.4
     
 Then execute (to update the apt-key):
 
     $ wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
-    
+
+Then add ppas:
+
+    $ sudo apt-add-repository ppa:ubuntugis/ubuntugis-unstable
+    $ sudo apt-add-repository ppa:zfs-native/stable
+
 Then:
     
     $ sudo apt-get update
     
 Now you'll need a few packages:
 
-    $ sudo apt-get install postgresql-9.4 postgis gdal-bin libgdal-dev \
-      python-dev python-pip
-      
-And a few postgres things that apt can't seem to find on its own (beta fun):
-
-    $ wget http://apt.postgresql.org/pub/repos/apt/pool/main/p/postgis/postgresql-9.4-postgis-2.1-scripts_2.1.3%2bdfsg-4.pgdg70%2b1_all.deb
-    $ sudo dpkg -i postgresql-9.4-postgis-2.1-scripts_2.1.3+dfsg-4.pgdg70+1_all.deb
-    $ wget http://apt.postgresql.org/pub/repos/apt/pool/main/p/postgresql-9.4/postgresql-plpython-9.4_9.4~beta2-2~129.bzr487.pgdg14.04%2b1_amd64.deb
-    $ sudo dpkg -i postgresql-plpython-9.4_9.4~beta2-2~129.bzr487.pgdg14.04+1_amd64.deb
+    $ sudo apt-get install postgresql-9.4 postgresql-9.4-postgis-2.1 postgresql-9.4-postgis-2.1-scripts postgis gdal-bin python-dev python-pip python-gdal libpq-dev postgresql-plpython-9.4 nodejs nodejs-legacy npm
 
 Now you'll need some pip deliciousness:
 
-    $ sudo pip install flask psycopg2 Shapely jsonpickle requests flask-security flask-cors
+    $ sudo pip install flask Shapely jsonpickle requests flask-security flask-cors
     
 Now you need to configure PostgreSQL, which is always a blast:
 
@@ -63,6 +60,17 @@ To (development only):
 
     local   all     all     trust
     
+If you are uncomfortable with the above, then you'll need to peruse `install.sql`
+to establish which sql users you want to have what access (for now).
+
+Also make sure you are on port 5432: 
+
+    $ sudo nano /etc/postgresql/9.4/main/postgresql.conf
+    
+And finally:
+
+    $ sudo /etc/init.d/postgresql restart
+
 Now travel to where you want Nimbodata and instantiate the database:
 
     $ git clone https://github.com/Earth-MGMT-SYS/nimbodata.git

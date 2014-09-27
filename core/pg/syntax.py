@@ -57,27 +57,41 @@ def alter_column_type(schemaid,tblid,colid,newtype):
                     "_adm-registries"."to_%(coltype)s"("%(colid)s")
            """
     return stub % {
-                    'qtn':get_tqn(schemaid,tblid),
-                    'colid':colid,
-                    'coltype':newtype
-                 }
+        'qtn':get_tqn(schemaid,tblid),
+        'colid':colid,
+        'coltype':newtype
+     }
            
 def add_column(schemaid,tblid,colid,dtype,pk=None):
     subStr = {
-            'tqn':_get_tqn(schemaid,tblid),
-            'const':'"' + str(tblid) + '_pkuq"',
-            'colid':str(colid),
-            'dtype':str(dtype),
-            }
+        'tqn':_get_tqn(schemaid,tblid),
+        'const':'"' + str(tblid) + '_pkuq"',
+        'colid':str(colid),
+        'dtype':str(dtype),
+    }
+    
     if pk is None:
         stmt = """ALTER TABLE %(tqn)s ADD COLUMN "%(colid)s" %(dtype)s """
     elif pk is True:
         stmt = """
-                ALTER TABLE %(tqn)s
-                ADD COLUMN "%(colid)s" %(dtype)s,
-                ADD CONSTRAINT %(const)s UNIQUE ("%(colid)s"),
-                ADD PRIMARY KEY ("%(colid)s")  """
+            ALTER TABLE %(tqn)s
+            ADD COLUMN "%(colid)s" %(dtype)s,
+            ADD CONSTRAINT %(const)s UNIQUE ("%(colid)s"),
+            ADD PRIMARY KEY ("%(colid)s")
+        """
     return stmt % subStr
+    
+def update_as(schemaid,tblid,colid,exp):
+    subStr = {
+        'tqn':_get_tqn(schemaid,tblid),
+        'const':'"' + str(tblid) + '_pkuq"',
+        'colid':str(colid),
+        'exp':exp
+    }
+    return """
+        UPDATE %(tqn)s
+        SET "%(colid)s" = %(exp)s
+    """ % subStr
 
 def add_index(schemaid,tblid,indid,colid,unique=False,index_type=None):
     stub = """

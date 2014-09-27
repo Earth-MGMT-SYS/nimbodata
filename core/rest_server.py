@@ -270,13 +270,19 @@ def process_entity_identified(entityname,objid,method=None,child=None,last=None)
     elif method is not None and method.startswith('create_'):
         if request.method != 'POST':
             abort(405)
-        ent = api.get_entity(entityname)(objid)
+        try:
+            ent = api.get_entity(entityname)(objid)
+        except KeyError:
+            abort(404)
         return dump(getattr(ent,method)(**load(request.data)))
     
     else:
         if request.method != 'GET':
             abort(405)
-        ent = api.get_entity(entityname)(objid)
+        try:
+            ent = api.get_entity(entityname)(objid)
+        except KeyError:
+            abort(404)
         try:
             return dump(getattr(ent,method)())
         except AttributeError:

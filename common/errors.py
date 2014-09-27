@@ -59,3 +59,10 @@ class DataError(Exception):
 
 class NotAuthorized(Exception):
     strerror = '!ERROR! 042: Not Authorized'
+
+class QueryError(Exception):
+    """The query is malformed.
+    
+    For instance it requests columns not specified in from or join.
+    
+    """

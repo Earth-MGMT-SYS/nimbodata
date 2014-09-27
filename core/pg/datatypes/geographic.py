@@ -25,11 +25,19 @@ class Geographic(Datatype):
                 'colid':colid
             }    
 
+
 class Point(geo.Point,Geographic):
     """Simple X,Y point.  Extends PostGIS `POINT` and Shapely `Point`."""
         
     def sql_create(self):
         return 'geometry(POINT,4326)'
+        
+    def as_lonlat(self,lon,lat):
+        lon = float(lon)
+        lat = float(lat)
+        
+        return "ST_SetSRID( ST_Point(%(lon)s, %(lat)s), 4326)"
+    
 
 
 class MultiPoint(geo.MultiPoint,Geographic):

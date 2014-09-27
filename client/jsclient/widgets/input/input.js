@@ -29,6 +29,25 @@ return {
         Widget.prototype.init.call(this, root, spec)
     },
     
+    event_filter: function(source,event,details) {
+        if (details.entitytype) {
+            if (details.entitytype == 'View' || details.entitytype == 'Table') {
+                return true
+            }
+        } else if (details._info) {
+            if (details._info.entitytype == 'View' || details._info.entitytype == 'Table') {
+                return true
+            }
+        } else if (details.viewid) {
+            return true
+        } else if (event == 'refresh') {
+            return ['select',{'viewid':objid}]
+        } else if (event == 'select') {
+            return ['select',{'viewid':objid}]
+        }
+        return false
+    },
+    
     update: function(e,dataset) {
                 
         if (dataset) {}
@@ -37,6 +56,8 @@ return {
             Widget.prototype.update.call(this)
             return
         }
+        
+        self._node.selectAll('*').remove()
         
         var rows = dataset.rows
         var header = dataset.header
@@ -52,13 +73,15 @@ return {
         var fields = schema.properties
                 
         var dtconv = {
-            'text':'string'
+            'Text':'string',
+            'Float':'number',
+            'Integer':'number'
         }
         
         dataset.header.forEach(function (d) {
-            var dtype = d.datatype.toLowerCase()
+            var dtype = dtconv[d.datatype] ? dtconv[d.datatype] : 'object'
             fields[d.name] = {
-                'type': dtconv[dtype] ? dtconv[dtype] : dtype,
+                'type': dtype,
                 'name': d.name,
                 'title': d.alias ? d.alias : d.name
             }

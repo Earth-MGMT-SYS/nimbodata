@@ -16,3 +16,7 @@
     font-size: 0.8em;
 }
 
+div.Input {
+    padding-left: 2em;
+    max-width: 90%;
+}

@@ -1,6 +1,6 @@
 [
     {
-        "title":"Earth-MGMT Atlas",
+        "title":"Water-MGMT Dashboard",
         "id":"map",
         "widget":"Map",
         "maxbutton":false,
@@ -12,20 +12,7 @@
     {
         "id":"menutree",
         "widget":"MenuTree",
-        "datasource":"tree",
-        "overbox":true
-    },
-    {
-        "id":"querybox",
-        "widget":"Select",
-        "overbox":true,
-        "column_control":false,
-        "order_control":false,
-        "create":false
-    },
-    {
-        "id":"stylemaster",
-        "widget":"Styler",
+        "datasource":["databases","WaterMgmt","tree"],
         "overbox":true
     },
     {

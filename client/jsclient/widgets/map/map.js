@@ -12,16 +12,34 @@ var base_layers = [],
     feature_layers = [];
     
 var _map, self;
+var fill = "#29CAE1", stroke = "#F40C0E";
+var _style = {
+    "clickable": true,
+    "color": stroke,
+    "fillColor": fill,
+    "weight": 1,
+    "opacity": 0.5,
+    "fillOpacity": 0.5
+};
+
+var _hover_style = {
+    "clickable": true,
+    "color": stroke,
+    "fillColor": fill,
+    "weight": 2,
+    "opacity": 0.9,
+    "fillOpacity": 0.3
+};
 
 var maximized = false;
 
 // Private function used in init, also with public method interface.
 function _add_base_layer (urltempl) {
     
-    var mq_tiles = L.tileLayer(
-        urltempl,
-        {maxZoom: 18}
-    )
+    var mq_tiles = L.tileLayer(urltempl,{
+        maxZoom: 18,
+        attribution: '<a href="http://www.mapquest.com">MapQuest</a>'
+    })
     
     base_layers.push(mq_tiles)
     mq_tiles.addTo(_map);
@@ -90,6 +108,9 @@ function got_geojson (e, d) {
     gj_layer.addTo(_map)
 }
 
+
+var _layerchoice;
+
 // Public methods on object
 return {
     
@@ -156,6 +177,9 @@ return {
     
     event_filter: function(source,event,details) {
         var info = details._info ? details._info : details
+        if (event == 'style') {
+            return true;
+        }
         if (info.objid && info.entitytype) {
             var ent = cloud[info.entitytype](info.objid)
             if (ent.geo_columns) {
@@ -163,6 +187,7 @@ return {
                     if (d.length == 0) {
                         return false
                     } else {
+                        _layerchoice = info
                         self.add_tiled_geojson(info)
                     }
                 })
@@ -295,20 +320,33 @@ return {
         d3.json(url,got_geojson)
     },
     
+    style: function (details) {
+        _style = {
+            "clickable": true,
+            "color": details.stroke,
+            "fillColor": details.fill,
+            "weight": 2,
+            "opacity": 0.5,
+            "fillOpacity": 0.5
+        };
+
+        _hover_style = {
+            "clickable": true,
+            "color": details.stroke,
+            "fillColor": details.fill,
+            "weight": 3,
+            "opacity": 0.9,
+            "fillOpacity": 0.3
+        };
+        self.add_tiled_geojson(_layerchoice)
+    },
+    
     add_tiled_geojson: function (info) {
         
         var objid = info.objid
         var etype = info.entitytype
         
         this.clear()
-        var style = {
-            "clickable": true,
-            "color": "#00D",
-            "fillColor": "#00D",
-            "weight": 0.5,
-            "opacity": 0.3,
-            "fillOpacity": 0.2
-        };
         
         var hoverStyle = {
             "fillOpacity": 0.5
@@ -324,12 +362,15 @@ return {
             opacity: 1,
             fillOpacity: 0.8
         };
+        
+        var laststyle;
             
         var gj_layer = new L.TileLayer.GeoJSON(geojsonURL, {
                 clipTiles: true,
                 unique: function (feature) {
                     return feature.properties.rowid;
                 },
+            },{
                 pointToLayer:function (feature, latlng) {
                     var marker = L.circleMarker(latlng, geojsonMarkerOptions);
                     marker.on('click',function(e){
@@ -340,6 +381,7 @@ return {
                     })
                     return marker
                 },
+            
                 onEachFeature: function (feature, layer) {
                     layer.on('click', function (e) {
                         Model.respond(self,'selectrow',{
@@ -347,10 +389,45 @@ return {
                             'objid':objid
                         })
                     })
+                    layer.on('mouseover', function (e) {
+                        layer.setStyle(_hover_style)
+                    })
+                    layer.on('mouseout', function (e) {
+                        layer.setStyle(_style)
+                    })
+                },
+                style: function (feature) {
+                    if (!feature) {
+                    } else if (_style) {
+                        laststyle = _style
+                    } else if (feature.geometry.geometries[0].type == 'Point') {
+                        // Points - doesn't actually do anything now
+                        // but I would forget how if I don't leave this in.
+                        laststyle = {
+                            "clickable": true,
+                            "color": "#F40C0E",
+                            "fillColor": "#8BDCEB",
+                            "weight": 1,
+                            "opacity": 0.9,
+                            "fillOpacity": 0.7
+                        };
+                    } else {
+                        // Polygons and lines - doesn't actually do anything now
+                        // but I would forget how if I don't leave this in.
+                        laststyle = {
+                            "clickable": true,
+                            "color": "#D88717",
+                            "fillColor": "#DFE129",
+                            "weight": 1,
+                            "opacity": 0.5,
+                            "fillOpacity": 0.3
+                        };
+                    }
+                    return laststyle
                 }
             }
         )
-    
+            
         feature_layers.push(gj_layer)
         gj_layer.addTo(_map)
         

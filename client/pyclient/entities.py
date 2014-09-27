@@ -104,6 +104,7 @@ class Entity(base_ent.Entity):
             return self._info
         
     def listing(self,child_type=None):
+        
         if child_type is None:
             items = json.loads(sesh.get(self._get_req_url()).text)
             entities = [init_entity(x) for x in items]
@@ -111,10 +112,10 @@ class Entity(base_ent.Entity):
                 e.sesh = sesh
             return entities
         else:
-            url = self._get_req_url(self.objid) + ("%ss/" % child_type)
+            url = self._get_req_url(self.objid) + ("%ss/" % child_type.lower())
             r = sesh.get(url).text
             try:
-                return [View(x) for x in json.loads(r)]
+                return [api.get_entity(x['entitytype'])(x) for x in json.loads(r)]
             except ValueError as e:
                 print r
                 raise e
@@ -217,18 +218,6 @@ class View(Entity):
         r = sesh.get(url).text
         try:
             return Column(json.loads(r))
-        except ValueError as e:
-            print r
-            raise e
-            
-    def columns(self):
-        url = self._get_req_url(self.objid) + "columns/"
-        r = sesh.get(url).text
-        try:
-            cols = [Column(x) for x in json.loads(r)]
-            for x in cols:
-                x.api = api
-            return cols
         except ValueError as e:
             print r
             raise e

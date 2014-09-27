@@ -10,7 +10,7 @@ import psycopg2
 sys.path.append('../')
 
 import config_cloud as cfg
-from core.pg.datatypes import Text,Integer
+from core.pg.datatypes import Text,Integer, Float
 
 target = 'rest'
 
@@ -74,7 +74,7 @@ class TestDDL(unittest.TestCase):
         self.assertEquals(self.db.info['alias'],'FrankrankBoffinBrew')
                 
         
-    @unittest.skip('skip')
+    #@unittest.skip('skip')
     def test_view_metadata(self):
         """Can we create and query from a view?"""
         cols = [
@@ -96,7 +96,7 @@ class TestDDL(unittest.TestCase):
         self.assertEquals(viewcols[1]['name'],'a')
         self.assertEquals(viewcols[2]['name'],'b')
     
-    @unittest.skip('skip')
+    #@unittest.skip('skip')
     def test_view_insert_select(self):
         """Can we select from a view reliably after inserts?"""
         cols = [
@@ -130,7 +130,7 @@ class TestDDL(unittest.TestCase):
         result = cloud.select(temp)
         self.assertEquals(result[0]['pk'],'frank')
         
-    @unittest.skip('skip')  
+    #@unittest.skip('skip')
     def test_cols(self):
         """Can we create and modify columns?"""
         cols = [
@@ -162,7 +162,41 @@ class TestDDL(unittest.TestCase):
         pk, a, b = self.table.columns()
         self.assertEquals(pk['datatype'],'Text')
         
-    @unittest.skip('skip')
+    #@unittest.skip('skip')
+    def test_add_column_as(self):
+        """Can we add a column as an expression on another?"""
+        
+        cols = [
+            {'name':'pk','datatype':Text},
+            {'name':'a','datatype':Integer},
+            {'name':'b','datatype':Text},
+            {'name':'c','datatype':Text},
+        ]
+        self.table = self.db.create_table('Colstuff',cols)
+        pk, a, b, c = self.table.columns()
+        values = [
+            ('frank',2,'1','1.1'),
+            ('jerry',5,'2','2.2'),
+            ('ann',7,'3','3.3'),
+            ('francine',9,'4','4.4'),
+        ]
+        self.table.insert(values)
+        vals = cloud.select(self.table)
+        self.assertEquals(vals[0]['b'],'1')
+        
+        self.table.add_columns([
+            {'name':'d','datatype':'Integer','exp':Integer(b)},
+            {'name':'e','datatype':'Text','exp':Text(a)},
+            {'name':'f','datatype':'Float','exp':Float(c)}
+        ])
+        
+        vals = cloud.select(self.table)
+        
+        self.assertEquals(vals[0]['d'],1)
+        self.assertEquals(vals[0]['e'],'2')
+        self.assertEquals(vals[0]['f'],1.1)
+        
+    #@unittest.skip('skip')
     def test_addRow(self):
         """Ensure that we can insert into a newly created table."""
         cols = [
@@ -182,7 +216,7 @@ class TestDDL(unittest.TestCase):
         # Ensure that there's one and only one result
         self.assertEquals(len(dbs),1)
     
-    @unittest.skip('skip')
+    #@unittest.skip('skip')
     def test_drop_table(self):
         """Can we drop a table?"""
         table = self.db.create_table('testme',[])
@@ -191,7 +225,7 @@ class TestDDL(unittest.TestCase):
         table_objids = [x['objid'] for x in self.db.tables()]
         self.assertNotIn(tblid,table_objids)
         
-    @unittest.skip('skip')
+    #@unittest.skip('skip')
     def test_drop_table_with_children(self):
         """Can we drop a table with children (i.e. columns)?"""
         cols = [
@@ -207,7 +241,7 @@ class TestDDL(unittest.TestCase):
         col_list = [x['objid'] for x in cloud.Column().listing()]
         self.assertNotIn(table_cols[0],col_list)
     
-    @unittest.skip('skip')
+    #@unittest.skip('skip')
     def test_drop_db_with_grandchildren(self):
         """Can we drop a database with grandchildren (i.e. columns)?"""
         cols = [
@@ -223,7 +257,7 @@ class TestDDL(unittest.TestCase):
         col_list = [x['objid'] for x in cloud.Column().listing()]
         self.assertNotIn(table_cols[0],col_list)
         
-    @unittest.skip('skip')
+    #@unittest.skip('skip')
     def test_drop_column(self):
         """Can we drop a column?"""
         cols = [
@@ -237,7 +271,7 @@ class TestDDL(unittest.TestCase):
         cols = self.table.columns()
         self.assertEquals(cols[0]['name'],'b')
     
-    @unittest.skip('skip')
+    #@unittest.skip('skip')
     def test_rename_column(self):
         """Can we can rename a column?"""
         cols = [
@@ -251,7 +285,7 @@ class TestDDL(unittest.TestCase):
         self.assertEquals(num_cols,len(self.table.columns()))
         self.assertEquals(self.table.columns()[0]['name'],'G')
     
-    @unittest.skip('skip')
+    #@unittest.skip('skip')
     def test_rename_table(self):
         """Can we can rename a table?"""
         self.table = self.db.create_table('testTable',[])
@@ -259,7 +293,7 @@ class TestDDL(unittest.TestCase):
         self.table.rename('borfo')
         self.assertEquals(self.table.info['name'],'borfo')
     
-    @unittest.skip('skip')
+    #@unittest.skip('skip')
     def test_rename_db(self):
         """Can we rename a database?"""
         dbs = cloud.Database().listing()

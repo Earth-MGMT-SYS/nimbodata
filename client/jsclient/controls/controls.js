@@ -89,6 +89,25 @@ return {
         return node
     },
     
+    color: function (parent_node,params) {
+        var selector = controls._selector(parent_node)
+        var tag;
+                
+        var node = d3.select(selector)
+            .append('div')
+                .classed("argo",true)   
+            
+        var next = node.append('form')
+            .classed('pure-form',true)
+            .append("label")
+                .classed('argo',true)
+                .text(params.label)
+        return next.append("input")
+                    .attr("type","color")
+                    .attr("id",params.id)
+                    .attr("value",params.default)
+    },
+    
     feedback: function(parent_node,params) {
         var selector = controls._selector(parent_node)
         
@@ -264,6 +283,48 @@ return {
                     .attr("id",params.id)
                     .attr("value",params.default)
                     .classed("argo",true)
+                    
+        var button = form.append('a')
+            .classed('pure-button',true)
+            .classed('n_input_button',true)
+            .on('click',params.on.click)
+            
+        if (params.icon) {
+            button.append('i')
+                .classed('fa',true)
+                .classed('fa-'+params.icon,true)
+        }
+        
+        var label = button.append('span')
+            .text(params.button_label)
+        
+        if (params.icon) {    
+            label.classed('n_button_icon_label',true)
+        }
+        
+    },
+    
+    color_button: function (parent_node,params) {
+        var selector = controls._selector(parent_node)
+        
+        var node = d3.select(selector)
+            .append('div')
+            .attr("id",params.id + "_container")
+            .classed('argo',true)
+        
+        var form = node.append('form')
+            .classed('pure-form',true)
+            
+        form
+            .append("label")
+                .classed("argo",true)
+                .text(params.label)
+                    .append("input")
+                    .attr("id",params.id)
+                    .attr('type','color')
+                    .attr("value",params.default)
+                    .classed("argo",true)
+                    .classed("n_color",true)
                     
         var button = form.append('a')
             .classed('pure-button',true)

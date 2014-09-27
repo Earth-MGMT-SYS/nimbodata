@@ -10,10 +10,9 @@ body {
   color: white;
   position: absolute;
   background-color:rgba(0,0,0,0.5);
-  padding: 20px;
-  border-radius: 5px;
+  padding: 0.5em;
+  border-radius: 0.5em;
   z-index: 5;
-  -webkit-padding-start: 20px;
 }
 
 .Overbox:hover {

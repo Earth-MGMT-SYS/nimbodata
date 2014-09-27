@@ -24,7 +24,7 @@ class Column(base_column.Column,Entity):
         return startIndex
     
     def create(self,parent,name,datatype,alias=None,primary_key=None,
-            tblinfo=None,index=None):
+            tblinfo=None,index=None,exp=None):
         """Create the column in SQL, register it."""
         if tblinfo is None:
             try:
@@ -72,7 +72,10 @@ class Column(base_column.Column,Entity):
             try:
                 datatype = getattr(datatypes,str(datatype)[9:])
             except AttributeError:
-                datatype = getattr(datatypes,str(datatype))
+                try:
+                    datatype = getattr(datatypes,str(datatype))
+                except AttributeError:
+                    raise TypeError(str(datatype)+ " is not a valid type.")
         
         try:
             dt_sql = datatype.sql_create()
@@ -86,8 +89,16 @@ class Column(base_column.Column,Entity):
             dt_sql,
             primary_key
         )
-        
+                
         controllers['ddl'].execute(stmt)
+        
+        # Needs cleanup
+        if exp is not None:
+            p = self.api.get_byid(parent)
+            s = datatypes.Function().sql_exp(*exp)
+            stmt = syntax.update_as(p['parent_objid'],p.objid,colid,s)
+            controllers['ddl'].execute(stmt,params)
+        
         controllers['ddl'].conn.commit()
         
         self.objid = colid

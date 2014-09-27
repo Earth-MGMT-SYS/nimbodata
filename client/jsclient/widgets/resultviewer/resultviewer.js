@@ -109,6 +109,7 @@ return {
                 .enter().append("td")
                     .text(function (d) { return d })
         
+        Widget.prototype.update.call(this)
         Layout.refresh()
     },
     

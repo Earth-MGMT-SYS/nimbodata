@@ -44,6 +44,10 @@
                         "widget":"ResultViewer"
                     },
                     {
+                        "id":"formview",
+                        "widget":"Input"
+                    },
+                    {
                         "id":"chart",
                         "widget":"Chart"
                     },

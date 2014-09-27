@@ -1,0 +1,9 @@
+[
+    {
+        "id":"editor",
+        "widget":"Input",
+        "disable_edit_json":true,
+        "browserview":{"width":"60%","height":"60%"},
+        "datasource":"../resultviewer/examples/example.json"
+    }
+]

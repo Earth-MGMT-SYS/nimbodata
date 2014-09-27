@@ -173,6 +173,7 @@ select.argo {
     color: #C2BDBD;
     padding: 0.5em;
     text-align: center;
+    white-space: nowrap;
 }
 
 .n_expando_tab:hover {
@@ -219,3 +220,4 @@ div.n_check {
 .hidden {
     display: none;
 }
+

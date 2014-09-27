@@ -107,7 +107,7 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         if (!L.Path.SVG) { return; }
 
         var svg = this._map._pathRoot;
-        
+
         // create the defs container if it doesn't exist
         var defs = null;
         if (svg.getElementsByTagName('defs').length === 0) {
@@ -191,23 +191,24 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
                     geometries: [geojson.geometry]
                 };
             }
-            
+
             // Transform the geojson into a new Layer
             try {
-                incomingLayer = L.GeoJSON.geometryToLayer(geojson, this.options.pointToLayer, options.coordsToLatLng);
+                incomingLayer = L.GeoJSON.geometryToLayer(geojson, options.pointToLayer, options.coordsToLatLng);
             }
             // Ignore GeoJSON objects that could not be parsed
             catch (e) {
                 return this;
             }
 
-            incomingLayer.feature = L.GeoJSON.asFeature(geojson);
             // Add the incoming Layer to existing key's GeometryCollection
             if (key in this._keyLayers) {
-                return this;
+                parentLayer = this._keyLayers[key];
+                parentLayer.feature.geometry.geometries.push(geojson.geometry);
             }
             // Convert the incoming GeoJSON feature into a new GeometryCollection layer
             else {
+                incomingLayer.feature = L.GeoJSON.asFeature(geojson);
                 this._keyLayers[key] = incomingLayer;
             }
         }
@@ -226,19 +227,17 @@ L.TileLayer.GeoJSON = L.TileLayer.Ajax.extend({
         incomingLayer.defaultOptions = incomingLayer.options;
 
         this.geojsonLayer.resetStyle(incomingLayer);
-        
-        
-        
-        if (this.options.onEachFeature) {
-            this.options.onEachFeature(geojson, incomingLayer);
+
+        if (options.onEachFeature) {
+            options.onEachFeature(geojson, incomingLayer);
         }
         parentLayer.addLayer(incomingLayer);
 
         // If options.clipTiles is set and the browser is using SVG
         // then clip the layer using SVG clipping
-        // if (this.options.clipTiles) {
-        //     this._clipLayerToTileBoundary(incomingLayer, tilePoint);
-        // }
+        if (this.options.clipTiles) {
+            this._clipLayerToTileBoundary(incomingLayer, tilePoint);
+        }
         return this;
     },
 

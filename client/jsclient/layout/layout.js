@@ -60,17 +60,23 @@ return {
             .style('height',init_dim[1]+'px')
     },
     
-    set_size: function(selector, w, h) {
+    set_width_pct: function(selector, w) {
         var parent = selector.node().parentNode
         var dim = this.dimensions(parent)
-        
         if (typeof w == 'string' && w.slice(-1) == '%') {        
             w = String((Number(w.slice(0,w.length - 1)) / 100 * dim[0])) + 'px'
-            h = String((Number(h.slice(0,h.length - 1)) / 100 * dim[1])) + 'px'
         }
-        
         selector
             .style("width",w)
+    },
+    
+    set_height_pct: function(selector, h) {
+        var parent = selector.node().parentNode
+        var dim = this.dimensions(parent)
+        if (typeof h == 'string' && h.slice(-1) == '%') {        
+            h = String((Number(h.slice(0,h.length - 1)) / 100 * dim[1])) + 'px'
+        }
+        selector
             .style("height",h)
     },
         

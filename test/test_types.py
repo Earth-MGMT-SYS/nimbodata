@@ -197,13 +197,13 @@ class TestTypes(unittest.TestCase):
                 {'name':'a','datatype':Integer},
                 {'name':'b','datatype':DataObject}
                ]
-        rows = [(2,json.dumps({'hello':'waffo'})),
-                (1,json.dumps({'hello':'gorgo'}))]
+        rows = [(2,{'hello':'waffo'}),
+                (1,{'hello':'gorgo'})]
         table = self.cloud.create_table(self.db,'datetable',cols)
         table.insert(rows)
         view = self.cloud.select(table,order_by='a')
-        self.assertEqual(view[0][1],{u'hello':u'gorgo'})
-        self.assertEqual(view[1][1],{u'hello':u'waffo'})    
+        self.assertEqual(view[0]['b'],{u'hello':u'gorgo'})
+        self.assertEqual(view[1]['b'],{u'hello':u'waffo'})    
     
     #@unittest.skip('skip')
     def test_geog_point(self):
