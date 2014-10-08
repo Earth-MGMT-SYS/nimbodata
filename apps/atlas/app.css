@@ -10,8 +10,8 @@
 #menutree {
     margin: 1em;
     position: absolute;
-    top: 1em;
-    left: 1em;
+    top: 4%;
+    left: 0.5em;
 }
 
 #details {
@@ -23,7 +23,7 @@
 #stylemaster {
     position: absolute;
     right: 1em;
-    top: 10%;
+    top: 13%;
 }
 
 #querybox.Overbox {

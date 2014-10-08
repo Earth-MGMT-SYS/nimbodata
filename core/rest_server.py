@@ -17,17 +17,20 @@ sys.path.append('../')
 import common
 import common.errors as errors
 import common.datatypes.fallback_json as fb
+import common.api
+
+from cloud import get_api
+
+api = get_api()
 
 load,dump,pretty_dump = fb.load, fb.dump, fb.pretty_dump
 
 import pg.entities
 import pg.select
-
-from cloud import get_api
-
-api = get_api()
+import pg.expressions
 api.login = login
 pg.select.api = api
+pg.expressions.inject_api(api)
 
 import auth
 
@@ -52,6 +55,8 @@ devindex = open('./dev_index.html','r').read()
 appspec = open('../apps/earth-mgmt/app.json').read()
 appatlas = open('../apps/atlas/app.json').read()
 appcatalog = open('../apps/catalog/app.json').read()
+appwater = open('../apps/water-mgmt/app.json').read()
+siteinfo = open('../apps/water-mgmt/templates/siteinfo.mst').read()
 
 @app.route('/favicon.ico',methods=['GET'])
 def nada():
@@ -76,6 +81,14 @@ def appatlasview():
 @app.route('/app-catalog.json',methods=['GET'])
 def appcatalogview():
     return appcatalog
+    
+@app.route('/app-water.json',methods=['GET'])
+def appwaterview():
+    return appwater
+
+@app.route('/templates/siteinfo.mst',methods=['GET'])
+def siteinfomst():
+    return siteinfo
 
 @app.route('/api/', methods=['GET'])
 def apiresponder():
@@ -133,7 +146,7 @@ def get_select_processor(objid):
     try:        
         argspec = api.get_args('Select','select')
         kwargs = {
-            'viewid':objid,
+            'objid':objid,
             'limit':50
         }
         return dump(api.get_entity('Select')().select(**kwargs))

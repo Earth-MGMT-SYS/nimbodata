@@ -42,18 +42,26 @@ Model.prototype = function () {
             if (event == 'select') {
                 
                 var basicresponders = []
+                var inforesponders = []
+                var subresponders = []
                 var info = details._info ? details._info : details
                 
                 d3.values(responders).forEach(function(sink) {
                     // If the widget does not define event_filter, it gets
                     // only layout events.
+                    var fresult = false
                     if (sink.event_filter) {
-                        var fresult = sink.event_filter(source,event,details)
-                    } else {
-                        var fresult = false
+                        fresult = sink.event_filter(source,event,details)
                     }
                     
-                    if (fresult === true) {
+                    if (!fresult) {
+                        fresult = false
+                    }
+                    
+                    if (fresult && sink._spec.subview) {
+                        subresponders.push(sink)
+                        if (sink.clear) sink.clear()
+                    } else if (fresult === true) {
                         basicresponders.push(sink)
                         if (sink.clear) sink.clear()
                     } else if (fresult == 'refresh') {
@@ -71,13 +79,16 @@ Model.prototype = function () {
                                 })
                             }
                         }
+                    } else if (fresult == 'info') {
+                        inforesponders.push(sink)
+                        if (sink.clear) sink.clear()
                     } else if (fresult && fresult[0] == 'select') {
                         if (sink.clear) sink.clear()
                         cloud.select(fresult[1],function (e,d) {
                             sink.update(e,d)
                             Layout.refresh()
                         })
-                    } else if (fresult) {
+                    } else {
                         // Otherwise it has a special request
                         if (fresult[1]) {
                             if (fresult[1].entitytype) {
@@ -103,15 +114,23 @@ Model.prototype = function () {
                         basicresponders.forEach(function(rsp) {
                             rsp.update(e,d)
                         })
-                        Layout.refresh()
                     })
+                    subresponders.forEach(function(rsp) {
+                        var sink = rsp[0]
+                        var view = rsp[1]
+                        var row = rsp[2]
+                        cloud.get_byrowid(view,row,function (e,d) {
+                            sink.update(e,d)
+                        })
+                    })
+                    Layout.refresh()
                     return
                 }
                 
                 if (basicresponders.length > 0) {
                     if (info.objid) {
                         var params = {
-                            'viewid':info.objid,
+                            'objid':info.objid,
                             'limit':200
                         }
                     } else {
@@ -121,9 +140,21 @@ Model.prototype = function () {
                         basicresponders.forEach(function(rsp) {
                             rsp.update(e,d)
                         })
+                        inforesponders.forEach(function(rsp) {
+                            rsp.update(e,d)
+                        })
+                        Layout.refresh()
+                    })
+                } else if (inforesponders.length > 0) {
+                    cloud.Entity(info.objid).info(function (e,d) {
+                        inforesponders.forEach(function(rsp) {
+                            var inf = {'info':d}
+                            rsp.update(e,inf)
+                        })
                         Layout.refresh()
                     })
                 }
+                
             } else if (event == 'rename') {
                 cloud[details.entitytype](details.objid)
                     .rename(details.newname, function (e,d) {
@@ -133,7 +164,7 @@ Model.prototype = function () {
                             var selobjid = details.objid
                         }
                         Model.respond(source,'select',{
-                            'viewid':selobjid
+                            'objid':selobjid
                         })
                     })
             } else if (event == 'modify') {
@@ -152,7 +183,7 @@ Model.prototype = function () {
                             var selobjid = details.objid
                         }
                         Model.respond(source,'select',{
-                            'viewid':selobjid
+                            'objid':selobjid
                         })
                     })
             } else if (event == 'refresh') {
@@ -163,7 +194,15 @@ Model.prototype = function () {
                 })
             } else if (event == 'selectrow') {
                 d3.values(responders).forEach(function(sink) {
-                    if (sink.event_filter && sink.event_filter(source,event,details)) {
+                    if (sink._spec.subview) {
+                        if (sink.event_filter) {
+                            var fresult = sink.event_filter(source,event,details)
+                            var viewid = fresult[0], rowid = fresult[1]
+                            cloud.get_byrowid(viewid,rowid, function (e,d) {
+                                sink.update(e,d)
+                            })
+                        }
+                    } else if (sink.event_filter && sink.event_filter(source,event,details)) {
                         cloud.get_byrowid(details.objid,details.rowid, function (e,d) {
                             sink.update(e,d)
                         })

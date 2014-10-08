@@ -47,7 +47,7 @@ class TestAuth(unittest.TestCase):
         
         table = self.db.create_table('owner',[{'name':'boffo','datatype':Text}])
         table2 = self.db.create_table('gungy',[{'name':'boffo','datatype':Text}])
-        view = self.db.create_view('stinky',{'viewid':table})
+        view = self.db.create_view('stinky',{'objid':table})
         
         table.rename('frango')
         view.rename('spangy')

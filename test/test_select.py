@@ -3,10 +3,12 @@
 
 import unittest
 import sys
+import datetime
 sys.path.append('../')
 
 import config_cloud as cfg
-from core.pg.datatypes import Text,Integer,Float
+from core.pg.datatypes import Text,Integer,Float,Date,Timestamp
+from common.expressions import MAX, AS, Join
 
 target = 'rest'
 
@@ -15,8 +17,8 @@ if target == 'local':
     cloud = cc.Cloud(cfg.user)
 elif target == 'rest':
     sys.path.append('../client')
-    import pyclient
-    cloud = pyclient.connect("http://localhost:5000",cfg.user)
+    import pyclient as cc
+    cloud = cc.connect("http://localhost:5000",cfg.user)
 
 class TestSelect(unittest.TestCase):
     """Test the functionality of the Select module."""
@@ -24,7 +26,7 @@ class TestSelect(unittest.TestCase):
         """Create the database, a table and insert some values."""
         try:
             self.db = cloud.create_database('selectdb')
-        except cc.IntegrityError:
+        except cc.RelationExists:
             cloud.Database('selectdb').drop()
             self.db = cloud.create_database('selectdb')
         cols = [
@@ -66,17 +68,55 @@ class TestSelect(unittest.TestCase):
     def _joinSecond(self):
         """For the double-join test.  Another table with values."""
         cols = [
-            {'name':'z','datatype':Text},
+            {'name':'pk','datatype':Text},
             {'name':'jj','datatype':Text},
         ]
         
         self.table3 = self.db.create_table('join2',cols)
         vals = [
+            ('jerry','sting'),
+            ('ann','madonna'),
+            ('francine','boy george'),
+        ]
+        self.table3.insert(vals)
+        
+    def _joinThird(self):
+        """For the double-join test.  Another table with values."""
+        cols = [
+            {'name':'z','datatype':Text},
+            {'name':'jj','datatype':Text},
+        ]
+        
+        self.table4 = self.db.create_table('join3',cols)
+        vals = [
             ('sting','vlappo'),
             ('madonna','crapding'),
             ('boy george','barsz'),
         ]
-        self.table3.insert(vals)
+        self.table4.insert(vals)
+        
+    def _datesTable(self):        
+        cols = [
+            {'name':'num','datatype':Integer},
+            {'name':'obd','datatype':Date},
+            {'name':'value','datatype':Float},
+        ]
+        self.table2 = self.db.create_table('Colll',cols)
+        values = [
+            (1,Date(1950,1,1),10.5),
+            (1,Date(1950,6,6),21.1),
+            (1,Date(1990,1,1),88.8),
+            (1,Date(1990,6,6),33.3),
+            (2,Date(1950,1,1),23.3),
+            (2,Date(1950,6,6),13.3),
+            (2,Date(1990,1,1),39.4),
+            (2,Date(1990,6,6),93.7),
+            (3,Date(1950,1,1),23.3),
+            (3,Date(1950,6,6),13.3),
+            (3,Date(1990,1,1),39.4),
+            (3,Date(1990,6,6),93.7),
+        ]
+        self.table2.insert(values)
         
     def _aggTable(self):
         """For the aggregation tests, a second table with some numbers."""
@@ -100,54 +140,6 @@ class TestSelect(unittest.TestCase):
         
         self.table2 = cloud.create_table(self.db,'aggtable',cols2)
         self.table2.insert(val2)
-        
-    def _castInteger(self):
-        cols = [
-            {'name':'pk','datatype':Text},
-            {'name':'a','datatype':Integer},
-            {'name':'b','datatype':Text}
-        ]
-        
-        vals = [
-            ('a',1,'1'),
-            ('b',2,'2'),
-            ('c',3,'3')
-        ]
-        
-        self.cast_table = self.db.create_table('cast_table',cols)
-        self.cast_table.insert(vals)
-        
-    def _castFloat(self):
-        cols = [
-            {'name':'pk','datatype':Text},
-            {'name':'a','datatype':Float},
-            {'name':'b','datatype':Text}
-        ]
-        
-        vals = [
-            ('a',1.1,'1.1'),
-            ('b',2.2,'2.2'),
-            ('c',3.3,'3.3')
-        ]
-        
-        self.cast_table = self.db.create_table('cast_table',cols)
-        self.cast_table.insert(vals)
-        
-    def _castText(self):
-        cols = [
-            {'name':'pk','datatype':Text},
-            {'name':'a','datatype':Text},
-            {'name':'b','datatype':Text}
-        ]
-        
-        vals = [
-            ('a','1',1),
-            ('b','2',2),
-            ('c','3',3)
-        ]
-        
-        self.cast_table = self.db.create_table('cast_table',cols)
-        self.cast_table.insert(vals)
     
     def _aliasTable(self):
         """Create a table with columns with aliases."""
@@ -191,13 +183,23 @@ class TestSelect(unittest.TestCase):
         self.assertEqual(len(result.header),2)
         colnames = [x['name'] for x in result.header]
         self.assertEqual(['pk','b'],colnames)
+        
+    #@unittest.skip('skip')
+    def test_target_as(self):
+        """Can we select specified columns from a table? """
+        result = cloud.select(self.table,cols=[
+            'pk',AS('b','BarneyFife','Barfo')
+        ])
+        self.assertEqual(len(result.header),2)
+        colnames = [x['name'] for x in result.header]
+        self.assertEqual(['pk','BarneyFife'],colnames)
     
     #@unittest.skip('skip')
     def test_target_view(self):
         """Can we select columns from a view?"""
         self._aggTable()
         view = cloud.create_view(self.db,"testview",{
-            'viewid':self.table2,
+            'objid':self.table2,
             'cols':['pk','orderno'],
             'order_by':['pk']
         })
@@ -248,6 +250,16 @@ class TestSelect(unittest.TestCase):
         results = cloud.select(self.table,where = where)
         self.assertEqual(len(results),2)
         
+    #@unittest.skip('skip')
+    def test_where_date(self):
+        """Can we do basic where filters?"""
+        self._datesTable()
+        num, obd, value = self.table2.columns()
+        
+        where = ((obd < Date(1960,1,1)) & (obd > Date(1940,1,1)))
+        results = cloud.select(self.table2,where = where)
+        self.assertEqual(len(results),6)
+    
     #@unittest.skip('skip')
     def test_single_where_syntax(self):
         """Can we do where queries in each syntax option?"""
@@ -367,19 +379,50 @@ class TestSelect(unittest.TestCase):
         
     #@unittest.skip('skip')
     def test_join(self):
-        """Can we do a simple inner join?"""
+        """Can we do a simple inner join with varioius syntax options?"""
         self._joinTable()
+        
+        pk, a, b = self.table.columns()
+        j_pk, z = self.table2.columns()
         
         join = (self.table2,"testTable.pk = jointable.pk")
         results = cloud.select(self.table,join=join)
         self.assertEqual(len(results),3)
         
-        pk, a, b = self.table.columns()
-        j_pk, z = self.table2.columns()
-                
-        join = (self.table2,(pk,'=',j_pk))
+        join = Join(self.table2,pk == j_pk)
         results = cloud.select(self.table,join=join)
         self.assertEqual(len(results),3)
+        
+        join = Join(self.table2)
+        results = cloud.select(self.table,join=join)
+        self.assertEqual(len(results),3)
+        
+    #@unittest.skip('skip')
+    def test_multijoin(self):
+        """Can we do multiple inner joins?"""
+        self._joinTable()
+        
+        pk, a, b = self.table.columns()
+        j_pk, z = self.table2.columns()
+
+        self._joinSecond()
+        join = [Join(self.table2),Join(self.table3)]
+        results = cloud.select(self.table,join=join)
+        self.assertEqual(len(results.header),10)
+        
+        self._joinThird()
+        jz,jj = self.table4.columns()
+        cols = [pk,jj]
+        join = [Join(self.table2),Join(self.table4, z == jz)]
+        results = cloud.select(self.table,cols=cols,join=join)
+        checker = {
+            'jerry':'vlappo',
+            'ann':'crapding',
+            'francine':'barsz'
+        }
+        for row in results:
+            self.assertEquals(row[1],checker[row[0]]),
+        
     
     #@unittest.skip('skip')
     def test_where_order(self):
@@ -415,8 +458,9 @@ class TestSelect(unittest.TestCase):
         """Can we do a where filter on a join query?"""
         pk, a, b = self.table.columns()
         self._joinTable()
+        jpk, z = self.table2.columns()
         where = a == 7
-        join = (self.table2,"testTable.pk = jointable.pk")
+        join = (self.table2,pk == jpk)
         results = cloud.select(self.table,join=join,where=where)
         self.assertEqual(len(results),1)
         self.assertEqual(results[0][0],'ann')
@@ -426,8 +470,9 @@ class TestSelect(unittest.TestCase):
         """Can we do a where filter on a join query and order the results?"""
         self._joinTable()
         pk, a, b = self.table.columns()
+        jpk, z = self.table2.columns()
         where = a < 9
-        join = (self.table2,"testTable.pk = jointable.pk")
+        join = (self.table2,pk == jpk)
         results = cloud.select(self.table,join=join,where=where,order_by='testTable.pk')
         self.assertEqual(len(results),2)
         self.assertEqual(results[1]['jointable.z'],'sting')
@@ -437,8 +482,9 @@ class TestSelect(unittest.TestCase):
         """Can we do a where filter on a join query and limit the results?"""
         self._joinTable()
         pk, a, b = self.table.columns()
+        jpk, z = self.table2.columns()
         where = a < 9
-        join = (self.table2,"testTable.pk = jointable.pk")
+        join = (self.table2,pk == jpk)
         view = cloud.select(self.table,join=join,where=where,limit=1)
         self.assertEqual(len(view),1)
         self.assertEqual(len(view[0]),5)
@@ -448,8 +494,9 @@ class TestSelect(unittest.TestCase):
         """Can we do a where on a join query, limit and order the results?"""
         self._joinTable()
         pk, a, b = self.table.columns()
+        jpk, z = self.table2.columns()
         where = a < 9
-        join = (self.table2,"testTable.pk = jointable.pk")
+        join = (self.table2,pk == jpk)
         
         view = cloud.select(
             self.table,
@@ -461,81 +508,6 @@ class TestSelect(unittest.TestCase):
         
         self.assertEqual(len(view),1)
         self.assertEqual(view[0]['jointable.z'],'madonna')
-    
-    #@unittest.skip('skip')
-    def test_group(self):
-        """Can we do a group by with an aggregate function?"""
-        self._aggTable()
-        cols = ['pk',('max','ordertotal')]
-        group_by = ['pk']
-        
-        view = cloud.select(
-            self.table2,
-            cols=cols,
-            group_by=group_by,
-            order_by='pk'
-        )
-        
-        self.assertEqual(view[0][1],9.0)
-        self.assertEqual(view[1][1],99.09)
-        cols = ['pk',('avg','ordertotal')]
-        
-        view = cloud.select(
-            self.table2,
-            cols=cols,
-            group_by=group_by,
-            order_by='pk'
-        )
-        
-        self.assertEqual(view[0][1],9.0)
-        self.assertEqual(view[1][1],50.655)
-    
-    #@unittest.skip('skip')
-    def test_function(self):
-        """Can we do a function without a group by?"""
-        self._aggTable()
-        
-        cols = [('max','ordertotal')]
-        result = cloud.select(self.table2,cols)
-        self.assertEqual(result[0][0],99.09)
-        
-        cols = [('min','ordertotal')]
-        result = cloud.select(self.table2,cols)
-        self.assertEqual(result[0][0],2.22)
-        
-        cols = [('avg','ordertotal')]
-        result = cloud.select(self.table2,cols)
-        self.assertEqual(result[0][0],25.9011111111111)
-        
-    #@unittest.skip('skip')
-    def test_asinteger(self):
-        """Can we select column of Integers typed as Text cast as Integer?"""
-        self._castInteger()
-        pk,a,b = self.cast_table.columns()
-        cols = [pk,a,Integer(b)]
-        result = cloud.select(self.cast_table,cols)
-        for row in result:
-            self.assertEquals(row[1],row[2])
-            
-    #@unittest.skip('skip')
-    def test_asfloat(self):
-        """Can we select column of Integers typed as Text cast as Integer?"""
-        self._castFloat()
-        pk,a,b = self.cast_table.columns()
-        cols = [pk,a,Float(b)]
-        result = cloud.select(self.cast_table,cols)
-        for row in result:
-            self.assertEquals(row[1],row[2])
-            
-    #@unittest.skip('skip')
-    def test_astext(self):
-        """Can we select column of Integers typed as Text cast as Integer?"""
-        self._castText()
-        pk,a,b = self.cast_table.columns()
-        cols = [pk,a,Text(b)]
-        result = cloud.select(self.cast_table,cols)
-        for row in result:
-            self.assertEquals(row[1],row[2])
     
     #@unittest.skip('skip')
     def test_byid(self):
@@ -567,7 +539,7 @@ class TestSelect(unittest.TestCase):
         self.assertEquals(result[0],2.22)
         result = cloud.get_array(
             self.table2,
-            ('max','ordertotal'),
+            MAX('ordertotal'),
         )
         self.assertEquals(result[0],99.09)
         self.assertEquals(len(result),1)        

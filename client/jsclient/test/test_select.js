@@ -46,7 +46,7 @@ describe('select',function () {
     })
     
     it('simple select', function (done) {
-        cloud.select({'viewid':table},function (e,d) {
+        cloud.select({'objid':table},function (e,d) {
             assert(d.rows.length == 4)
             assert(d.rows[0].length == 3)
             assert(d.rows[0][0] == 'frank')
@@ -56,7 +56,7 @@ describe('select',function () {
     })
     
     it('target select', function (done) {
-        cloud.select({'viewid':table,'cols':['pk','b']},function (e,d) {
+        cloud.select({'objid':table,'cols':['pk','b']},function (e,d) {
             assert(d.rows.length == 4)
             assert(d.rows[0].length == 2)
             assert(d.rows[0][0] == 'frank')
@@ -67,7 +67,7 @@ describe('select',function () {
     
     it('select single where', function (done) {       
         cloud.select({
-            'viewid':table,
+            'objid':table,
             'where': 'a < 9'
             },function (e,d) {
                 assert(d.rows.length == 3)
@@ -78,7 +78,7 @@ describe('select',function () {
     
     it('select multiple where', function (done) {
         cloud.select({
-            'viewid':table,
+            'objid':table,
             'where': ['a < 9','a > 2'],
             },function (e,d) {
                 assert(d.rows.length == 2)
@@ -89,7 +89,7 @@ describe('select',function () {
     
     it('complex where', function(done) {
         cloud.select({
-            'viewid':table,
+            'objid':table,
             'where': {
                 'all':['a < 9' , 'a > 2'],
                 "any":['b = apple', 'b = fig']

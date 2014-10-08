@@ -34,18 +34,40 @@ def create_managed_table(schemaid,tblid):
                  "_adm-rowid" text DEFAULT "_adm-registries".newrowid())
            """ % {'qtn':get_tqn(schemaid,tblid)}
 
-def create_view(schemaid,viewid,select,temporary=False):
+def create_view(schemaid,viewid,select,temporary=False,materialized=False):
+    temp = ' TEMPORARY ' if temporary else 'MATERIALIZED' if materialized \
+        else ''
     return ( """
         CREATE %(temp)s VIEW  %(qtn)s
         AS
         
     """ % {
             'qtn':get_tqn(schemaid,viewid),
-            'temp': ' TEMPORARY ' if temporary else ''
+            'temp': temp
           } 
     ) + select
 
-def alter_column_type(schemaid,tblid,colid,newtype):
+def alter_column_type(schemaid,tblid,colid,newtype,using=None):
+    stub = """
+                ALTER TABLE %(qtn)s
+                ALTER COLUMN "%(colid)s"
+                TYPE %(coltype)s
+           """
+    if using is not None:
+        stub += """ USING """ + using
+    elif newtype != 'Text':
+        stub += """
+                USING
+                    "_adm-registries"."to_%(coltype)s"("%(colid)s")
+           """
+    return stub % {
+        'qtn':get_tqn(schemaid,tblid),
+        'colid':colid,
+        'coltype':newtype,
+        'fmt':'%(fmt)s'
+     }
+     
+def alter_column_type_using(schemaid,tblid,colid,newtype,exp):
     stub = """
                 ALTER TABLE %(qtn)s
                 ALTER COLUMN "%(colid)s"
@@ -60,7 +82,7 @@ def alter_column_type(schemaid,tblid,colid,newtype):
         'qtn':get_tqn(schemaid,tblid),
         'colid':colid,
         'coltype':newtype
-     }
+    }
            
 def add_column(schemaid,tblid,colid,dtype,pk=None):
     subStr = {

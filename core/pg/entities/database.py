@@ -49,6 +49,13 @@ class Database(base_db.Database,Entity):
         for table in self.tables():
             for column in table.columns():
                 column.drop()
+            for view in table.views():
+                for column in view.columns():
+                    try:
+                        column.drop()
+                    except errors.RelationDoesNotExist:
+                        pass
+                view.drop()
         
         Entity.drop(self)
         

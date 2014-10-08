@@ -43,26 +43,6 @@ extend(MasterMenu, function () {
             
         },
         
-        event_filter: function(source,event,details) {
-            var match = false
-            if (details.entitytype) {
-                if (details.entitytype == 'Table' || details.entitytype == 'View') {
-                    // We will tag along with everything else, what we need is
-                    // in the results.
-                    return true
-                } else {
-                    // There's no select here, so we need to get the entity info.
-                    match = ['info',details]
-                }
-            } else if (details.key) {
-                // We need the entity info, but it was a rollup node.
-                match = ['info',details.key]
-            } else if (details.viewid) {
-                match = ['info',details.viewid]
-            }
-            return match
-        },
-                    
         update: function (e, dataset) {
             
             if (dataset) {}

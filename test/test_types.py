@@ -8,6 +8,7 @@ sys.path.append('../')
 
 import config_cloud as cfg
 from core.pg.datatypes import *
+from common.expressions import *
 
 target = 'rest'
 
@@ -20,7 +21,6 @@ elif target == 'rest':
     cloud = pyclient.connect("http://localhost:5000",cfg.user)
 
 
-#@unittest.skip('skip')
 class TestTypes(unittest.TestCase):
     """Test type and column functionality."""
     
@@ -40,8 +40,8 @@ class TestTypes(unittest.TestCase):
         self.db.drop()
     
     #@unittest.skip('skip')
-    def test_string(self):
-        """Do strings work?"""
+    def test_text(self):
+        """Does text work?"""
         cols = [
                 {'name':'a','datatype':Text},
                 {'name':'b','datatype':Text}
@@ -54,6 +54,20 @@ class TestTypes(unittest.TestCase):
         self.assertEqual(vals[1][0],'pie')
         self.assertEqual(vals[0][1],'vanilla')
         self.assertEqual(vals[1][1],'apple')
+    
+    #@unittest.skip('skip')
+    def test_TextArray(self):
+        """Do integer arrays work?"""
+        cols = [
+                {'name':'a','datatype':Integer},
+                {'name':'b','datatype':TextArray}
+               ]
+        rows = [(1,('apple','bannana')),(3,('pie','cookies'))]
+        table = self.cloud.create_table(self.db,'inttable',cols)
+        table.insert(rows)
+        vals = self.cloud.select(table,order_by='a')
+        self.assertEqual(vals[0][1][0],'apple')
+        self.assertEqual(vals[1][1][1],'cookies')
     
     #@unittest.skip('skip')
     def test_integer(self):
@@ -70,6 +84,20 @@ class TestTypes(unittest.TestCase):
         self.assertEqual(vals[0][1],2)        
         self.assertEqual(vals[1][0],3)        
         self.assertEqual(vals[1][1],4)
+        
+    #@unittest.skip('skip')
+    def test_IntegerArray(self):
+        """Do integer arrays work?"""
+        cols = [
+                {'name':'a','datatype':Integer},
+                {'name':'b','datatype':IntegerArray}
+               ]
+        rows = [(1,(2,6)),(3,(4,8))]
+        table = self.cloud.create_table(self.db,'inttable',cols)
+        table.insert(rows)
+        vals = self.cloud.select(table,order_by='a')
+        self.assertEqual(vals[0][1][0],2)
+        self.assertEqual(vals[1][1][1],8)
         
     #@unittest.skip('skip')
     def test_range(self):
@@ -114,6 +142,20 @@ class TestTypes(unittest.TestCase):
         self.assertEqual(vals[0][1],2.2)        
         self.assertEqual(vals[1][0],3.3)        
         self.assertEqual(vals[1][1],4.4)
+        
+    #@unittest.skip('skip')
+    def test_FloatArray(self):
+        """Do integer arrays work?"""
+        cols = [
+                {'name':'a','datatype':Integer},
+                {'name':'b','datatype':FloatArray}
+               ]
+        rows = [(1,(2.2,6.6)),(3,(4.4,8.8))]
+        table = self.cloud.create_table(self.db,'inttable',cols)
+        table.insert(rows)
+        vals = self.cloud.select(table,order_by='a')
+        self.assertEqual(vals[0][1][0],2.2)
+        self.assertEqual(vals[1][1][1],8.8)
     
     #@unittest.skip('skip')
     def test_bool(self):
@@ -130,20 +172,42 @@ class TestTypes(unittest.TestCase):
         self.assertEqual(view[1][1],False)        
         self.assertEqual(view[2][1],True)
         self.assertEqual(view[3][1],True)
+        
+    #@unittest.skip('skip')
+    def test_BoolArray(self):
+        """Do integer arrays work?"""
+        cols = [
+                {'name':'a','datatype':Integer},
+                {'name':'b','datatype':BooleanArray}
+               ]
+        rows = [(1,(True,False)),(3,(False,True))]
+        table = self.cloud.create_table(self.db,'inttable',cols)
+        table.insert(rows)
+        vals = self.cloud.select(table,order_by='a')
+        self.assertEqual(vals[0][1][0],True)
+        self.assertEqual(vals[1][1][1],True)
     
     #@unittest.skip('skip')
     def test_date(self):
         """Do dates work?"""
         cols = [
                 {'name':'a','datatype':Integer},
-                {'name':'b','datatype':Date}
+                {'name':'b','datatype':Date},
+                {'name':'c','datatype':Text}
                ]
-        rows = [(2,datetime.date(1911,1,1)),(1,datetime.date(1950,1,1))]
+        rows = [
+            (2,datetime.date(1911,1,1),'1911-01-01'),
+            (1,datetime.date(1950,1,1),'1950-01-01')
+        ]
         table = self.cloud.create_table(self.db,'datetable',cols)
         table.insert(rows)
         view = self.cloud.select(table,order_by='a')
         self.assertEqual(view[0][1],datetime.date(1950,1,1))
         self.assertEqual(view[1][1],datetime.date(1911,1,1))
+        a,b,c = table.columns()
+        c.modify({'datatype':Date,'exp':'YYYY-MM-DD'})
+        for row in table.select():
+            self.assertEquals(row[1],row[2])
     
     #@unittest.skip('skip')
     def test_timestamp(self):

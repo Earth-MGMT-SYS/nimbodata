@@ -16,6 +16,7 @@ div.n_tabs {
 
 div.n_tabs > ul.n_tabs {
 	list-style:none;
+    -webkit-padding-start: 0.5em;
 }
 
 div.n_tabs > ul.n_tabs > li.n_tabs {

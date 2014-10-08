@@ -41,7 +41,7 @@ class Entity(object):
             try:
                 self.objid = name['objid']
                 return
-            except TypeError:
+            except (KeyError,TypeError):
                 pass
             
         if name is not None:

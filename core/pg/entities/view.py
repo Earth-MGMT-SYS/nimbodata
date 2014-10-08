@@ -17,7 +17,7 @@ class View(base_view.View,Entity):
     view_cols = '_adm-viewcolumns'
     view_col_info = '_adm-viewcolinfo'
     
-    def create(self,parent_objid,name,select,temporary=False):
+    def create(self,parent_objid,name,select,temporary=False,materialized=True):
         """Create and register."""
         viewid = self._new_id()
         
@@ -35,7 +35,7 @@ class View(base_view.View,Entity):
             sel_stmt, sel_params, out_colinfo = _s._prepare_select(**select)
         else:
             sel_stmt, sel_params, out_colinfo = _s._prepare_select(**select)
-            select['cols'] = ['_adm-rowid'] + [x['name'] for x in out_colinfo]
+            select['cols'] = ['_adm-rowid'] + [x['objid'] for x in out_colinfo]
             select['viewcreate'] = True
             sel_stmt, sel_params, out_colinfo = _s._prepare_select(**select)
         
@@ -47,25 +47,85 @@ class View(base_view.View,Entity):
             'entitytype':'Column',
             'owner':self.session['user'],
             'objid':"_adm-rowid",
-            'alias':'Row ID'
+            'alias':'Row ID',
         })
         
-        for col in out_colinfo:
-            regVals = {
-                'viewid':viewid,
-                'weight':col['weight'],
-                'colid':col['objid']
-            }
+        for i,col in enumerate(out_colinfo):            
+            try:
+                regVals = {
+                    'viewid':viewid,
+                    'weight':i,
+                    'colid':col['objid'],
+                    'datatype':col['datatype']
+                }
+            except TypeError:
+                regVals = {
+                    'viewid':viewid,
+                    'weight':i,
+                    'colid':col[0]['objid'],
+                    'datatype':col[0]['datatype']
+                }
             
+            if not isinstance(col,dict):
+                col = col.row_dict
+            if 'newcol' in col:
+                col['parent_objid'] = viewid
+                del(col['methods'])
+                del(col['newcol'])
+                Entity.create(self.api.get_entity('Column')(),col)
             self._registry_insert(regVals,self.view_cols)
+            
+        try:
+            if not parent_objid.startswith('dbi'):
+                parent_objid = self.api.get_byid(parent_objid)['parent_objid']
+        except AttributeError:
+            if not isinstance(parent_objid,self.api.get_entity('Database')):
+                parent_objid = self.api.get_byid(parent_objid)['parent_objid']
         
-        view_stmt = syntax.create_view(parent_objid,viewid,sel_stmt)
+        view_stmt = syntax.create_view(parent_objid,viewid,sel_stmt,
+            materialized = materialized)
         
+        #print view_stmt
+                        
         controllers['ddl'].execute(view_stmt, sel_params)
         controllers['ddl'].conn.commit()
         
+        if materialized is True:
+            for col in self.columns():
+                print 'Added index To: ', col['name']
+                self.add_index(col)
+            #self.add_index('_adm-rowid')
+        
         self.objid = viewid
         return self
+        
+    def _new_indid(self):
+        """Gets a new rowid for an inserted row."""
+        return 'ind-'+str(uuid()).replace('-','')
+    
+    def add_index(self,col,unique=False):
+        geocolnames = [x['name'] for x in self.geo_columns()]
+        colinfo = self.api.get_entity('Column')(col).info
+        index_type = 'GIST' if colinfo['name'] in geocolnames else None
+        
+        parent_objid = self.info['parent_objid']
+        try:
+            if not parent_objid.startswith('dbi'):
+                parent_objid = self.api.get_byid(parent_objid)['parent_objid']
+        except AttributeError:
+            if not isinstance(parent_objid,self.api.get_entity('Database')):
+                parent_objid = self.api.get_byid(parent_objid)['parent_objid']
+        
+        tblname = self.info['name']
+        dbid = parent_objid
+        tblid = self.info['objid']
+        tblowner = self.info['owner']
+        stmt = syntax.add_index(
+            dbid,tblid,self._new_indid(),colinfo['objid'],unique,index_type
+        )
+        controllers['ddl'].execute(stmt)
+        controllers['ddl'].conn.commit()
+        return self.info
             
     def columns(self):
         """Get a list of columns in the relation."""
@@ -82,15 +142,7 @@ class View(base_view.View,Entity):
             order_by = ['weight']
         )
         
-        infos = list(controllers['drc'].execute(stmt,params))
-        retVal = []
-        
-        for i in infos:
-            if i['name'] == '_adm-rowid':
-                continue
-            retVal.append(self.api.get_entity('Column')(objid=i['objid']))
-            
-        return retVal
+        return [dict(x) for x in controllers['drc'].execute(stmt,params)]
         
     def get_q_cols(self,select):
         """Get the columns resulting from a query without fetching rows."""
@@ -120,7 +172,7 @@ class View(base_view.View,Entity):
         sel_func = select.Select().select
         select_args = inspect.getargspec(sel_func)[0][2:]
         kwargs.update(dict(zip(select_args,args)))
-        kwargs['viewid'] = self.objid
+        kwargs['objid'] = self.objid
         return sel_func(**kwargs)
         
     def features(self,rowids,z=None):        
@@ -166,6 +218,10 @@ class View(base_view.View,Entity):
         features = []
         corners = tilecalc.tileBB(int(x),int(y),int(z))
         
+        if tblinfo['parent_objid'].startswith('tbl'):
+            tbl = self.api.get_entity('Table')(joininfo['parent_objid'])
+            tblinfo['parent_objid'] = tbl['parent_objid']
+        
         dbid = tblinfo['parent_objid']
         tblid = tblinfo['objid']
         
@@ -185,7 +241,7 @@ class View(base_view.View,Entity):
         geocols = self.geo_columns()
         if len(geocols) == 0:
             return
-        tblinfo = Entity(str(self.objid))
+        tblinfo = self.api.get_byid(self.objid)
         geocolid = geocols[0]['objid']
         geocolname = geocols[0]['name']
         geocoltype = geocols[0]['datatype']
@@ -194,6 +250,14 @@ class View(base_view.View,Entity):
             corners = tilecalc.tileBB(int(x),int(y),int(z))
         else:
             corners = None
+        
+        if not tblinfo['parent_objid'].startswith('dbi'):
+            tbl = api.get_byid(tblinfo['parent_objid'])
+            try:
+                tblinfo['parent_objid'] = tbl['parent_objid']
+            except TypeError:
+                tblinfo = tblinfo.row_dict
+                tblinfo['parent_objid'] = tbl['parent_objid']
         
         dbid = tblinfo['parent_objid']
         tblid = tblinfo['objid']

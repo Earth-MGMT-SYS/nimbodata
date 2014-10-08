@@ -28,7 +28,7 @@ class TestDDL(unittest.TestCase):
         """Instantiate a db, drop and instantiate if the first try fails."""
         try:
             self.db = cloud.create_database('selectdb')
-        except cc.IntegrityError:
+        except cc.RelationExists:
             db = cloud.Database('selectdb').drop()
             self.db = cloud.create_database('selectdb')
     def tearDown(self):
@@ -72,63 +72,6 @@ class TestDDL(unittest.TestCase):
         self.db.modify({'name':'BozoHappyland','alias':'FrankrankBoffinBrew'})
         self.assertEquals(self.db.info['name'],'BozoHappyland')
         self.assertEquals(self.db.info['alias'],'FrankrankBoffinBrew')
-                
-        
-    #@unittest.skip('skip')
-    def test_view_metadata(self):
-        """Can we create and query from a view?"""
-        cols = [
-            {'name':'pk','datatype':Text},
-            {'name':'a','datatype':Integer},
-            {'name':'b','datatype':Text},
-        ]
-        
-        self.table = self.db.create_table('Colstuff',cols)
-        view = self.db.create_view('Cloudy',{'viewid':self.table})
-        check_view = self.db.view('Cloudy')
-        self.assertEquals(view.objid,check_view.objid)
-        views = self.db.views()
-        self.assertEquals(len(views),1)
-        self.assertEquals(views[0]['objid'],view.objid)
-        viewcols = view.columns()
-        self.assertEquals(len(viewcols),3)
-        self.assertEquals(viewcols[0]['name'],'pk')
-        self.assertEquals(viewcols[1]['name'],'a')
-        self.assertEquals(viewcols[2]['name'],'b')
-    
-    #@unittest.skip('skip')
-    def test_view_insert_select(self):
-        """Can we select from a view reliably after inserts?"""
-        cols = [
-            {'name':'pk','datatype':Text},
-            {'name':'a','datatype':Integer},
-            {'name':'b','datatype':Text},
-        ]
-        
-        self.table = self.db.create_table('Colstuff',cols)
-        values = [
-            ('frank',2,'1'),
-            ('jerry',5,'2'),
-            ('ann',7,'3'),
-            ('francine',9,'4'),
-        ]
-        
-        self.table.insert(values)
-        view = self.db.create_view('Cloudy',{'viewid':self.table})
-        result = cloud.select(view,['a','b'])
-        self.assertEquals(result[0]['a'],2)
-        result = cloud.select(view)
-        self.assertEquals(result[0]['pk'],'frank')
-        
-        temp = self.db.create_view(
-            'With a chance of Meatwad',
-            {'viewid':self.table},
-            temporary = True
-        )
-        result = cloud.select(temp,['a','b'])
-        self.assertEquals(result[0]['a'],2)
-        result = cloud.select(temp)
-        self.assertEquals(result[0]['pk'],'frank')
         
     #@unittest.skip('skip')
     def test_cols(self):

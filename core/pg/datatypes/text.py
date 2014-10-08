@@ -16,6 +16,12 @@ class Text(txt.Text,Datatype):
     def sql_create(self):
         return 'text'
         
+    def sql_cast(self,colspec):
+        col = colspec['args'][0]
+        return ''' "_adm-registries"."to_Text"("%(col)s") ''' % {
+            'col':col
+        }, {}
+        
 class Json(txt.Json,Datatype):
     
     def sql_create(self):

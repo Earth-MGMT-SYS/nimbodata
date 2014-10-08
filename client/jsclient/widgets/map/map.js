@@ -12,12 +12,14 @@ var base_layers = [],
     feature_layers = [];
     
 var _map, self;
+var _geocol;
 var fill = "#29CAE1", stroke = "#F40C0E";
+var strokewidth = 2, strokewidthhover = 3;
 var _style = {
     "clickable": true,
     "color": stroke,
     "fillColor": fill,
-    "weight": 1,
+    "weight": strokewidth,
     "opacity": 0.5,
     "fillOpacity": 0.5
 };
@@ -26,7 +28,7 @@ var _hover_style = {
     "clickable": true,
     "color": stroke,
     "fillColor": fill,
-    "weight": 2,
+    "weight": strokewidthhover,
     "opacity": 0.9,
     "fillOpacity": 0.3
 };
@@ -188,7 +190,7 @@ return {
                         return false
                     } else {
                         _layerchoice = info
-                        self.add_tiled_geojson(info)
+                        self.add_tiled_geojson(info,d[0])
                     }
                 })
             }
@@ -321,33 +323,72 @@ return {
     },
     
     style: function (details) {
-        _style = {
-            "clickable": true,
-            "color": details.stroke,
-            "fillColor": details.fill,
-            "weight": 2,
-            "opacity": 0.5,
-            "fillOpacity": 0.5
-        };
+        if (arguments.length > 0) {
+            stroke = details.stroke
+            fill = details.fill
+            _style = {
+                "clickable": true,
+                "color": details.stroke,
+                "fillColor": details.fill,
+                "weight": 2,
+                "opacity": 0.5,
+                "fillOpacity": 0.5
+            };
 
-        _hover_style = {
-            "clickable": true,
-            "color": details.stroke,
-            "fillColor": details.fill,
-            "weight": 3,
-            "opacity": 0.9,
-            "fillOpacity": 0.3
-        };
-        self.add_tiled_geojson(_layerchoice)
+            _hover_style = {
+                "clickable": true,
+                "color": details.stroke,
+                "fillColor": details.fill,
+                "weight": 3,
+                "opacity": 0.9,
+                "fillOpacity": 0.3
+            };
+            self.add_tiled_geojson(_layerchoice)
+        } else {
+            _style = {
+                "clickable": true,
+                "color": stroke,
+                "fillColor": fill,
+                "weight": strokewidth,
+                "opacity": 0.5,
+                "fillOpacity": 0.5
+            };
+
+            _hover_style = {
+                "clickable": true,
+                "color": stroke,
+                "fillColor": fill,
+                "weight": strokewidthhover,
+                "opacity": 0.9,
+                "fillOpacity": 0.3
+            };
+        }
+        
     },
     
-    add_tiled_geojson: function (info) {
+    add_tiled_geojson: function (info,geocol) {
         
         var objid = info.objid
         var etype = info.entitytype
         
         this.clear()
         
+        if (geocol) {
+            _geocol = geocol
+        } else {
+            geocol = _geocol
+        }
+        
+        if (geocol._info.datatype == 'MultiLine'){
+            strokewidth = 4
+            strokewidthhover = 8
+            self.style()
+        } else {
+            strokewidth = 2
+            strokewidthhover = 3
+            self.style()
+        }
+                
         var hoverStyle = {
             "fillOpacity": 0.5
         };
@@ -366,7 +407,7 @@ return {
         var laststyle;
             
         var gj_layer = new L.TileLayer.GeoJSON(geojsonURL, {
-                clipTiles: true,
+                clipTiles: false,
                 unique: function (feature) {
                     return feature.properties.rowid;
                 },

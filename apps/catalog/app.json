@@ -1,11 +1,20 @@
 [
     {
-        "id":"left",
+        "id":"top",
         "title":"Earth-MGMT Catalog",
+        "widget":"MasterMenu",
+        "browserview":{
+            "width":"100%",
+            "height":"4%"
+        }
+    },
+    {
+        "id":"left",
+        
         "widget":"Container",
         "browserview":{
                 "width":"15%",
-                "height":"100%"
+                "height":"96%"
             },
         "children":[
             {
@@ -21,7 +30,7 @@
         "widget":"Container",
         "browserview":{
                 "width":"85%",
-                "height":"100%"
+                "height":"96%"
             },
         "children":[
             {

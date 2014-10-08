@@ -6,12 +6,11 @@ import shapely.geometry as shp
 from . import *
 from . import PG_Datatype as Datatype
 import common.datatypes.geographic as geo
-from common import comparable
 
 class Geographic(Datatype):
     """Generic geographic type."""
         
-    def sql_target(self,colid,colname,alias=True,viewcreate=False):
+    def sql_target(self,colid,colname=None,alias=True,viewcreate=False):
         """ Return the column results as GeoJSON string"""
         if viewcreate:
             return ''' "%(colid)s" ''' % { 'colid':colid }
@@ -24,6 +23,15 @@ class Geographic(Datatype):
             return ''' ST_AsGeoJSON("%(colid)s") AS "%(colid)s" ''' % {
                 'colid':colid
             }    
+            
+    def sql_cast(self,colspec):
+        col_a, col_b = colspec['args']
+        return """
+            ST_SetSRID(ST_Point("%(col_a)s","%(col_b)s"),4326)
+        """ % {
+            'col_a':col_a,
+            'col_b':col_b,
+        }, {}
 
 
 class Point(geo.Point,Geographic):

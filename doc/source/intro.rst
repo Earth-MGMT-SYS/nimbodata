@@ -6,7 +6,7 @@ Introduction
 
 Nimbodata aims to enable distributed management systems.  The core capabilities
 of any management system include the collection, validation, management,
-analysis, communication of structured information in the furtherance of an
+analysis, and communication of structured information in the furtherance of an
 objective.  Nimbodata expands upon the now age-old concepts of a relational
 database and GIS, but makes them Python, REST and Javascript native, with
 a sprinking of modern goodness like an object store thrown in.

@@ -17,6 +17,12 @@ function set_env ( env ) {
     environment = env
 }
 
+if ( typeof String.prototype.startsWith != 'function' ) {
+    String.prototype.startsWith = function( str ) {
+        return this.substring( 0, str.length ) === str;
+    }
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 ////// Entity Base Class //////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -33,17 +39,21 @@ function Entity (objinfo) {
 }
 
 Entity.prototype = {
+    
     get objid () {
         if (this._objid) return this._objid
         else return this._info.objid
     },
+    
     entity_type: 'Entity',
+    
     init: function (objinfo) {
         if (typeof objinfo == 'string') {
             this._objid = objinfo
         }
         else this._info = objinfo
     },
+    
     info: function (callback) {
         if (this._info) {
             callback(null,this._info)
@@ -55,16 +65,29 @@ Entity.prototype = {
         }
         else {
             var entity_type = this.entity_type
-            n_get(['databases',this.parent,this.entity_type,this.objid],function (e,d) {
-                if (typeof d == 'object') {
-                    callback(e,d)
-                }
-                else {
-                    n_get([entity_type,d],callback)
-                }
-            })
+            if (! this.parent.startsWith('dbi')) {
+                var partype = this.parent.startsWith('tbl') ? 'tables' : 'views'
+                n_get([partype,this.parent,this.entity_type,this.objid],function (e,d) {
+                    if (typeof d == 'object') {
+                        callback(e,d)
+                    }
+                    else {
+                        n_get([entity_type,d],callback)
+                    }
+                })
+            } else {
+                n_get(['databases',this.parent,this.entity_type,this.objid],function (e,d) {
+                    if (typeof d == 'object') {
+                        callback(e,d)
+                    }
+                    else {
+                        n_get([entity_type,d],callback)
+                    }
+                })
+            }
         }
     },
+    
     listing: function (/*child_type,callback*/) {
         if (arguments.length == 1) {
             var callback = arguments[0]
@@ -77,6 +100,7 @@ Entity.prototype = {
         }
         
     },
+    
     tree: function(callback) {
         n_get([this.entity_type,this.objid],callback)
     },
@@ -96,6 +120,7 @@ Entity.prototype = {
         this._info = false
         n_post([this.entity_type,this.objid,'rename'],{'newname':newname},callback)
     },
+    
     drop: function (callback) {
         n_delete([this.entity_type,this.objid],function (e,d) {
             if (callback) callback(null,d)
@@ -173,6 +198,12 @@ View.prototype.select = function (callback) {
         ['select',this.objid],
         callback
     )
+}
+
+View.prototype.View = function (name) {
+    var view = new View(name)
+    view.parent = this.objid
+    return view
 }
 
 View.prototype.columns = function (callback) {    
@@ -365,8 +396,8 @@ var public = {
     },
     select: function (kwargs,callback) {        
         try {
-            if (kwargs.viewid._info) {
-                kwargs.viewid = kwargs.viewid.objid
+            if (kwargs.objid._info) {
+                kwargs.objid = kwargs.objid.objid
             }
         } catch (e) {
             return

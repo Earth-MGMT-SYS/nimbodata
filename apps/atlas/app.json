@@ -1,12 +1,21 @@
 [
     {
+        "id":"top",
         "title":"Earth-MGMT Atlas",
+        "widget":"MasterMenu",
+        "browserview":{
+            "width":"100%",
+            "height":"4%"
+        }
+    },
+    {
+        
         "id":"map",
         "widget":"Map",
         "maxbutton":false,
         "browserview":{
             "width":"100%",
-            "height":"100%"
+            "height":"96%"
         }
     },
     {

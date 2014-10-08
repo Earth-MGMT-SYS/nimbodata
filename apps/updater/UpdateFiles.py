@@ -42,9 +42,14 @@ class UpdateFileTable(object):
         return list(reader)
         
     def asfile(self):
-        r = csv.reader(EncodedFile(open(self.fpath,'rb'),'utf-8','utf-8','ignore'))
+        header,rows = self.process_result(EncodedFile(open(self.fpath,'rb'),'utf-8','utf-8','ignore'))
         f = StringIO.StringIO()
         w = csv.writer(f)
-        r.next()
-        for row in r: w.writerow(row)
+        for row in rows: w.writerow(row)
         return f
+
+    def process_result(self,infile):
+        r = csv.reader(infile)
+        header = r.next()
+        return header,(x for x in r)
+        

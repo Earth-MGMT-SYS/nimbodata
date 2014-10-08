@@ -14,7 +14,7 @@ def fallback_json(obj):
 
     if isinstance(obj,datetime.datetime) or isinstance(obj,datetime.date) \
             or isinstance(obj,datetime.time):
-        return jsonpickle.encode(obj)
+        return obj.isoformat()
     try:
         return obj.toJSON()
     except:

@@ -4,8 +4,6 @@
 import datetime
 import json
 
-import jsonpickle
-
 import datatypes
 import datatypes.fallback_json as fallback_json
 

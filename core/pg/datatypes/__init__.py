@@ -20,6 +20,7 @@ from text import *
 from time import *
 from function import *
 from ranges import *
+from array import *
 from dataobject import *
 
 # Supports the idiom where the object represents the Type and can be called
@@ -40,14 +41,14 @@ Timestamp = Timestamp()
 Time = Time()
 IntegerRange = IntegerRange()
 DataObject = DataObject()
+FloatArray = FloatArray()
+IntegerArray = IntegerArray()
+BooleanArray = BooleanArray()
+TextArray = TextArray()
 
 import _register_lunatics
 
-casts = {
-    'Integer':'_adm-registries"."to_Integer',
-    'Float':'_adm-registries"."to_Float',
-    'Text':'_adm-registries"."to_Text',
-    'Point':'ST_Point',
-}
-
-function.casts = casts
+valid = ['Text','Integer','Float','Point','MultiPoint','Line','MultiLine',
+         'Polygon','MultiPolygon','Boolean','Json','Date','Timestamp','Time',
+         'IntegerRange','DataObject','IntegerArray','FloatArray','BooleanArray',
+         'TextArray']

@@ -7,9 +7,9 @@ import psycopg2.extensions
 
 from . import *
 
-import common.comparable as comparable
+import common.expressions as expressions
 
-comparable.operators += ['@>','<@','?','?|','?&']
+expressions.operators += ['@>','<@','?','?|','?&']
 
 class DataObject(Datatype):
     """The base class for a PostgreSQL datatype in Nimbodata.
@@ -26,17 +26,17 @@ class DataObject(Datatype):
         return json.loads(value)
 
     def contains(self,this,other):
-        return comparable.WhereClause(this['name'],'@>',other)
+        return expressions.BinaryExpression(this['name'],'@>',other)
         
     def containedby(self,this,other):
-        return comparable.WhereClause(this['name'],'<@',other)
+        return expressions.BinaryExpression(this['name'],'<@',other)
 
     def haskey(self,this,other):
-        return comparable.WhereClause(this['name'],'?',other)
+        return expressions.BinaryExpression(this['name'],'?',other)
 
     def hasall(self,this,other):
-        return comparable.WhereClause(this['name'],'?&',other)
+        return expressions.BinaryExpression(this['name'],'?&',other)
         
     def hasany(self,this,other):
-        return comparable.WhereClause(this['name'],'?|',other)
+        return expressions.BinaryExpression(this['name'],'?|',other)
         

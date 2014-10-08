@@ -38,12 +38,15 @@ class UpdateWebTable(object):
         self.name, self.url = name, url
         print url
         r = requests.get(url)
+        if r.status_code == 404:
+            self.header, self.rows = None, None
+            return # Logit later.
         self.header, self.rows = self.process_result(r.text)
         
     @property
     def columns(self):
         return [{'name':x,'datatype':Text} for x in self.header]
-        
+    
     def select(self):
         return rows
         
@@ -63,9 +66,6 @@ class UpdateWebTable(object):
         if len(header) == 1:
             rdr = csv.reader((row for row in StringIO.StringIO(text) if row[0] != '#'),
             dialect='excel-tab')
-        try:
             header = rdr.next()
-        except StopIteration:
-            return None,None
         rows = [x for x in rdr]
         return header,rows

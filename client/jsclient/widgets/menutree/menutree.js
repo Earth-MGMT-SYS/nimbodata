@@ -13,28 +13,27 @@ extend(MenuTree,function () {
         var split = this.split(sep);
         return maxsplit ? [ split.slice(0, -maxsplit).join(sep) ].concat(split.slice(-maxsplit)) : split;
     }
-
+        
     var objid_to_name = d3.map();
 
     function get_key(d) {
         return d.objid ? d.objid : d.key
-    };
+    }
 
     function get_label(d) {
-        
-        
-        
         if (d.key) {
             var split = d.key.rsplit(' ',1)[1]
             if (objid_to_name.has(split)) return objid_to_name.get(split)
-            else return split
+            else if (split.startsWith('tbl')) {
+                return objid_to_name.get(split)
+            } else return split
         }
         else return lab = d.alias ? d.alias : d.name
-    };
+    }
 
     function get_id(d) {
         return d.parent_objid + d.name + d.entitytype + d.key;
-    };
+    }
 
     var on_click_methods = {
         'add_layer':function(d) {Map.add_tiled_geojson(d.objid)},
@@ -232,8 +231,8 @@ extend(MenuTree,function () {
             var top_type = d[0].entitytype;
                 
             for (var i = d.length -1; i >=0; i--)  {
+                objid_to_name.set(d[i].objid,d[i].name)
                 if (d[i].entitytype == top_type) {
-                    objid_to_name.set(d[i].objid,d[i].name)
                     levels.add(d.entitytype)
                     d.splice(i,1)
                 }

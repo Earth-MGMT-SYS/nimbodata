@@ -20,6 +20,10 @@
     right: 1em;
 }
 
+div.n_mustache_frame {
+    margin: 1em;
+}
+
 #stylemaster {
     position: absolute;
     right: 1em;
@@ -81,7 +85,8 @@ span.argo, div.argo {
 
 
 div.n_tabs {
-    background: #425F81;
+    background: rgba(66,95,129,0.5);
+    border-radius: 0.5em 0.5em 0 0;
 }
 
 div.n_tabs > ul.n_tabs > li.n_tabs {

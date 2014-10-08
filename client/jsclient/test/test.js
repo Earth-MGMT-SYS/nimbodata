@@ -148,7 +148,7 @@ describe('view', function () {
             db.create_table('testtable',cols,function(e,tbl){
                 table = tbl
                 table.insert([['g',1],['b',2]],function () {
-                    db.create_view('klepto',{'viewid':table.objid},function (e,d) {
+                    db.create_view('klepto',{'objid':table.objid},function (e,d) {
                         view = d
                         done()
                     })

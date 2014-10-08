@@ -17,3 +17,5 @@ core/test/nimbodata/*
 .git/*
 install/dumps/*
 core/lastaccess
+*.gdb/*
+*/import-data/*

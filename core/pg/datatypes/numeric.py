@@ -15,8 +15,42 @@ class Integer(num.Integer,Datatype):
     
     def sql_create(self):
         return 'integer'
+        
+    def sql_cast(self,colspec):
+        col = colspec['args'][0]
+        return ''' "_adm-registries"."to_Integer"("%(col)s") ''' % {
+            'col':col
+        }, {}
+        
+    def sql_target(self,colspec):
+        if 'viewcolid' in colspec:
+            viewcol = colspec['viewcolid']
+        else:
+            viewcol = None
+        col = colspec['args'][0]
+        return ''' "_adm-registries"."to_Integer"("%(col)s") AS "%(viewcol)s" ''' % {
+            'col':col,
+            'viewcol':viewcol if viewcol is not None else col
+        }, {}
 
 class Float(num.Float,Datatype):
         
     def sql_create(self):
         return 'float'
+        
+    def sql_cast(self,colspec):
+        col = colspec['args'][0]
+        return ''' "_adm-registries"."to_Float"("%(col)s") ''' % {
+            'col':col
+        }, {}
+
+    def sql_target(self,colspec):
+        if 'viewcolid' in colspec:
+            viewcol = colspec['viewcolid']
+        else:
+            viewcol = None
+        col = colspec['args'][0]
+        return ''' "_adm-registries"."to_Float"("%(col)s") AS "%(viewcol)s" ''' % {
+            'col':col,
+            'viewcol':viewcol if viewcol is not None else col
+        }, {}

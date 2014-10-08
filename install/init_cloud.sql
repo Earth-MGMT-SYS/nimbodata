@@ -9,7 +9,6 @@ CREATE EXTENSION postgis;
 CREATE LANGUAGE plpython2u;
 
 
-
 DROP SCHEMA "_adm-registries" CASCADE;
 
 CREATE SCHEMA "_adm-registries";
@@ -76,6 +75,53 @@ AS $$
             return None
 $$ LANGUAGE plpython2u;
 
+CREATE FUNCTION "to_TextArray" (val text)
+    RETURNS text[]
+AS $$
+    if len(str(val)) == 0:
+        return None
+    else:
+        retVal = []
+        repl = val.replace('[','')
+        repl = repl.replace(']','')
+        return repl.split(',')
+$$ LANGUAGE plpython2u;
+
+CREATE FUNCTION "to_IntegerArray" (val text)
+    RETURNS integer[]
+AS $$
+    if len(str(val)) == 0:
+        return None
+    else:
+        retVal = []
+        repl = val.replace('{','') # SRSLYWTF, it swapped my brackets in text
+        repl = repl.replace('}','') # SRSLYWTF, it swapped my brackets in text
+        for item in repl.split(','):
+            try:
+                retVal.append(int(item))
+            except (ValueError,TypeError):
+                retVal.append(None)
+        return retVal
+$$ LANGUAGE plpython2u;
+
+CREATE FUNCTION "to_FloatArray" (val text)
+    RETURNS float[]
+AS $$
+    if len(str(val)) == 0:
+        return None
+    else:
+        retVal = []
+        repl = val.replace('{','') # SRSLYWTF, it swapped my brackets in text
+        repl = repl.replace('}','') # SRSLYWTF, it swapped my brackets in text
+        for item in repl.split(','):
+            try:
+                retVal.append(float(item))
+            except (ValueError,TypeError):
+                retVal.append(None)
+        return retVal
+$$ LANGUAGE plpython2u;
+
+
 CREATE TABLE "_adm-entityregistry" (
     name text,
     owner text,
@@ -96,6 +142,7 @@ CREATE INDEX ON "_adm-entityregistry"(objid);
 CREATE INDEX ON "_adm-entityregistry"(parent_objid);
 CREATE INDEX ON "_adm-entityregistry"(entitytype);
 CREATE INDEX ON "_adm-entityregistry"(creationtime);
+CREATE INDEX ON "_adm-entityregistry"(weight);
 
 CREATE TABLE "_adm-userregistry" (
     usrname text PRIMARY KEY,
@@ -106,9 +153,16 @@ CREATE TABLE "_adm-userregistry" (
 CREATE TABLE "_adm-viewcolumns" (
     viewid text not null,
     colid text not null,
+    datatype text not null,
     weight int,
+    transform jsonb,
     creationtime timestamp with time zone DEFAULT clock_timestamp()
 );
+
+CREATE INDEX ON "_adm-viewcolumns"(weight);
+CREATE INDEX ON "_adm-viewcolumns"(viewid);
+CREATE INDEX ON "_adm-viewcolumns"(colid);
+CREATE INDEX ON "_adm-viewcolumns"(creationtime);
 
 --Provides a view for immediate access to the most recent entry for entities
 CREATE VIEW "_adm-entityinfo" AS
@@ -126,7 +180,8 @@ SELECT "_adm-entityregistry"."name",
     "_adm-entityregistry"."weight",
     "_adm-entityregistry"."alias",
     "_adm-entityregistry"."cols",
-    "_adm-entitymethods"."methods"
+    "_adm-entityregistry"."dobj",
+    "_adm-entitymethods"."methods"    
 FROM "_adm-entityregistry"
 INNER JOIN max_insert
     ON "_adm-entityregistry"."creationtime" = max_insert.maxtime
@@ -142,14 +197,17 @@ FROM "_adm-entityinfo"
 WHERE "entitytype" = 'Column'
 GROUP BY parent_objid;
 
+
+--Provides a view of column info taking into account multiple associations
 CREATE VIEW "_adm-viewcolinfo" AS
 WITH max_insert AS (
     SELECT viewid as maxviewid, colid as maxcolid, MAX(creationtime) as maxtime
     FROM "_adm-viewcolumns"
     GROUP BY viewid, colid
 )
-SELECT viewcols.viewid, entityinfo.parent_objid, viewcols.weight, entityinfo.name, 
-    entityinfo.datatype, entityinfo.owner, viewcols.colid objid, entityinfo.alias
+SELECT viewcols.viewid, entityinfo.parent_objid, entityinfo.entitytype,
+    viewcols.weight, entityinfo.name, viewcols.datatype, entityinfo.owner, 
+    viewcols.colid objid, entityinfo.alias
 FROM "_adm-viewcolumns" as viewcols
 INNER JOIN max_insert
     on viewcols.creationtime = max_insert.maxtime

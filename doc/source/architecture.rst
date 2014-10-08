@@ -7,9 +7,7 @@ Architecture
 The core of the platform is the data persistence engine.  It is written in
 Python and exposes a REST interface.  This Python application interacts with
 PostgreSQL via unix sockets on the localhost.  The application mediates all
-access to the database.  It is expected that `SELECT` functionality will be
-granted via direct driver access in the future, but all DDL and DML actions
-will be mediated by the application for the foreseeable future.
+access to the database via a metacatalog which spans PostgreSQL clusters.
 
 
 Nimbodata Core Server
@@ -21,11 +19,10 @@ documentation for more detail.
 The Nimbodata server uses psycopg2, a syntax engine, a metadata catalog
 and some hidden columns to provide extra capabilities beyond a traditional SQL
 database.  Current functionality is aimed to provide a feature complete
-relational (i.e. not SQL compliant) database, with geospatial and object store
-support.
+relational (i.e. not SQL) database, with geospatial and object store support.
 
 The server logic and the client access patterns are both oriented around the 
-API.
+API structure, which in turn, is structured on the relational model.
 
 
 Nimbodata Application Server

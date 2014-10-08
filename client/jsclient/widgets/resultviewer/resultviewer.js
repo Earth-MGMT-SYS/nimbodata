@@ -62,7 +62,7 @@ return {
     },
     
     update: function(e,dataset) {
-                
+        
         if (dataset) {}
         else if (e) { alert(e.responseText) }
         else {
@@ -96,6 +96,9 @@ return {
             .data(header)
             .enter().append("th")
                 .text(self.get_label)
+                .attr('class',function (d,i) {
+                    return 'n_hcol_'+i
+                })
                 .on('click',function (d) {
                     tiddlywinks.col_selected(this,tiddlywinks,d)
                 })
@@ -108,6 +111,9 @@ return {
                 .data(function (d) { return d })
                 .enter().append("td")
                     .text(function (d) { return d })
+                    .attr('class',function (d,i) {
+                        return 'n_col_'+i
+                    })
         
         Widget.prototype.update.call(this)
         Layout.refresh()
@@ -236,10 +242,16 @@ return {
         d3.select('#'+self._spec.id).selectAll("th.header_selected")
             .classed('header_selected',false)
         
+        d3.selectAll('td.n_col_selected')
+            .classed('n_col_selected',false)
+        
         Model.respond(self,'select',d)
         
         var colid = d.objid
         var dtype = d.datatype
+        
+        d3.selectAll('.n_col_'+node.cellIndex)
+            .classed('n_col_selected',true)
                 
         d3.select(node)
             .classed('header_selected',true)

@@ -11,7 +11,14 @@ table.pure-table {
 }
 
 .header_selected {
-  background: orange;
+  background: #E46B17;
+}
+
+tr:nth-child(odd) > td.n_col_selected {
+  background: rgba(228,107,23,0.4)
+}
+td.n_col_selected {
+  background: rgba(228,107,23,0.2)
 }
 
 th {

@@ -1,0 +1,338 @@
+{
+  "info": {
+    "name": "AvgAnnualSnow",
+    "weight": null,
+    "datatype": null,
+    "parent_objid": "dbi-0532e2fdd86c4921870a2bb89850a18b",
+    "entitytype": "View",
+    "cols": [
+      {
+        "name": "site_name",
+        "weight": 0,
+        "datatype": "Text",
+        "parent_objid": "tbl-136a81fe1c144c96967523fb6f0896fd",
+        "viewid": "viw-9e246879a7044d958056e48cf330d47a",
+        "entitytype": "Column",
+        "alias": "Site Name",
+        "objid": "col-997e953a1bd046cf949543bd9d2c4a33",
+        "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7"
+      },
+      {
+        "name": "site_no",
+        "weight": 1,
+        "datatype": "Integer",
+        "parent_objid": "tbl-251cf63e63754e78a3ed040207d2f6aa",
+        "viewid": "viw-9e246879a7044d958056e48cf330d47a",
+        "entitytype": "Column",
+        "alias": "Site Number",
+        "objid": "col-7e33564d599346aea10704be88f7bea9",
+        "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7"
+      },
+      {
+        "name": "date",
+        "weight": 2,
+        "datatype": "Date",
+        "parent_objid": "tbl-251cf63e63754e78a3ed040207d2f6aa",
+        "viewid": "viw-9e246879a7044d958056e48cf330d47a",
+        "entitytype": "Column",
+        "alias": "Observation Date",
+        "objid": "col-4abfe727dda7464f91e29e103b728474",
+        "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7"
+      },
+      {
+        "name": "swe",
+        "weight": 3,
+        "datatype": "Float",
+        "parent_objid": "tbl-251cf63e63754e78a3ed040207d2f6aa",
+        "viewid": "viw-9e246879a7044d958056e48cf330d47a",
+        "entitytype": "Column",
+        "alias": "Snow Water Equivalent (in)",
+        "objid": "col-66d45747dfd141119e9305d4b57c758d",
+        "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7"
+      }
+    ],
+    "dobj": null,
+    "alias": null,
+    "objid": "viw-9e246879a7044d958056e48cf330d47a",
+    "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7",
+    "methods": [
+      "rename",
+      "geo_columns",
+      "features",
+      "column",
+      "modify",
+      "drop",
+      "tree",
+      "get_q_cols",
+      "columns",
+      "listing",
+      "tile",
+      "tile_rowids",
+      "select"
+    ]
+  },
+  "header": [
+    {
+      "name": "site_name",
+      "weight": 0,
+      "datatype": "Text",
+      "parent_objid": "tbl-136a81fe1c144c96967523fb6f0896fd",
+      "viewid": "viw-9e246879a7044d958056e48cf330d47a",
+      "entitytype": "Column",
+      "alias": "Site Name",
+      "objid": "col-997e953a1bd046cf949543bd9d2c4a33",
+      "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7"
+    },
+    {
+      "name": "site_no",
+      "weight": 1,
+      "datatype": "Integer",
+      "parent_objid": "tbl-251cf63e63754e78a3ed040207d2f6aa",
+      "viewid": "viw-9e246879a7044d958056e48cf330d47a",
+      "entitytype": "Column",
+      "alias": "Site Number",
+      "objid": "col-7e33564d599346aea10704be88f7bea9",
+      "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7"
+    },
+    {
+      "name": "date",
+      "weight": 2,
+      "datatype": "Date",
+      "parent_objid": "tbl-251cf63e63754e78a3ed040207d2f6aa",
+      "viewid": "viw-9e246879a7044d958056e48cf330d47a",
+      "entitytype": "Column",
+      "alias": "Observation Date",
+      "objid": "col-4abfe727dda7464f91e29e103b728474",
+      "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7"
+    },
+    {
+      "name": "swe",
+      "weight": 3,
+      "datatype": "Float",
+      "parent_objid": "tbl-251cf63e63754e78a3ed040207d2f6aa",
+      "viewid": "viw-9e246879a7044d958056e48cf330d47a",
+      "entitytype": "Column",
+      "alias": "Snow Water Equivalent (in)",
+      "objid": "col-66d45747dfd141119e9305d4b57c758d",
+      "owner": "usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7"
+    }
+  ],
+  "rows": [
+    [
+      "BALDY ",
+      310,
+      1979,
+      null
+    ],
+    [
+      "BALDY ",
+      310,
+      1980,
+      0.8195652173913
+    ],
+    [
+      "BALDY ",
+      310,
+      1981,
+      1.4350684931507
+    ],
+    [
+      "BALDY ",
+      310,
+      1982,
+      2.6221917808219
+    ],
+    [
+      "BALDY ",
+      310,
+      1983,
+      4.6460273972603
+    ],
+    [
+      "BALDY ",
+      310,
+      1984,
+      1.5158469945355
+    ],
+    [
+      "BALDY ",
+      310,
+      1985,
+      3.2391780821918
+    ],
+    [
+      "BALDY ",
+      310,
+      1986,
+      1.4509589041096
+    ],
+    [
+      "BALDY ",
+      310,
+      1987,
+      3.6701369863014
+    ],
+    [
+      "BALDY ",
+      310,
+      1988,
+      1.868306010929
+    ],
+    [
+      "BALDY ",
+      310,
+      1989,
+      1.261095890411
+    ],
+    [
+      "BALDY ",
+      310,
+      1990,
+      0.85753424657534
+    ],
+    [
+      "BALDY ",
+      310,
+      1991,
+      2.8594520547945
+    ],
+    [
+      "BALDY ",
+      310,
+      1992,
+      2.6398907103825
+    ],
+    [
+      "BALDY ",
+      310,
+      1993,
+      4.0890410958904
+    ],
+    [
+      "BALDY ",
+      310,
+      1994,
+      1.5265753424657
+    ],
+    [
+      "BALDY ",
+      310,
+      1995,
+      2.112602739726
+    ],
+    [
+      "BALDY ",
+      310,
+      1996,
+      0.87704918032787
+    ],
+    [
+      "BALDY ",
+      310,
+      1997,
+      2.0079452054795
+    ],
+    [
+      "BALDY ",
+      310,
+      1998,
+      2.5290410958904
+    ],
+    [
+      "BALDY ",
+      310,
+      1999,
+      0.4841095890411
+    ],
+    [
+      "BALDY ",
+      310,
+      2000,
+      0.71256830601093
+    ],
+    [
+      "BALDY ",
+      310,
+      2001,
+      2.2849315068493
+    ],
+    [
+      "BALDY ",
+      310,
+      2002,
+      0.85315068493151
+    ],
+    [
+      "BALDY ",
+      310,
+      2003,
+      1.673698630137
+    ],
+    [
+      "BALDY ",
+      310,
+      2004,
+      1.0969945355191
+    ],
+    [
+      "BALDY ",
+      310,
+      2005,
+      2.3887671232877
+    ],
+    [
+      "BALDY ",
+      310,
+      2006,
+      0.25342465753425
+    ],
+    [
+      "BALDY ",
+      310,
+      2007,
+      1.0106849315069
+    ],
+    [
+      "BALDY ",
+      310,
+      2008,
+      2.4158469945355
+    ],
+    [
+      "BALDY ",
+      310,
+      2009,
+      2.1147945205479
+    ],
+    [
+      "BALDY ",
+      310,
+      2010,
+      3.6613698630137
+    ],
+    [
+      "BALDY ",
+      310,
+      2011,
+      1.0326923076923
+    ],
+    [
+      "BALDY ",
+      310,
+      2012,
+      1.3527322404372
+    ],
+    [
+      "BALDY ",
+      310,
+      2013,
+      1.5635616438356
+    ],
+    [
+      "BALDY ",
+      310,
+      2014,
+      0.52619926199262
+    ]
+  ]
+}

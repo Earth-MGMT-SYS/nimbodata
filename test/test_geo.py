@@ -73,7 +73,7 @@ class TestPoints(unittest.TestCase):
         points = cloud.select(self.table)
         self.assertEquals(len(points.rows),4)
         
-        view = self.db.create_view('testview',{'viewid':self.table})
+        view = self.db.create_view('testview',{'objid':self.table})
         
         cols = view.columns()
         
@@ -88,7 +88,7 @@ class TestPoints(unittest.TestCase):
     def test_basics_view(self):
         """Create a view of geographic data and get the features."""
         view = cloud.create_view(self.db,'GeoView',{
-            'viewid':self.table,
+            'objid':self.table,
             'cols':['home','poi']
         })
         

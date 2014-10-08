@@ -3,6 +3,8 @@ import subprocess
 
 import sys
 import csv
+from pprint import pprint
+
 
 #csv.field_size_limit(sys.maxsize)
 
@@ -40,11 +42,16 @@ class Updater(object):
                 cloud.Database(self.source.name).drop()
                 self.db = cloud.create_database(self.source.name)
 
+        self.tables = {}
+        for i,src_tbl in enumerate(self.source.tables()):
+            self.tables[src_tbl.name] = self.db.create_table(src_tbl.name,src_tbl.columns)
         
+        """
         self.tables = dict(
             (src_tbl.name,self.db.create_table(src_tbl.name,src_tbl.columns))
             for src_tbl in self.source.tables()
         )
+        """
             
         return self.db
     
@@ -69,9 +76,14 @@ class Updater(object):
                 errors.append(e)
             if src_file is not None:
                 ins_tbl.insert_file(src_file)
+                try:
+                    pass
+                except Exception as e:
+                    errors.append(e)
         for table in self.tables.values():
             geocols = table.geo_columns()
             for col in geocols:
                 table.add_index(col)
                 print "Added spatial index to: " + col['name']
         print 'Number of errors vs total: ',len(errors), ' / ', i
+        pprint(errors)

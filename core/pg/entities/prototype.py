@@ -25,7 +25,10 @@ class Entity(base_ent.Entity):
         ]
         
         if type(self).__name__ != 'Database':
-            where += [('parent_objid','=',str(self.parent))]
+            try:
+                where += [('parent_objid','=',str(self.parent))]
+            except (TypeError,AttributeError):
+                raise errors.RelationDoesNotExist
         
         stmt, params = syntax.select(
             self.schema,
@@ -39,8 +42,7 @@ class Entity(base_ent.Entity):
             raise errors.RelationDoesNotExist
     
     @property
-    def info(self):
-        """So that we always have accurate metadata."""
+    def info(self):        
         objid = str(self.objid)
         
         stmt, params = syntax.select(self.schema,
@@ -51,6 +53,15 @@ class Entity(base_ent.Entity):
             retVal = dict(controllers['drc']._get_first(stmt, params))
         except TypeError:
             raise errors.RelationDoesNotExist
+        
+        try:
+            if retVal['entitytype'] in ['View','Table']:
+                try:
+                    retVal['cols'] = [x.row_dict for x in self.columns()]
+                except AttributeError:
+                    retVal['cols'] = self.columns()
+        except errors.RelationDoesNotExist: # Likely during the creation stage
+            pass
         return retVal
     
     def select(self):
@@ -178,6 +189,7 @@ class Entity(base_ent.Entity):
         if name is not None and temporary:
             pass
         elif name is not None:
+            print vals['name']
             raise errors.RelationExists
         vals['entitytype'] = type(self).__name__
         if isinstance(vals['parent_objid'],Entity):

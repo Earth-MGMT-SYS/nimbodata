@@ -4,12 +4,13 @@
 import json
 import sys
 import inspect
+import datetime
 
 import shapely.geometry as shp
 import jsonpickle
 
 import common.results as results
-import common.comparable as comparable
+import common.expressions as expressions
 import common.errors as errors
 import common.datatypes as datatypes
 
@@ -18,13 +19,19 @@ import common.api
 
 
 def fallback_json(obj):
+    if isinstance(obj,datetime.datetime) or isinstance(obj,datetime.date) \
+            or isinstance(obj,datetime.time):
+        return obj.isoformat()
     try:
         return obj.objid
     except AttributeError:
         try:
             return obj.data
         except:
-            return json.dumps(shp.mapping(obj))
+            try:
+                return json.dumps(shp.mapping(obj))
+            except AttributeError:
+                print obj
 
 def dump(obj):
     return json.dumps(obj,default=fallback_json)
@@ -170,13 +177,18 @@ class Database(Entity):
 
 class View(Entity):
     
-    def create(self,parent,name,select,temporary=False):
+    def create(self,parent,name,select,temporary=False,materialized=False):
         return Entity.create(self,{
             'parent_objid':parent.objid,
             'name':name,
             "select":select,
-            'temporary':temporary
+            'temporary':temporary,
+            'materialized':materialized
         })
+        
+    def add_index(self,col,unique=False):
+        payload = dump({'col':col,'unique':unique})
+        return json.loads(sesh.post(self._get_req_url(self.objid)+"add_index/",data = payload).text)
         
     def _get_select_url(self):
         return "%(server)s/select/%(objid)s/" % {
@@ -190,7 +202,7 @@ class View(Entity):
         req_url = server + "/select/%(viewid)s/" % { 'viewid' : self.objid }
     
         kwargs = {
-            'viewid':self.objid,
+            'objid':self.objid,
             'cols':cols,
             'join':join,
             'where':where,
@@ -280,13 +292,9 @@ class Table(View):
     def add_columns(self,cols):
         payload = dump({'cols':cols})
         return json.loads(sesh.post(self._get_req_url(self.objid)+"add_columns/",data = payload).text)
-    
-    def add_index(self,col,unique=False):
-        payload = dump({'col':col,'unique':unique})
-        return json.loads(sesh.post(self._get_req_url(self.objid)+"add_index/",data = payload).text)
 
 
-class Column(Entity, comparable.Comparable):
+class Column(Entity, expressions.Comparable):
     
     def create(self,tblid,colname,dtype,colalias=None,primary_key=None):
         return Entity.create(self,{

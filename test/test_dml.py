@@ -81,7 +81,7 @@ class TestInsert(unittest.TestCase):
                 {'name':'b','datatype':Text},
                 ]
         table = cloud.create_table(self.db,'testTable',cols)
-        view = cloud.create_view(self.db,'testView',{'viewid':table})
+        view = cloud.create_view(self.db,'testView',{'objid':table})
         vals = ['george',3,'pigskin']
         rowid = table.insert(vals)
         self.assertTrue(rowid.startswith('row-'))

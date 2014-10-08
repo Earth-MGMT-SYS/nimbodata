@@ -7,7 +7,6 @@ import inspect
 
 import requests
 
-import common.comparable as comparable
 import common.errors as errors
 from common.errors import *
 import common.results as results
@@ -46,13 +45,13 @@ class Cloud(object):
         req_url = server + "/get_byrowid/%s/%s/%s/" % (tblid.objid,rowid,alias)
         return json.loads(sesh.get(req_url).text)
         
-    def get_array(self,viewid=None,col=None,join=None,where=None,
+    def get_array(self,objid=None,col=None,join=None,where=None,
             group_by=None,order_by=None,limit=None):
         
-        req_url = server + "/get_array/%(viewid)s/" % { 'viewid' : viewid.objid }
+        req_url = server + "/get_array/%(objid)s/" % { 'objid' : objid.objid }
     
         kwargs = {
-            'viewid':viewid,
+            'objid':objid,
             'col':col,
             'join':join,
             'where':where,
@@ -73,13 +72,13 @@ class Cloud(object):
             raise RelationDoesNotExist
         return data
 
-    def select(self,viewid=None,cols=None,join=None,where=None,
+    def select(self,objid=None,cols=None,join=None,where=None,
             group_by=None,order_by=None,limit=None):
     
-        req_url = server + "/select/%(viewid)s/" % { 'viewid' : viewid.objid }
+        req_url = server + "/select/%(objid)s/" % { 'objid' : objid.objid }
     
         kwargs = {
-            'viewid':viewid,
+            'objid':objid,
             'cols':cols,
             'join':join,
             'where':where,

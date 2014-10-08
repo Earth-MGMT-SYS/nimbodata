@@ -9,7 +9,7 @@ Welcome to Nimbodata's documentation!
 UNDER SERIOUS CONSTRUCTION!
 
 Welcome to the documentation for the Nimbodata platform.  This documentation
-provides tutorials, guidance for usage, an API reference and a documentation
+provides tutorials, guidance for usage, an API reference and documentation
 about the implementation itself.
 
 

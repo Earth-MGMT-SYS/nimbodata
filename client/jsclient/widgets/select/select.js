@@ -65,7 +65,7 @@ return {
         var cols = controls.checkboxes_get_selected(self.relid("column_checks"))
         var join = [joininfo.jtbl,[joininfo.jto,'=',joininfo.jcol]]
         var params = {
-            'viewid':objid,
+            'objid':objid,
             'where':{"all":all_parts,"any":any_parts},
             'order_by':order_parts,
             'limit':200
@@ -99,7 +99,7 @@ return {
     create_view: function (temporary) {
         var cols = controls.checkboxes_get_selected(self.relid("column_checks"))
         var params = {
-            'viewid':objid,
+            'objid':objid,
             'where':{"all":all_parts,"any":any_parts},
             'order_by':order_parts,
         }
@@ -140,14 +140,39 @@ return {
         var match = false
         if (details.entitytype) {
             if (details.entitytype == 'View' || details.entitytype == 'Table') {
-                match = true
+                match = 'info'
+            } else if (details.entitytype == 'Column') {
+                self.col_selected(details)
             }
         } else if (details.viewid) {
-            match = true
+            match = 'info'
         } else if (details._info) {
-            match = true
+            match = 'info'
         }
+        
         return match
+    },
+    
+    col_selected: function(column) {
+        d3.select('#'+self.relid("filter_stmt")).attr('value',column.name + ' ')
+        d3.select('#'+self.relid("orderby")).selectAll('option')
+            .each(function(d) {
+                if (this.value == column.name) {
+                    this.selected = true
+                }
+            })
+        d3.select('#'+self.relid("join_to_col")).selectAll('option')
+            .each(function(d) {
+                if (this.value == column.name) {
+                    this.selected = true
+                }
+            })
+        d3.select('#'+self.relid("group")).selectAll('option')
+            .each(function(d) {
+                if (this.value == column.name) {
+                    this.selected = true
+                }
+            })
     },
     
     update: function(e, d) {
@@ -163,8 +188,9 @@ return {
         
         if (d) dataset = d;
         
-        if (dataset && dataset.header[0]) {}
-        else {
+        if (dataset && dataset.info) {
+        } else if (dataset && dataset.header[0]) {
+        } else {
             Widget.prototype.update.call(this)
             return
         }
@@ -174,7 +200,6 @@ return {
         if (dataset.info) {
             parent_objid = dataset.info.parent_objid
             objid = dataset.info.objid
-            
         } else {
             objid = dataset.header[0].parent_objid
         }
@@ -188,7 +213,7 @@ return {
             .classed("hidden",false)
             .attr("state","shown")
         
-        var cols = dataset.header
+        var cols = dataset.header ? dataset.header : dataset.info.cols
         var optmap = d3.map()
         var revmap = d3.map()
         var colopts = []
@@ -217,12 +242,12 @@ return {
                         
             controls.feedback(self.relid("wherebox"),{
                 "label":"All : ",
-                "id":this.relid("all_stmt"),
+                "id":this.relid("all_stmt")
             })
             
             controls.feedback(self.relid("wherebox"),{
                 "label":"Any : ",
-                "id":this.relid("any_stmt"),
+                "id":this.relid("any_stmt")
             })
             
             d3.select('#'+self.relid('wherebox'))

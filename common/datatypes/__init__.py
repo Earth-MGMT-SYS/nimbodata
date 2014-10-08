@@ -17,6 +17,7 @@ from text import *
 from time import *
 from function import *
 from ranges import *
+from array import *
 from dataobject import *
 
 # Supports the idiom where the object represents the Type and can be called

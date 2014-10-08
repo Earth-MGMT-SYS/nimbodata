@@ -17,7 +17,45 @@
     },
     {
         "id":"details",
-        "widget":"RowViewer",
-        "overbox":true
+        "widget":"Container",
+        "browserview":{"containermode":"tabs"},
+        "overbox":true,
+        "children":[
+            {
+                "id":"SiteInfo",
+                "widget":"RowViewer",
+                "browserview":{
+                    "width":"natural",
+                    "height":"natural"
+                }
+            },
+            {
+                "id":"POR",
+                "subview":"POR",
+                "widget":"RowViewer",
+                "browserview":{
+                    "width":"natural",
+                    "height":"natural"
+                }
+            },
+            {
+                "id":"WY2013",
+                "subview":"Peak2013",
+                "widget":"RowViewer",
+                "browserview":{
+                    "width":"natural",
+                    "height":"natural"
+                }
+            },
+            {
+                "id":"Comparison",
+                "subview":"Data",
+                "widget":"RowViewer",
+                "browserview":{
+                    "width":"natural",
+                    "height":"natural"
+                }
+            }
+        ]
     }
 ]

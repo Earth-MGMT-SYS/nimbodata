@@ -1,0 +1,9 @@
+[
+    {
+        "id":"rows",
+        "widget":"MustacheView",
+        "template":"./examples/template.mst",
+        "datasource":"./examples/angrylib.json",
+        "overbox":true
+    }
+]

@@ -6,13 +6,20 @@ import common.errors as errors
 
 from .. import syntax
 from .. import datatypes
+from .. import expressions
 from . import *
 
 class Column(base_column.Column,Entity):
     """Column in a table, referenced by views.  Can be used in where filter."""
+            
+    def __init__(self,*args,**kwargs):
+        if 'func' in kwargs:
+            self.func = kwargs['func']
+            del(kwargs['func'])
+        return Entity.__init__(self,*args,**kwargs)
     
-    def _start_colindex(self,tblid):
-        """Next column index, which may be zero if there are no columns."""
+    def _start_weight(self,tblid):
+        """Next column weight, which may be zero if there are no columns."""
         stmt,params = syntax.select(
             "_adm-registries",
             "_adm-maxcolindex",
@@ -24,7 +31,7 @@ class Column(base_column.Column,Entity):
         return startIndex
     
     def create(self,parent,name,datatype,alias=None,primary_key=None,
-            tblinfo=None,index=None,exp=None):
+            tblinfo=None,weight=None,exp=None,func=None):
         """Create the column in SQL, register it."""
         if tblinfo is None:
             try:
@@ -39,8 +46,8 @@ class Column(base_column.Column,Entity):
                 controllers['ddl'].conn.commit()
                 tblinfo = dict(controllers['ddl']._get_first(stmt, params))
                 
-        if index is None:
-            index = self._start_colindex(parent)
+        if weight is None:
+            weight = self._start_weight(parent)
         
         dbid,tblname = tblinfo['parent_objid'],tblinfo['name']
         tblowner = tblinfo['owner']
@@ -57,15 +64,16 @@ class Column(base_column.Column,Entity):
         
         regVals = {
             'parent_objid':parent,
-            'weight':index,
+            'weight':weight,
             'name':name,
             'alias':alias,
             'datatype':datatype,
             'owner':tblowner,
-            'objid':colid
+            'objid':colid,
+            'dobj':func
         }
         
-        Entity.create(self,regVals)
+        
         regVals['qtn'] = str(dbid)+'"."'+str(parent)
         
         if not isinstance(datatype,datatypes.Datatype):
@@ -92,12 +100,23 @@ class Column(base_column.Column,Entity):
                 
         controllers['ddl'].execute(stmt)
         
-        # Needs cleanup
         if exp is not None:
+            try:
+                fname = exp['fname']
+                args = exp['args']
+            except TypeError:
+                fname = exp[0]
+                args = exp[1:]
             p = self.api.get_byid(parent)
-            s = datatypes.Function().sql_exp(*exp)
+            if fname in datatypes.valid:
+                s,params = getattr(datatypes,fname).sql_cast(exp)
+            else:
+                raise errors.InvalidFunction
             stmt = syntax.update_as(p['parent_objid'],p.objid,colid,s)
             controllers['ddl'].execute(stmt,params)
+        
+        del(regVals['qtn'])
+        Entity.create(self,regVals)
         
         controllers['ddl'].conn.commit()
         
@@ -112,33 +131,37 @@ class Column(base_column.Column,Entity):
         
         if 'datatype' in params:
             newtype = params['datatype']
+            if newtype.startswith('datatype:'):
+                newtype = newtype.replace('datatype:','')
+            if newtype not in datatypes.valid:
+                raise TypeError("Invalid type: " + newtype)
             colinfo = self.info
-            tblinfo = self.api.get_entity('Column')(objid=colinfo['parent_objid'])
+            tblinfo = self.api.get_byid(colinfo['parent_objid'])
             
-            # Need to validate `newtype`
-            mod_stmt = syntax.alter_column_type(
-                tblinfo['parent_objid'],
-                tblinfo['objid'],
-                colinfo['objid'],
-                newtype
-            )
+            if 'exp' not in params:
+                mod_stmt = syntax.alter_column_type(
+                    tblinfo['parent_objid'],
+                    tblinfo['objid'],
+                    colinfo['objid'],
+                    newtype
+                )
+                u_params = None
+            else:
+                args = {
+                    'fname':newtype,
+                    'args':[colinfo['objid'],params['exp']]
+                }
+                u_stmt, u_params = getattr(datatypes,newtype).sql_cast(args)
+                # Need to test the validation for `newtype`
+                mod_stmt = syntax.alter_column_type(
+                    tblinfo['parent_objid'],
+                    tblinfo['objid'],
+                    colinfo['objid'],
+                    newtype,
+                    u_stmt
+                )
             
-            try:
-                controllers['ddl'].execute(mod_stmt)
-            except errors.DataError:
-                table = self.api.get_entity('Table')(tblinfo['objid'])
-                result = table.select(['_adm-rowid',colinfo['objid']])
-                out = []
-                for row in result:
-                    if newtype == 'Integer':
-                        try:
-                            if str(row[1])[0] not in ('123456789'):
-                                out.append([row[0],None])
-                            else:
-                                out.append([row[0],int(row[1])])
-                        except IndexError:
-                            out.append([row[0],None])
-                return out
+            controllers['ddl'].execute(mod_stmt,u_params)
             
             colinfo['datatype'] = newtype
             self._registry_insert(colinfo)

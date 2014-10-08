@@ -1,7 +1,7 @@
 """Module implements the table column."""
 # Copyright (C) 2014  Bradley Alan Smith
 
-import common.comparable as comparable
+import common.expressions.comparable as comparable
 import common.datatypes as datatypes
 
 from . import * 
@@ -14,8 +14,11 @@ class Column(Entity,comparable.Comparable):
         Entity.__init__(self,name,objid,info)
         
     def __getattr__(self,attr):
+        if attr in ('info','columns'):
+            raise AttributeError
         try:
-            func = getattr(getattr(datatypes,self.info['datatype']),attr)
+            dty = getattr(datatypes,self.info['datatype'])
+            func = getattr(dty,attr)
         except TypeError as e:
             print attr
             raise e
