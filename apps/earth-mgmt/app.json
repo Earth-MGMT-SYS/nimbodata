@@ -14,10 +14,8 @@
             "id":"launcher",
             "widget":"Launcher",
             "options":[
-                ["Water-Mgmt Explorer","../water-mgmt/"],
-                ["Water-Mgmt Explorer","../water-dash/"],
-                ["Catalog","../catalog/",["databases","WaterMgmt","tree"]],
-                ["Atlas","../atlas/",["databases","TigerLine","tree"]]
+                ["Explorer","../water-mgmt/"],
+                ["Catalog","../catalog/",["databases","WaterMgmt","tree"]]
             ]
         }
     ]
