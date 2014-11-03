@@ -33,6 +33,7 @@ class Constraint(base_constraint.Constraint,Entity):
             'name':const['conname'],
             'datatype':contype,
             'parent_objid':const['tblid'],
+            'parent_db':const['tblid'],
             'owner':self.session['user']
         })
         

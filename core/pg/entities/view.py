@@ -21,26 +21,49 @@ class View(base_view.View,Entity):
         """Create and register."""
         viewid = self._new_id()
         
+        parent = self.api.get_byid(parent_objid)
+        
         Entity.create(self,{
             'parent_objid':parent_objid,
+            'parent_db':parent['parent_db'],
             'name':name,
             'owner':self.session['user'],
             'objid':viewid
         },temporary)
         
-        select['alias'] = False
-        if 'cols' in select and select['cols'] is not None:
-            select['cols'] = ['_adm-rowid'] + select['cols']
-            select['viewcreate'] = True
-            sel_stmt, sel_params, out_colinfo = _s._prepare_select(**select)
+        def process_statement(select):
+            select['alias'] = False
+            if 'cols' in select and select['cols'] is not None:
+                select['cols'] = ['_adm-rowid'] + select['cols']
+                select['viewcreate'] = True
+                return _s._prepare_select(**select)
+            else:
+                sel_stmt, sel_params, out_colinfo = _s._prepare_select(**select)
+                select['cols'] = ['_adm-rowid'] + [x['objid'] for x in out_colinfo]
+                select['viewcreate'] = True
+                return _s._prepare_select(**select)
+            
+        if 'fname' in select and select['fname'] is not None \
+                and select['args'] is not None:
+            args = select['args']
+            objid = args[0]['objid']
+            stmts = []
+            sel_params = {}
+            out_colinfo = None
+            for arg in args:
+                stmt_a,params_a,out_colinfo_a = process_statement(arg)
+                sel_params.update(params_a)
+                stmts.append(stmt_a)
+                if out_colinfo is None:
+                    out_colinfo = out_colinfo_a
+            sel_stmt = "\n UNION \n".join(stmts)
+            
         else:
-            sel_stmt, sel_params, out_colinfo = _s._prepare_select(**select)
-            select['cols'] = ['_adm-rowid'] + [x['objid'] for x in out_colinfo]
-            select['viewcreate'] = True
-            sel_stmt, sel_params, out_colinfo = _s._prepare_select(**select)
+            sel_stmt,sel_params,out_colinfo = process_statement(select)
         
         Entity.create(self.api.get_entity('Column')(),{
             'parent_objid':viewid,
+            'parent_db':parent['parent_db'],
             'weight':0,
             'name':'rowid',
             'datatype':'text',
@@ -70,19 +93,21 @@ class View(base_view.View,Entity):
                 col = col.row_dict
             if 'newcol' in col:
                 col['parent_objid'] = viewid
-                del(col['methods'])
+                try:
+                    del(col['methods'])
+                except KeyError:
+                    pass
+                try:
+                    del(col['viewid'])
+                except KeyError:
+                    pass
                 del(col['newcol'])
                 Entity.create(self.api.get_entity('Column')(),col)
             self._registry_insert(regVals,self.view_cols)
-            
-        try:
-            if not parent_objid.startswith('dbi'):
-                parent_objid = self.api.get_byid(parent_objid)['parent_objid']
-        except AttributeError:
-            if not isinstance(parent_objid,self.api.get_entity('Database')):
-                parent_objid = self.api.get_byid(parent_objid)['parent_objid']
         
-        view_stmt = syntax.create_view(parent_objid,viewid,sel_stmt,
+        parent_db = self.api.get_byid(parent_objid)['parent_db']
+        
+        view_stmt = syntax.create_view(parent_db,viewid,sel_stmt,
             materialized = materialized)
         
         #print view_stmt
@@ -104,9 +129,16 @@ class View(base_view.View,Entity):
         return 'ind-'+str(uuid()).replace('-','')
     
     def add_index(self,col,unique=False):
+        
         geocolnames = [x['name'] for x in self.geo_columns()]
-        colinfo = self.api.get_entity('Column')(col).info
-        index_type = 'GIST' if colinfo['name'] in geocolnames else None
+        if col == '_adm-rowid':
+            colid = '_adm-rowid'
+            index_type = None
+        
+        else:
+            colinfo = self.api.get_entity('Column')(col).info
+            index_type = 'GIST' if colinfo['name'] in geocolnames else None
+            colid = colinfo['objid']
         
         parent_objid = self.info['parent_objid']
         try:
@@ -115,15 +147,17 @@ class View(base_view.View,Entity):
         except AttributeError:
             if not isinstance(parent_objid,self.api.get_entity('Database')):
                 parent_objid = self.api.get_byid(parent_objid)['parent_objid']
-        
         tblname = self.info['name']
         dbid = parent_objid
         tblid = self.info['objid']
         tblowner = self.info['owner']
         stmt = syntax.add_index(
-            dbid,tblid,self._new_indid(),colinfo['objid'],unique,index_type
+            dbid,tblid,self._new_indid(),colid,unique,index_type
         )
-        controllers['ddl'].execute(stmt)
+        try:
+            controllers['ddl'].execute(stmt)
+        except psycopg2.ProgrammingError:
+            raise errors.RelationDoesNotExist
         controllers['ddl'].conn.commit()
         return self.info
             
@@ -237,11 +271,26 @@ class View(base_view.View,Entity):
         
         return [x[0] for x in r]
     
-    def tile(self,x,y,z):
-        geocols = self.geo_columns()
+    def tile(self,x,y,z,magnitude=None):
+        tblinfo = self.api.get_byid(self.objid)
+        
+        simple = False
+        layerid = None
+        if tblinfo['dobj'] is not None and 'tilescheme' in tblinfo['dobj']:            
+            layerid = tblinfo['objid']
+            tblinfo = self.api.get_byid(tblinfo['dobj']['tilescheme'][z])
+            simple = True
+        
+        tcols = tblinfo.columns()
+        geotypes = ['Polygon','MultiPolygon','Point','MultiPoint','Line','MultiLine']
+        geocols = [j for j in tcols if j['datatype'] in geotypes]
         if len(geocols) == 0:
             return
-        tblinfo = self.api.get_byid(self.objid)
+        
+        if magnitude is None:
+            if 'magnitude' in [j['name'] for j in tcols]:
+                magnitude = 'magnitude'
+        
         geocolid = geocols[0]['objid']
         geocolname = geocols[0]['name']
         geocoltype = geocols[0]['datatype']
@@ -250,9 +299,20 @@ class View(base_view.View,Entity):
             corners = tilecalc.tileBB(int(x),int(y),int(z))
         else:
             corners = None
+            
+        if magnitude is not None:
+            cols = dict((j['name'],j) for j in tcols)
+            cols.update(
+                dict((j['objid'],j) for j in tcols)
+            )
+            try:
+                magnitude = cols[magnitude]['objid']
+            except KeyError:
+                raise errors.DataError
+            
         
         if not tblinfo['parent_objid'].startswith('dbi'):
-            tbl = api.get_byid(tblinfo['parent_objid'])
+            tbl = self.api.get_byid(tblinfo['parent_objid'])
             try:
                 tblinfo['parent_objid'] = tbl['parent_objid']
             except TypeError:
@@ -262,24 +322,27 @@ class View(base_view.View,Entity):
         dbid = tblinfo['parent_objid']
         tblid = tblinfo['objid']
         
-        if geocoltype == 'Polygon' or geocoltype == 'MultiPolygon':
-            stmt = syntax.select_geography_poly(
-                dbid,
-                tblid,
-                geocolid,
-                geocolname,
-                corners,
-                z=z
-            )
-        else:
-            stmt = syntax.select_geography(
-                dbid,
-                tblid,
-                geocolid,
-                geocolname,
-                corners,
-                z=z
-            )
+        #if geocoltype == 'Polygon' or geocoltype == 'MultiPolygon':
+            #stmt = syntax.select_geography_poly(
+                #dbid,
+                #tblid,
+                #geocolid,
+                #geocolname,
+                #corners,
+                #z=z,
+                #magnitude=magnitude
+            #)
+        #else:
+        stmt = syntax.select_geography(
+            dbid,
+            tblid,
+            geocolid,
+            geocolname,
+            corners,
+            z=z,
+            magnitude=magnitude,
+            simple=simple
+        )
 
         r = controllers['dql'].execute(stmt)
         
@@ -288,7 +351,10 @@ class View(base_view.View,Entity):
                 'type':'Feature',
                 'geometry':json.loads(row[1]),
                 'properties':{
-                    'rowid':row[0]
+                    'rowid':row[0],
+                    'objid':tblid,
+                    'layerid':layerid,
+                    'magnitude':row[2] if len(row) > 2 else None
                 }
             })
         

@@ -3,6 +3,8 @@ import os
 import subprocess
 import StringIO
 import zipfile
+import tarfile
+import gzip
 import tempfile
 
 import pycurl
@@ -18,8 +20,6 @@ type_map = {
     'linestring':Line,
     'multilinestring':MultiLine,
 }
-
-
 
 class UpdateShapefileDatabase(object):
     """A database drawn from CSV files."""
@@ -49,7 +49,7 @@ class UpdateShapefileDatabase(object):
         return retVal
 
 class UpdateShapefileTable(object):
-    """A table from a Shapefile zip file."""
+    """A table from a local Shapefile zip file."""
     
     def __init__(self,fname,fpath):
         if os.path.splitext(fpath)[1] == '.zip':
@@ -58,8 +58,7 @@ class UpdateShapefileTable(object):
             fpath = os.path.splitext(fpath)[0] + '.shp'
         self.fname, self.fpath = fname, fpath
         self.name = os.path.splitext(fname)[0]
-        
-        
+    
     @property
     def columns(self):
         p = subprocess.check_output(['shp2pgsql','-p',self.fpath])
@@ -94,6 +93,7 @@ class UpdateShapefileTable(object):
 
 
 class UpdateShapefileZipURL(UpdateShapefileTable):
+    """Adapter for a shapefile stored as a tar or zip at a url."""
     
     def __init__(self,name,url):
         print "Getting " + name + " ( " + url + " ) "
@@ -104,8 +104,18 @@ class UpdateShapefileZipURL(UpdateShapefileTable):
         curl.setopt(curl.WRITEDATA, buf)
         curl.perform()
         curl.close()
-        with zipfile.ZipFile(buf,'r') as myzip:
-            myzip.extractall(tempdir)
+        try:
+            with zipfile.ZipFile(buf,'r') as myzip:
+                myzip.extractall(tempdir)
+        except:
+            try:
+                buf.seek(0)
+                with tarfile.TarFile(fileobj=buf) as mytar:
+                    mytar.extractall(tempdir)
+            except:
+                buf.seek(0)
+                with tarfile.open(fileobj=buf,mode='r|gz') as mytar:
+                    mytar.extractall(tempdir)
         
         fname = [ f for f in os.listdir(tempdir)
             if os.path.splitext(f)[1] == '.shp'][0]

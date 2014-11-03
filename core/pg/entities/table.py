@@ -42,6 +42,7 @@ class Table(base_table.Table,View):
         
         ent_args = {
             'parent_objid':parent_objid,
+            'parent_db':parent_objid,
             'name':name,
             'owner':self.session['user'],
             'objid':tblid

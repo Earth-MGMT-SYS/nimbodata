@@ -1,0 +1,26 @@
+
+
+@import url("//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base.css");
+@import url("//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css");
+@import url("//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure.css");
+@import url("//cdnjs.cloudflare.com/ajax/libs/c3/0.3.0/c3.css");
+@import url("//fonts.googleapis.com/css?family=Inconsolata:300,500,700");
+@import url("//fonts.googleapis.com/css?family=Quicksand:300,500,700");
+
+@import url("./widgets/base/base.css");
+@import url("./widgets/container/container.css");
+@import url("./widgets/menutree/menutree.css");
+@import url("./widgets/entitymenu/entitymenu.css");
+@import url("./widgets/c3viewer/c3viewer.css");
+@import url("./widgets/resultviewer/resultviewer.css");
+@import url("./widgets/rowviewer/rowviewer.css");
+@import url("./widgets/contentpane/contentpane.css");
+@import url("./widgets/select/select.css");
+@import url("./widgets/styler/styler.css");
+@import url("./widgets/input/input.css");
+@import url("./widgets/legend/legend.css");
+@import url("./widgets/title/title.css");
+@import url("./widgets/map/map.css");
+@import url("./widgets/mastermenu/mastermenu.css");
+@import url("./widgets/launcher/launcher.css");
+@import url("./controls/controls.css");

@@ -234,9 +234,15 @@ class View(Entity):
             print r
             raise e
             
-    def tile(self,x,y,z):
+    def tile(self,x,y,z,magnitude=None):
         url = self._get_req_url(self.objid) + 'tile/'
         url += ('/'.join(str(i) for i in (x,y,z)) + '/')
+        if magnitude is not None:
+            try:
+                magnitude = magnitude.objid
+            except AttributeError:
+                pass
+            url += magnitude + '/'
         return json.loads(sesh.get(url).text)
             
     def tile_rowids(self,x,y,z):

@@ -66,10 +66,15 @@ to establish which sql users you want to have what access (for now).
 Also make sure you are on port 5432: 
 
     $ sudo nano /etc/postgresql/9.4/main/postgresql.conf
-    
+
 And finally:
 
     $ sudo /etc/init.d/postgresql restart
+    
+And then:
+    
+    $ sudo -u postgres createdb cloud_admin
+    $ sudo -u postgres createuser --superuser cloud_admin
 
 Now travel to where you want Nimbodata and instantiate the database:
 

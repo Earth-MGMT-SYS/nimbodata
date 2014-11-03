@@ -19,7 +19,6 @@ elev, lon, lat, start = cols['elev'],cols['lon'],cols['lat'],cols['start']
 snum = cols['site_no']
 
 elev.modify({'datatype':'Integer'})
-snum.modify({'datatype':'Integer'})
 lon.modify({'datatype':'Float'})
 lat.modify({'datatype':'Float'})
 start.modify({'datatype':'Date','exp':'YYYY-Month-01'})
@@ -33,7 +32,6 @@ site_table.add_columns([
 data_table = db.Table('SnotelData')
 snum,obd,swe,pre,tma,tmi,tav,pri = data_table.columns()
 
-snum.modify({'datatype':'Integer'})
 obd.modify({'datatype':'Date','exp':'YYYY-MM-DD'})
 swe.modify({'datatype':'Float'})
 pre.modify({'datatype':'Float'})

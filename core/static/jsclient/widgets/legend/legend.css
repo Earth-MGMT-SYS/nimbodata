@@ -1,0 +1,15 @@
+
+div.n_legend_square {
+    width: 2em;
+    height: 1em;
+    border: 1px solid lightgray;
+    cursor: pointer;
+    vertical-align: middle;
+    text-align: center;
+}
+
+div.n_legend_square:hover {
+    width: 4em;
+    height: 2em;
+    padding-top: 1em;
+}

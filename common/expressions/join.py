@@ -1,5 +1,5 @@
 
-from prototype import BinaryExpression
+from prototype import BinaryExpression, TwoValExpression
 
 class Join(object):
     """Represent a Nimbodata query join expression."""
@@ -16,7 +16,13 @@ class Join(object):
             self.target = target
             
         if on is not None:
-            self.on = BinaryExpression(on)
+            try:
+                self.on = BinaryExpression(on)
+            except ValueError:
+                print on
+                self.on = TwoValExpression(on['fname'],*on['args'])
+            except TypeError:
+                self.on = on
         else:
             self.on = None
         

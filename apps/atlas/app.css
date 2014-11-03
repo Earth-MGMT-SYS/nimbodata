@@ -14,7 +14,7 @@
     left: 0.5em;
 }
 
-#details {
+#details_outer {
     position: absolute;
     bottom: 2em;
     right: 1em;

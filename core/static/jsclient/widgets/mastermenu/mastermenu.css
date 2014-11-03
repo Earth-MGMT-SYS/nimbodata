@@ -1,0 +1,63 @@
+
+div.n_master_control_container {
+    background: rgba(0,0,0,0.5);
+    width: 100%;
+    background: rgba(0,0,0,0.5);
+    position: relative;
+    font-size: 1.5vh;
+    padding: 0;
+    margin: 0;
+    vertical-align: middle;
+    overflow: visible;
+}
+
+span.n_mastermenu_company {
+    display: inline;
+    font-family: Quicksand;
+    cursor: pointer;
+    float: left;
+    
+}
+
+span.n_mastermenu_right {
+    font-family: Quicksand;
+    display: inline;
+    cursor: pointer;
+    float: right;
+    vertical-align: middle;
+    color: white;
+    font-weight: 700;
+    margin-top: 0.5em;
+    margin-right: 1em;
+}
+
+
+span.n_mastermenu_company {
+    margin: 0;
+    font-size: 2.0em;
+    font-weight: 300;
+    margin-left: 0.3em;
+}
+
+span.n_mastermenu_company > a {
+    color: white;
+    margin: 0;
+    text-decoration: none;
+}
+
+a.n_rmenu_item {
+    font-size: 1.2em;
+    display: inline;
+    padding-right: 1em;
+    color: white;
+    text-decoration: none;
+}
+
+a.n_rmenu_item:visited {
+    color:white;
+    text-decoration: none;
+}
+
+a.n_rmenu_item:hover {
+    color:darkgray;
+}

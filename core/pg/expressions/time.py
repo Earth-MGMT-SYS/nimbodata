@@ -10,20 +10,22 @@ class TimeFunction(base.TimeFunction):
         if param not in self.fields:
             raise ValueError('Invalid time field ' + param)
         return ''' %(func)s(%(param)s FROM "%(colid)s") AS "%(newcolid)s" ''' % {
-            'colid':colid,
+            'colid':colid[0] + '"."' + colid[1],
             'func': type(self).__name__.lower(),
             'param':param,
-            'newcolid':newcolid if newcolid is not None else colid
+            'newcolid':newcolid if newcolid is not None else colid[1]
         }
     
     def sql_cast(self,colid,param):
+        print type(self).__name__.lower(), colid, param
         if param not in self.fields:
             raise ValueError('Invalid time field ' + param)
-        return ''' %(func)s(%(param)s FROM "%(colid)s") ''' % {
+        retVal = ''' %(func)s(%(param)s FROM "%(colid)s") ''' % {
             'colid':colid,
             'func': type(self).__name__.lower(),
             'param':param
         }
+        return retVal
 
 # CONSTANTS/OTHER
 

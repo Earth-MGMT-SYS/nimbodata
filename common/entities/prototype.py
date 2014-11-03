@@ -33,6 +33,7 @@ class Entity(object):
         
         """
         self.objid = None
+        self._info = None
                 
         if info is not None:
             self.objid = info['objid']
@@ -124,7 +125,7 @@ class Entity(object):
         
     @property
     def row_dict(self):
-        return self.info
+        return dict(self.info)
         
     @property
     def info(self):

@@ -10,6 +10,7 @@ import requests
 import common.errors as errors
 from common.errors import *
 import common.results as results
+import common.expressions
 
 import entities
 
@@ -73,21 +74,30 @@ class Cloud(object):
         return data
 
     def select(self,objid=None,cols=None,join=None,where=None,
-            group_by=None,order_by=None,limit=None):
+            group_by=None,order_by=None,limit=None,union=None):
     
-        req_url = server + "/select/%(objid)s/" % { 'objid' : objid.objid }
-    
-        kwargs = {
-            'objid':objid,
-            'cols':cols,
-            'join':join,
-            'where':where,
-            'group_by':group_by,
-            'order_by':order_by,
-            'limit':limit
-        }
-                
-        payload = json.dumps(kwargs,default = entities.fallback_json)
+        if objid is not None and not isinstance(objid,common.expressions.Union):
+            req_url = server + "/select/%(objid)s/" % { 'objid' : objid.objid }
+        
+            kwargs = {
+                'objid':objid,
+                'cols':cols,
+                'join':join,
+                'where':where,
+                'group_by':group_by,
+                'order_by':order_by,
+                'limit':limit
+            }
+                    
+            payload = json.dumps(kwargs,default = entities.fallback_json)
+        elif isinstance(objid,common.expressions.Union) or union is not None:
+            if union is None:
+                union = objid
+            qa = union.fargs[0]
+            req_url = server + "/select/%(objid)s/" % { 'objid' : qa['objid'] }
+            
+            payload = json.dumps(union,default = entities.fallback_json)
+        
         r = sesh.post(req_url, data = payload)
         
         try:
@@ -101,6 +111,8 @@ class Cloud(object):
         if isinstance(data,basestring) and data.startswith("!ERROR!"):
             raise RelationDoesNotExist
         return results.Results(data['header'],data['rows'])
+        
+            
         
     def _cont_func(self,verb,cont_name,fname):
         def inner(*args,**kwargs):

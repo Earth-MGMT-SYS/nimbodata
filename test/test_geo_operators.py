@@ -6,6 +6,7 @@ sys.path.append('../')
 
 import config_cloud as cfg
 from core.pg.datatypes import Text,Point, Line
+from common.expressions import Join
 
 from common import tilecalc
 
@@ -35,6 +36,7 @@ class TestOperators(unittest.TestCase):
         ]
         
         self.table = self.db.create_table('geoop',cols)
+        self.table2 = self.db.create_table('geoo2p',cols)
         
         self.A = Line([Point(1,1),Point(2,3)])
         self.B = Line([Point(2,1),Point(1,3)])
@@ -51,6 +53,7 @@ class TestOperators(unittest.TestCase):
         ]
         
         self.table.insert(values)
+        self.table2.insert(values)
                 
     def tearDown(self):
         self.db.drop()
@@ -65,6 +68,18 @@ class TestOperators(unittest.TestCase):
         self.assertEquals(len(result),2)
         self.assertEquals(result.rows[0][0],'A')
         self.assertEquals(result.rows[1][0],'B')
+        
+    #@unittest.skip('skip')
+    def test_contain_join(self):
+        """Does the contains operator function work?"""
+        label,geom = self.table.columns()
+        l2,g2 = self.table2.columns()
+        
+        result = self.table.select(
+            cols=[label],
+            join=Join(self.table2,geom.intersects(g2))
+        )
+        # I need to actually test this... maybe... the syntax is right.
 
     #@unittest.skip('skip')
     def test_containedby(self):

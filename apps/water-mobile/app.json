@@ -1,0 +1,23 @@
+{
+    "appname":"water-mgmt",
+    "title":"Water-MGMT Mobile",
+    "elements":[
+        {
+            "id":"topmenu",
+            "browserview":{
+                "width":"100%",
+                "height":"4%"
+            },
+            "widget":"MasterMenu"
+        },
+        {
+            "id":"map",
+            "widget":"Map",
+            "maxbutton":false,
+            "browserview":{
+                "width":"100%",
+                "height":"96%"
+            }
+        }
+    ]
+}

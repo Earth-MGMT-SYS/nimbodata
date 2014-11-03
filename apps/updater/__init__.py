@@ -25,7 +25,6 @@ elif target == 'rest':
     import pyclient as cc
     cloud = cc.connect("http://localhost:5000",user)
 
-        
 
 class Updater(object):
     """Update manager creates and/or updates a database based on a spec."""
@@ -42,9 +41,14 @@ class Updater(object):
                 cloud.Database(self.source.name).drop()
                 self.db = cloud.create_database(self.source.name)
 
-        self.tables = {}
-        for i,src_tbl in enumerate(self.source.tables()):
-            self.tables[src_tbl.name] = self.db.create_table(src_tbl.name,src_tbl.columns)
+        try:            
+            self.tables = {}
+            for i,src_tbl in enumerate(self.source.tables()):
+                self.tables[src_tbl.name] = self.db.create_table(src_tbl.name,src_tbl.columns)
+        except common.errors.RelationExists:
+            self.tables = {}
+            for i,src_tbl in enumerate(self.source.tables()):
+                self.tables[src_tbl.name] = self.db.Table(src_tbl.name)
         
         """
         self.tables = dict(
@@ -76,10 +80,7 @@ class Updater(object):
                 errors.append(e)
             if src_file is not None:
                 ins_tbl.insert_file(src_file)
-                try:
-                    pass
-                except Exception as e:
-                    errors.append(e)
+        
         for table in self.tables.values():
             geocols = table.geo_columns()
             for col in geocols:

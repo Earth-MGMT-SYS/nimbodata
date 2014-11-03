@@ -40,6 +40,22 @@ class TestDDL(unittest.TestCase):
             pass
 
     #@unittest.skip('skip')
+    def test_extrameta(self):
+        """Can we store and retrieve extra metadata in the DataObject?"""
+        cols = [
+            {'name':'pk','datatype':Text,'primary_key':True},
+            {'name':'a','datatype':Integer},
+            {'name':'b','datatype':Text},
+        ]
+        
+        self.table = self.db.create_table('testTable',cols)
+        
+        self.assertEquals(self.table['dobj'],None)
+        
+        self.table.modify({'dobj':{'cork':'plastic'}})
+        self.assertEquals(self.table['dobj']['cork'],'plastic')
+
+    #@unittest.skip('skip')
     def test_db_and_table(self):
         """Can we create a simple database with a single simple table?"""
         cols = [

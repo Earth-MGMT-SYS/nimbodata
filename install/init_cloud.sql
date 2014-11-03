@@ -75,6 +75,18 @@ AS $$
             return None
 $$ LANGUAGE plpython2u;
 
+CREATE FUNCTION "to_Float" (val integer)
+    RETURNS float
+AS $$
+    if len(str(val)) == 0:
+        return None
+    else:
+        try:
+            return float(val)
+        except:
+            return None
+$$ LANGUAGE plpython2u;
+
 CREATE FUNCTION "to_TextArray" (val text)
     RETURNS text[]
 AS $$
@@ -127,6 +139,7 @@ CREATE TABLE "_adm-entityregistry" (
     owner text,
     objid text,
     parent_objid text,
+    parent_db text,
     entitytype text REFERENCES "_adm-entitymethods"(entitytype),
     datatype text,
     datadetail text,
@@ -160,6 +173,7 @@ CREATE TABLE "_adm-viewcolumns" (
 );
 
 CREATE INDEX ON "_adm-viewcolumns"(weight);
+CREATE INDEX ON "_adm-viewcolumns"(datatype);
 CREATE INDEX ON "_adm-viewcolumns"(viewid);
 CREATE INDEX ON "_adm-viewcolumns"(colid);
 CREATE INDEX ON "_adm-viewcolumns"(creationtime);
@@ -175,6 +189,7 @@ SELECT "_adm-entityregistry"."name",
     "_adm-entityregistry"."owner",
     "_adm-entityregistry"."objid",
     "_adm-entityregistry"."parent_objid",
+    "_adm-entityregistry"."parent_db",
     "_adm-entityregistry"."entitytype",
     "_adm-entityregistry"."datatype",
     "_adm-entityregistry"."weight",
@@ -205,7 +220,7 @@ WITH max_insert AS (
     FROM "_adm-viewcolumns"
     GROUP BY viewid, colid
 )
-SELECT viewcols.viewid, entityinfo.parent_objid, entityinfo.entitytype,
+SELECT viewcols.viewid, entityinfo.parent_objid, entityinfo.entitytype, entityinfo.parent_db,
     viewcols.weight, entityinfo.name, viewcols.datatype, entityinfo.owner, 
     viewcols.colid objid, entityinfo.alias
 FROM "_adm-viewcolumns" as viewcols
@@ -214,6 +229,11 @@ INNER JOIN max_insert
         AND viewcols.colid = max_insert.maxcolid
 INNER JOIN "_adm-entityinfo" as entityinfo
     on viewcols.colid = entityinfo.objid;
+    
+CREATE VIEW "_adm-geocols" AS
+SELECT * FROM "_adm-viewcolinfo"
+WHERE datatype = 'MultiPoint' or datatype = 'Point' or datatype = 'Line'
+    or datatype = 'MultiLine' or datatype = 'Polygon' or datatype = 'MultiPolygon';
 
 -------------------------------------------------------------------------------
 ------ USERS ------------------------------------------------------------------

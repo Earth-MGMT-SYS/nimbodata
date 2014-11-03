@@ -17,7 +17,7 @@ huc = db.Table('HUC2')
 tmn,meta,src,srco,srcfeat,load,gnis,areaac,areakm,states,huc2,name,geom,leng,area, = \
     huc.columns()
 
-#states.modify({'datatype':'TextArray'})
+states.modify({'datatype':'TextArray'})
 tmn.drop()
 meta.drop()
 src.drop()
@@ -26,4 +26,4 @@ srcfeat.drop()
 load.drop()
 gnis.drop()
 
-huc.add_index(geom)
+#huc.add_index(geom)

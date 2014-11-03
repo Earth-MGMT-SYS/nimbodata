@@ -7,6 +7,6 @@ class Comparable(base.Comparable):
     """Override comparison operators for relational use."""
     
     def sql(self):
-        return "dickbutt"
+        return ""
         
     

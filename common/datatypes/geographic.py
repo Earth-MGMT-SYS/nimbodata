@@ -58,6 +58,13 @@ class Geographic(Datatype):
     
     def distance_between(self,this,other):
         return expressions.BinaryExpression(this['name'],'<->',other)
+        
+    ###########################################################################
+    ##### POSTGIS FUNCTIONS ###################################################
+    ###########################################################################
+    
+    def intersects(self,this,other):
+        return expressions.TwoValExpression('ST_Intersects',this['name'],other)
 
 class Point(Geographic):
     """Simple X,Y point.  Extends PostGIS `POINT` and Shapely `Point`."""

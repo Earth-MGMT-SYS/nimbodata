@@ -13,15 +13,15 @@ class Geographic(Datatype):
     def sql_target(self,colid,colname=None,alias=True,viewcreate=False):
         """ Return the column results as GeoJSON string"""
         if viewcreate:
-            return ''' "%(colid)s" ''' % { 'colid':colid }
+            return ''' "%(colid)s" ''' % { 'colid':colid[0] + '"."' + colid[1] }
         elif alias:
             return ''' ST_AsGeoJSON("%(colid)s") AS "%(colname)s" ''' % {
-                'colid':colid,
+                'colid':colid[0] + '"."' + colid[1],
                 'colname':colname
             }
         else:
             return ''' ST_AsGeoJSON("%(colid)s") AS "%(colid)s" ''' % {
-                'colid':colid
+                'colid':colid[0] + '"."' + colid[1]
             }    
             
     def sql_cast(self,colspec):

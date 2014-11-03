@@ -1,12 +1,12 @@
 """Module implements a dynamic REST API for Nimbodata using Flask."""
 # Copyright (C) 2014  Bradley Alan Smith
 
+from gevent import monkey; monkey.patch_all()
+
 import datetime
 import sys
 import json
 from functools import partial
-
-import jsonpickle
 
 from flask import Flask, request, abort
 from flask.views import MethodView
@@ -40,63 +40,66 @@ cors = CORS(
     app,
     headers=['Content-Type','Accept','Cookie'],
     origins=[
-        'http://ubupgbeta:8000',
+        'http://ubupgbeta:5000',
         'http://andydev:8000',
         'http://localhost:8000',
         'http://access.nimbodata.org:8000',
         'http://earth-mgmt.com',
         'http://www.earth-mgmt.com',
+        'https://preview-545-54528d357e2193572d3411d1-545294e97e2193cc232ce011.monaca.mobi'
     ],
     supports_credentials=True
 )
 
-index = open('./index.html','r').read()
-devindex = open('./dev_index.html','r').read()
-appspec = open('../apps/earth-mgmt/app.json').read()
-appatlas = open('../apps/atlas/app.json').read()
-appcatalog = open('../apps/catalog/app.json').read()
-appwater = open('../apps/water-mgmt/app.json').read()
-siteinfo = open('../apps/water-mgmt/templates/siteinfo.mst').read()
 
+@app.route('/<path:path>', methods=['OPTIONS'])
 @app.route('/favicon.ico',methods=['GET'])
 def nada():
+    """Sometimes we want to do nothing very quickly and successfully."""
     return ""
 
 @app.route('/', methods=['GET'])
 def indexview():
-    return index
+    """Root index - points to www.nimbodata.com as source for CSS/JS."""
+    with open('./index/index.html','r') as ifile:
+        return ifile.read()
+
+@app.route('/<appname>/app.json',methods=['GET'])
+def appjson(appname):
+    """Return the json spec for the app."""
+    appdb = api.get_entity('Database')(appname)
+    assets = appdb.Table('assets')
+    fname, val = assets.columns()
+    return dump(assets.select())
     
-@app.route('/dev', methods=['GET'])
-def devview():
-    return devindex
-    
+@app.route('/<appname>/',methods=['GET'])
+def appindex(appname):
+    """Return the html file for the app."""
+    with open('./index/index.html','r') as ifile:
+        return ifile.read()
+
 @app.route('/app.json',methods=['GET'])
 def appview():
-    return appspec
-    
-@app.route('/app-atlas.json',methods=['GET'])
-def appatlasview():
-    return appatlas
-    
-@app.route('/app-catalog.json',methods=['GET'])
-def appcatalogview():
-    return appcatalog
-    
-@app.route('/app-water.json',methods=['GET'])
-def appwaterview():
-    return appwater
+    """The launcher app spec."""
+    appdb = api.get_entity('Database')('earth-mgmt')
+    assets = appdb.Table('assets')
+    fname, val = assets.columns()
+    return dump(assets.select())
 
-@app.route('/templates/siteinfo.mst',methods=['GET'])
-def siteinfomst():
-    return siteinfo
+@app.route('/watertree.json',methods=['GET'])
+def watertreeeee():
+    """The launcher app spec."""
+    return open('../apps/water-mgmt/watertree.json','r').read()
 
 @app.route('/api/', methods=['GET'])
 def apiresponder():
+    """Get a copy of the api in json."""
     return dump(api.api)
 
 def responder(method,rfunc,objid=None):
     """Handle I/O and Error translation between API and REST."""
     if method == 'POST' and objid is None:
+        # creating an entity
         try:
             return dump(rfunc(load(request.data)))
         except errors.RelationExists:
@@ -104,6 +107,7 @@ def responder(method,rfunc,objid=None):
         except errors.NotAuthorized:
             abort(401)
     elif method == 'POST':
+        # modifying an entity
         try:
             return dump(rfunc(objid=objid,params=load(request.data)))
         except errors.IntegrityError as e:
@@ -111,8 +115,10 @@ def responder(method,rfunc,objid=None):
         except errors.NotAuthorized:
             abort(401)
     elif method == 'PUT':
+        # modifying an entity
         return dump(rfunc(objid=objid,params=load(request.data)))
     try:
+        # get or othere
         return dump(rfunc(objid=objid))
     except errors.NotAuthorized:
         abort(401)
@@ -134,6 +140,15 @@ for urlspec,rfunc in api.urls.items():
 @app.route('/tree/',methods=['GET'])
 def tree():
     return dump(api.get_entity('Database')().tree())
+    
+@app.route('/bypath/',methods=['POST'])
+def bypath():
+    path = load(request.data)['path'][1:].split('/')
+    root = api.get_entity('Database')(path[0])
+    last = root
+    for level in path[1:]:
+        last = last.View(level)
+    return dump(last)
 
 @app.route('/select/<objid>/<rowid>/',methods=['GET'])
 def getbyrowid(objid,rowid):
@@ -157,19 +172,31 @@ def get_select_processor(objid):
 @app.route('/tables/<objid>/tile_rowids/<x>/<y>/<z>/',methods=['GET'])
 @app.route('/Table/<objid>/tile_rowids/<x>/<y>/<z>/',methods=['GET'])
 def table_rowids_handler(objid,x,y,z):
-    """Handle get select."""
+    """Handle get tile."""
     return dump(api.get_entity('Table')(objid).tile_rowids(x,y,z))
     
 @app.route('/tables/<objid>/tile/<x>/<y>/<z>/',methods=['GET'])
 @app.route('/Table/<objid>/tile/<x>/<y>/<z>/',methods=['GET'])
 def table_tile_handler(objid,x,y,z):
-    """Handle get select."""
-    return dump(api.get_entity('Table')(objid).tile(x,y,z))
+    """Handle get tile."""
+    try:
+        return dump(api.get_entity('Table')(objid).tile(x,y,z))
+    except errors.RelationDoesNotExist:
+        abort(404)
+    
+@app.route('/tables/<objid>/tile/<x>/<y>/<z>/<magnitude>/',methods=['GET'])
+@app.route('/Table/<objid>/tile/<x>/<y>/<z>/<magnitude>/',methods=['GET'])
+def table_tile_handler_mag(objid,x,y,z,magnitude):
+    """Handle get tile with specified magnitude column."""
+    try:
+        return dump(api.get_entity('Table')(objid).tile(x,y,z,magnitude))
+    except errors.RelationDoesNotExist:
+        abort(404)
     
 @app.route('/tables/<objid>/features/',methods=['POST'])
 @app.route('/Table/<objid>/features/',methods=['POST'])
 def table_features_handler(objid):
-    """Handle get select."""
+    """Handle get features."""
     rdat = load(request.data)
     print [str(x) for x in rdat['rowids']]
     return dump(api.get_entity('Table')(objid).features(rdat['rowids']))
@@ -177,19 +204,31 @@ def table_features_handler(objid):
 @app.route('/views/<objid>/tile_rowids/<x>/<y>/<z>/',methods=['GET'])
 @app.route('/View/<objid>/tile_rowids/<x>/<y>/<z>/',methods=['GET'])
 def view_rowids_handler(objid,x,y,z):
-    """Handle get select."""
+    """Handle get tile rowids."""
     return dump(api.get_entity('View')(objid).tile_rowids(x,y,z))
     
 @app.route('/views/<objid>/tile/<x>/<y>/<z>/',methods=['GET'])
 @app.route('/View/<objid>/tile/<x>/<y>/<z>/',methods=['GET'])
 def view_tile_handler(objid,x,y,z):
-    """Handle get select."""
-    return dump(api.get_entity('View')(objid).tile(x,y,z))
+    """Handle get tile rowids."""
+    try:
+        return dump(api.get_entity('View')(objid).tile(x,y,z))
+    except errors.RelationDoesNotExist:
+        abort(404)
+
+@app.route('/views/<objid>/tile/<x>/<y>/<z>/<magnitude>/',methods=['GET'])
+@app.route('/View/<objid>/tile/<x>/<y>/<z>/<magnitude>/',methods=['GET'])
+def view_tile_handler_mag(objid,x,y,z,magnitude):
+    """Handle get tile with specified magnitude column."""
+    try:
+        return dump(api.get_entity('View')(objid).tile(x,y,z,magnitude))
+    except errors.RelationDoesNotExist:
+        abort(404)
     
 @app.route('/views/<objid>/features/',methods=['POST'])
 @app.route('/View/<objid>/features/',methods=['POST'])
 def view_features_handler(objid):
-    """Handle get select."""
+    """Handle get features."""
     rdat = load(request.data)
     print [str(x) for x in rdat['rowids']]
     return dump(api.get_entity('View')(objid).features(rdat['rowids']))
@@ -213,14 +252,10 @@ def post_select_processor(objid):
         abort(410)
 
 
-@app.route('/<path:path>', methods=['OPTIONS'])
-def options():
-    return ""
-
-#@app.route('/', defaults={"path":""}, methods=['GET'])
-@app.route('/<path:path>', methods=['GET','POST','PUT','DELETE','OPTIONS'])
+@app.route('/<path:path>', methods=['GET','POST','PUT','DELETE'])
 def respond(path):
     """Generic path responder, on its way out."""
+    # Standardize to no trailing slash (for parsing purposes)
     try:
         if path[-1] == '/':
             path = path[:-1]
@@ -235,6 +270,8 @@ def respond(path):
         return process_entity_identified(*args)
     except errors.RelationDoesNotExist:
         abort(410)
+    except TypeError:
+        abort(404)
     abort(404)
 
 

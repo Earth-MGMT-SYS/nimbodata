@@ -18,6 +18,17 @@ class BinaryExpression(object):
             if isinstance(a,BinaryExpression):
                 self.data = a.data
                 return
+            elif isinstance(a,dict):
+                if set(('any','all')) & set(a.keys()):
+                    for cl in a['all']:
+                        cl = BinaryExpression(cl)
+                    self.data = a
+                    return
+                elif 'fname' in a:
+                    self.data = a
+                    return
+                else:
+                    raise ValueError("Invalid comparison operator")
             try:
                 a, comp, b = a.split(' ')
             except AttributeError:
@@ -25,11 +36,7 @@ class BinaryExpression(object):
                     comp = a['fname']
                     a,b = a['args']
                 except TypeError:
-                    try:
-                        a, comp, b = a
-                    except:
-                        print a
-                        raise
+                    a, comp, b = a
         
         if comp not in operators + ['any','all']:
             raise ValueError("Invalid comparison operator")

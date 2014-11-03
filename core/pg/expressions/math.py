@@ -12,7 +12,7 @@ class MathFunction(base.MathFunction):
         else:
             viewcol = None
         return ''' %(func)s("%(colid)s") AS "%(viewcol)s" ''' % {
-            'colid':colid,
+            'colid':colid[0] + '"."' + colid[1],
             'func': type(self).__name__.lower(),
             'viewcol': viewcol if viewcol is not None else colid
         }
@@ -54,6 +54,9 @@ class AVG(MathFunction):
         
 class MIN(MathFunction):
     """Gets the max of a scalar."""
+    
+class SUM(MathFunction):
+    """Gets the sum of a scalar."""
 
 
 # VALUE

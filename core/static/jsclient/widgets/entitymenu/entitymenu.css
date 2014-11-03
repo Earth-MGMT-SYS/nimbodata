@@ -1,0 +1,32 @@
+
+div.n_entity_control_container {
+    float: left;
+    margin: 0.5em;
+}
+
+div.n_entity_control > div.n_entity_control {
+    background: #5B8BC3;
+    float: left;
+    border: none;
+}
+
+form.n_entity_control {
+    background: #5B8BC3;
+    float: left;
+    border: none;
+}
+
+div.n_editable {
+    margin-top: auto;
+    margin-bottom: auto;
+    position: relative;
+}
+
+div.n_empty {
+    font-style: italic;
+}
+
+div.n_edit_mode {
+    border: 1px solid gray;
+    padding: 0.1em;
+}

@@ -1,0 +1,10 @@
+[
+    {
+        "id":"rows",
+        "widget":"RowViewer",
+        "datasource":"tree",
+        "overbox":true,
+        "collapsible":true,
+        "label":"RowViewer!"
+    }
+]

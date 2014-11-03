@@ -2,6 +2,8 @@
 # Copyright (C) 2014  Bradley Alan Smith
 
 from . import *
+from prototype import TwoValExpression
+from where import Where
 
 from common import errors
 
@@ -10,21 +12,24 @@ class Join(base.Join):
 
     def join_cols(self,src,cols=None):
         
-        colinfo = src.columns()
+        colinfo = src['cols']
+        jcols = self.target.columns()
+        self.cols = colinfo
+        self.jcols = jcols
         
         if cols is None or cols == '':
             cols = [src['name']+"."+x['name'] for x in colinfo]
             try:
                 out_colinfo = [x.row_dict for x in colinfo]
             except AttributeError:
-                out_colinfo = [x for x in colinfo]
+                out_colinfo = [dict(x) for x in colinfo]
             for x in out_colinfo:
                 x['name'] = src['name']+'.'+x['name']
-            cols += [self.target['name']+'.'+x['name'] for x in self.target.columns()]
+            cols += [self.target['name']+'.'+x['name'] for x in jcols]
             try:
-                j_colinfo = [x.row_dict for x in self.target.columns()]
+                j_colinfo = [x.row_dict for x in jcols]
             except AttributeError:
-                j_colinfo = self.target.columns()
+                j_colinfo = jcols
             for x in j_colinfo:
                 x['name'] = self.target['name']+'.'+x['name']
             out_colinfo += j_colinfo
@@ -35,16 +40,14 @@ class Join(base.Join):
         """Process a canonical join statement into validated SQL."""
         
         try:
-            joininfo = self.target.info
+            joininfo = self.target.row_dict
         except AttributeError:
             try:
                 tobj = self.target['objid']
                 self.target = api.get_byid(objid=tobj)
             except TypeError:
                 self.target = api.get_byid(objid=self.target)
-            except KeyError:
-                print self.target
-            joininfo = self.target.info
+            joininfo = self.target.row_dict
             
         if not joininfo['parent_objid'].startswith('dbi'):
             tbl = api.get_byid(joininfo['parent_objid'])
@@ -55,12 +58,9 @@ class Join(base.Join):
         
         j_decoder = prototype.get_decoder(self.target)
         for jcol in j_colinfo:
-            decoder[jcol['objid']] = jcol['objid']
+            decoder[jcol['objid']] = (joininfo['objid'],jcol['objid'])
         
-        if alias:
-            join_stmt = """JOIN  "%(joinview)s" AS "%(joinshort)s"\nON """
-        else:
-            join_stmt = """JOIN  "%(joinview)s"\nON """
+        join_stmt = """JOIN  "%(joinview)s"\nON """
         
         strSub = {}
         strSub['joinshort'] = joininfo['name']
@@ -76,12 +76,16 @@ class Join(base.Join):
                 return item
         
         if self.on is None:
-            src_cols = set(get_base(x['name']) for x in self.src.columns())
-            trg_cols = set(get_base(x['name']) for x in self.target.columns())
+            try:
+                src_cols = set(get_base(x['name']) for x in self.cols)
+                trg_cols = set(get_base(x['name']) for x in self.jcols)
+            except AttributeError:
+                src_cols = set(get_base(x['name']) for x in self.src.columns())
+                trg_cols = set(get_base(x['name']) for x in self.target.columns())
             overlap = src_cols.intersection(trg_cols)
             if len(overlap) != 1:
-                print src_cols, trg_cols
-                raise ValueError("Join condition unclear, must specify")
+                oncol = '_adm-rowid'
+                whereCol,whereCmp,whereCond = '_adm-rowid','=','_adm-rowid'
             else:
                 oncol = overlap.pop()
                 whereCol,whereCmp,whereCond = decoder[oncol],'=',j_decoder[oncol]
@@ -89,18 +93,34 @@ class Join(base.Join):
             try:
                 whereCol, whereCmp, whereCond = self.on.data
             except ValueError:
-                whereCmp = self.on.data['fname']
+                if 'fname' not in self.on.data:
+                    jstmt, params = Where.sql(self.on,decoder,j_decoder,'join')
+                    return join_stmt + '\n' + jstmt, j_decoder
+                elif len(self.on.data['fname']) > 1:
+                    whereCmp = None
+                else:
+                    whereCmp = self.on.data['fname']
                 whereCol, whereCond = self.on.data['args']
         
         try:
-            whereCol = '"%s"' % decoder[whereCol]
+            print decoder[whereCol]
+            whereCol = '"%s"."%s"' % decoder[whereCol]
         except KeyError:
-            print whereCol
-            whereCol = '"%s"' % decoder[whereCol.split('.')[1]]
-        whereCond = '"%s"' % j_decoder[whereCond]
+            whereCol = '"%s"."%s"' % whereCol # Make sure this gets validated...
+        try:
+            whereCond = '"%s"."%s"' % j_decoder[whereCond]
+        except KeyError:
+            whereCond = '"%s"."%s"' % whereCond
         
         if whereCond == whereCol:
             whereCol = ('"%s".' + whereCol) % self.src['objid']
             whereCond = ('"%s".' + whereCond) % joininfo['objid']
         
-        return join_stmt + ' '.join((whereCol,whereCmp,whereCond)),j_decoder
+        if whereCmp is None:
+            return join_stmt + ' %(func)s ( %(a)s, %(b)s ) ' % {
+                'func':self.on.data['fname'],
+                'a': whereCol,
+                'b': whereCond
+            }, j_decoder
+        else:
+            return join_stmt + ' '.join((whereCol,whereCmp,whereCond)),j_decoder

@@ -8,7 +8,7 @@ sys.path.append('../')
 
 import config_cloud as cfg
 from core.pg.datatypes import Text,Integer,Float,Date,Timestamp
-from common.expressions import MAX, AS, Join
+from common.expressions import MAX, MIN, AVG, AS, Join, Union, extract
 
 target = 'rest'
 
@@ -164,6 +164,24 @@ class TestSelect(unittest.TestCase):
         self.a_table = cloud.create_table(self.db,'aggtable',cols2)
         self.a_rows = self.a_table.insert(val2)
     
+    def _unionTable(self):
+        """Create the database, a table and insert some values."""
+        cols = [
+            {'name':'pk','datatype':Text},
+            {'name':'a','datatype':Integer},
+            {'name':'b','datatype':Text},
+        ]
+        
+        self.uniontable = cloud.create_table(self.db,'unionTable',cols)
+        self.values = [
+            ('gorgo',8,'corn'),
+            ('flingrat',12,'potato'),
+            ('pork',13,'yam'),
+            ('beef',22,'oxtail'),
+        ]
+        
+        self.rowids = self.uniontable.insert(self.values)
+    
     #@unittest.skip('skip')
     def test_star(self):
         """Can we select * from a table?"""
@@ -175,6 +193,18 @@ class TestSelect(unittest.TestCase):
         
         colnames = [x['name'] for x in result.header]
         self.assertEqual(['pk','a','b'],colnames)
+        
+    #@unittest.skip('skip')
+    def test_union(self):
+        """Can we select a union of two queries?"""
+        self._unionTable()
+        qa = {'objid':self.table}
+        qb = {'objid':self.uniontable}
+        qc = {'objid':self.table}
+        result = cloud.select(Union(qa,qb))
+        self.assertEqual(len(result),8)
+        result = cloud.select(Union(qa,qb,qc))
+        self.assertEqual(len(result),8)
    
     #@unittest.skip('skip')
     def test_target(self):
@@ -259,6 +289,30 @@ class TestSelect(unittest.TestCase):
         where = ((obd < Date(1960,1,1)) & (obd > Date(1940,1,1)))
         results = cloud.select(self.table2,where = where)
         self.assertEqual(len(results),6)
+        
+    #@unittest.skip('skip')
+    def test_stats(self):
+        """Can we do a complex join and aggregate?"""
+        self._datesTable()
+        num, obd, value = self.table2.columns()
+        
+        stats = self.db.create_view('stats',{
+            'objid':self.table2,
+            'cols': [extract(obd,'month'),extract(obd,'day'),
+                MIN(value),AVG(value),MAX(value)
+            ],
+            'group_by': [extract(obd,'month'),extract(obd,'day')]
+        })
+        statmo, statday, statmin, statavg, statmax = stats.columns()
+        jon = (
+              (extract(obd,'month') == statmo)
+            & (extract(obd,'day') == statday)
+        )
+        results = self.table2.select(
+            cols=self.table2.columns() + [statmin, statavg, statmax],
+            join=Join(stats,jon)
+        )
+        self.assertEquals(len(results),12)
     
     #@unittest.skip('skip')
     def test_single_where_syntax(self):

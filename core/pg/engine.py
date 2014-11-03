@@ -48,7 +48,8 @@ class Engine(object):
                 except psycopg2.IntegrityError:
                     raise errors.IntegrityError
                 except psycopg2.DataError:
-                    raise errors.DataError
+                    print self.mogrify(*args)
+                    raise
                 except psycopg2.ProgrammingError:
                     #print self.mogrify(*args)
                     raise

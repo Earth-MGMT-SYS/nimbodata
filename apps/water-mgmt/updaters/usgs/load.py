@@ -11,6 +11,17 @@ from itertools import repeat
 
 sys.path.append('../../../../')
 from apps.updater import *
+from common.expressions import unique
+
+class SimpleUSGSTable(UpdateWebTable):
+    """Encapsulate the unique character of a USGS table."""
+   
+    def process_result(self,text):
+        header,rows = UpdateWebTable.process_result(self,text)
+        if header is None and rows is None:
+            return None, None
+        return header, rows[1:] # First row after header is field lengths
+
 
 # Take care of the file import
 dataPath = './import-data'
@@ -31,22 +42,13 @@ spec = [
     ('USGSParams',"http://nwis.waterdata.usgs.gov/usa/nwis/pmcodes?radio_pm_search=param_group&pm_group=All+--+include+all+parameter+groups&pm_search=&casrn_search=&srsname_search=&format=rdb&show=parameter_group_nm&show=parameter_nm&show=casrn&show=srsname&show=parameter_units"),
 ]
 
-class SimpleUSGSTable(UpdateWebTable):
-    """Encapsulate the unique character of a USGS table."""
-   
-    def process_result(self,text):
-        header,rows = UpdateWebTable.process_result(self,text)
-        if header is None and rows is None:
-            return None, None
-        return header, rows[1:] # First row after header is field lengths
-
 param_u = Updater(UpdateWebDatabase('WaterMgmt',spec,SimpleUSGSTable), db)
 param_u.create()
 param_u.update()
 
 # Now the sites.
 spec = [('USGSSites',"http://waterservices.usgs.gov/nwis/site/?format=rdb&siteType=ST&stateCd=%(st)s&siteOutput=expanded&hasDataTypeCd=dv&parameterCd=00060" % {'st':st })
-    for st in ('az','nm','tx','ca','co','or','wa','ut','wy','mt','id')]
+    for st in ('az','nm','tx','ca','co','or','wa','ut','wy','mt','id','nv')]
 site_u = Updater(UpdateWebDatabase('WaterMgmt',spec,SimpleUSGSTable),db)
 site_u.create()
 site_u.update()
@@ -127,24 +129,28 @@ data_u.create()
 data_u.update()
 
 
+db = cloud.Database('WaterMgmt')
+sites = db.Table('USGSSites')
+stats = db.Table('USGSStats')
+sitelist = set(x[0] for x in sites.select(['site_no']))
+try:
+    statno = dict((x['name'],x) for x in stats.columns())['site_no']
+    statslist = set(x[0] for x in stats.select(['site_no']))
+    uplist = sitelist - statslist
+except KeyError:
+    uplist = sitelist
+
+print len(uplist)
 
 # Now the stats
 spec = []
-for site in sites:
+for siteno in uplist:
     url = "http://waterservices.usgs.gov/nwis/stat/?format=rdb&sites=%(sitecode)s&statReportType=daily&statTypeCd=mean,min,max"
     spec.append(('USGSStats',url % {
-        'sitecode':site[0]
+        'sitecode':siteno
     }))
 data_u = Updater(UpdateWebDatabase('WaterMgmt',spec,SimpleUSGSTable), db)
 data_u.create()
 data_u.update()
 
-
-print db.tables()
-#table = db.Table('statscodes')
-#print len(table.select())
-table = db.Table('USGSSites')
-print len(table.select())
-#table = db.Table('USGS Data')
-#print len(table.select())
     

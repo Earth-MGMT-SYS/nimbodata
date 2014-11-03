@@ -30,6 +30,9 @@ class AVG(MathFunction):
         
 class MIN(MathFunction):
     """Gets the max of a scalar."""
+    
+class SUM(MathFunction):
+    """Gets the sum of a scalar."""
 
 
 # VALUE

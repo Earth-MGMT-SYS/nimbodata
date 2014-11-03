@@ -1,0 +1,19 @@
+[
+    {
+        "id":"chart",
+	"overbox":true,
+        "widget":"Chart",
+        "resize_control":true,
+        "width":500,
+        "height":500,
+        "title":"The Chart",
+        "subtitle":"2014 Water Year Stream Flow (CFS)",
+        "chart_type":"bar",
+        "type_control":true,
+	"ui_control":true,
+        "draw_y_axis":true,
+        "draw_x_axis":true,
+	"draw_y2_axis":false,
+        "datasource":"./examples/baldysnow.json"
+    }
+]

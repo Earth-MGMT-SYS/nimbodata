@@ -27,11 +27,11 @@ class PG_Datatype(Datatype):
         """
         if alias:
             return ''' "%(colid)s" AS "%(colname)s" ''' % {
-                'colid':colid,
+                'colid':colid[0] + '"."' + colid[1],
                 'colname':colname
             }
         else:
             return ''' "%(colid)s" ''' % {
-                'colid':colid
+                'colid':colid[0] + '"."' + colid[1]
             }
     

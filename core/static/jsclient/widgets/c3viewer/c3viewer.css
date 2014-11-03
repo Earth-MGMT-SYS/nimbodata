@@ -1,0 +1,29 @@
+
+#gauge {
+    overflow: visible;
+}
+
+div.c3 {
+    overflow: visible;
+}
+
+div.n_chart_title {
+    margin-top: 0.5em;
+    font-size: 125%;
+    color: white;
+    text-align: center;
+    width: 100%;
+    position: relative;
+}
+
+div.n_chart_nodata {
+    margin-top: 0.5em;
+    font-size: 100%;
+    margin-top: 2em;
+    font-style: italic;
+    color: white;
+    text-align: center;
+    width: 100%;
+    position: relative;
+    left: -0.5em;
+}

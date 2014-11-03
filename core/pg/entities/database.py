@@ -21,7 +21,8 @@ class Database(base_db.Database,Entity):
             'name':name,
             'owner':self.session['user'],
             'objid':dbid,
-            'parent_objid':self.session['user']
+            'parent_objid':self.session['user'],
+            'parent_db':dbid
         })
         
         stmt = syntax.create_db(dbid)

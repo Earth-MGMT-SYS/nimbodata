@@ -7,7 +7,7 @@ import sys
 sys.path.append('../')
 
 import config_cloud as cfg
-from core.pg.datatypes import Text,Point,Float
+from core.pg.datatypes import Text,Point,Float,Integer
 
 from common import tilecalc
 
@@ -35,18 +35,19 @@ class TestPoints(unittest.TestCase):
         
         cols = [
             {'name':'home','datatype':Text},
-            {'name':'poi','datatype':Point}
+            {'name':'poi','datatype':Point},
+            {'name':'value','datatype':Integer}
         ]
         
         self.table = cloud.create_table(self.db,'geotable',cols)
-        home, poi = self.table.columns()
+        home, poi, val = self.table.columns()
         self.table.add_index(poi)
         
         values = [
-            ('Arizona',Point(-111,34)),
-            ('California',Point(-120,37)),
-            ('New Mexico',Point(-106,34)),
-            ('Colorado',Point(-106,39)),
+            ('Arizona',Point(-111,34),0.10),
+            ('California',Point(-120,37),0.30),
+            ('New Mexico',Point(-106,34),0.50),
+            ('Colorado',Point(-106,39),0.90),
         ]
         
         try:
@@ -83,7 +84,16 @@ class TestPoints(unittest.TestCase):
         results = view.select()
         self.assertEquals(len(results.rows),4)
            
-        
+    
+    #@unittest.skip('skip')
+    def test_decile(self):
+        """Can we get a feature tile, does it have the expected data?"""
+        tile = self.table.tile(0,0,0,'value')
+        validate = dict((x['poi'],x['value']) for x in self.table.select())
+        self.assertEqual(len(tile['features']),4)
+        for f in tile['features']:
+            self.assertTrue(f['properties']['magnitude'] in range(11))
+    
     #@unittest.skip('skip')
     def test_basics_view(self):
         """Create a view of geographic data and get the features."""

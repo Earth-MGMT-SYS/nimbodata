@@ -1,45 +1,51 @@
-[
-    {
-        "id":"top",
-        "title":"Earth-MGMT Atlas",
-        "widget":"MasterMenu",
-        "browserview":{
-            "width":"100%",
-            "height":"4%"
+{
+    "appname":"atlas",
+    "title":"Earth-MGMT Atlas",
+    "elements":[
+        {
+            "id":"top",
+            "widget":"MasterMenu",
+            "browserview":{
+                "width":"100%",
+                "height":"4%"
+            }
+        },
+        {
+            "id":"map",
+            "widget":"Map",
+            "maxbutton":false,
+            "browserview":{
+                "width":"100%",
+                "height":"96%"
+            }
+        },
+        {
+            "id":"menutree",
+            "widget":"MenuTree",
+            "datasource":"tree",
+            "overbox":true
+        },
+        {
+            "id":"querybox",
+            "widget":"Select",
+            "overbox":true,
+            "column_control":false,
+            "order_control":false,
+            "join_control":false,
+            "aggregate_control":false,
+            "create":false
+        },
+        {
+            "id":"stylemaster",
+            "widget":"Styler",
+            "overbox":true
+        },
+        {
+            "id":"details",
+            "widget":"RowViewer",
+            "overbox":true,
+            "collapsible":true,
+            "label":"Feature Details"
         }
-    },
-    {
-        
-        "id":"map",
-        "widget":"Map",
-        "maxbutton":false,
-        "browserview":{
-            "width":"100%",
-            "height":"96%"
-        }
-    },
-    {
-        "id":"menutree",
-        "widget":"MenuTree",
-        "datasource":"tree",
-        "overbox":true
-    },
-    {
-        "id":"querybox",
-        "widget":"Select",
-        "overbox":true,
-        "column_control":false,
-        "order_control":false,
-        "create":false
-    },
-    {
-        "id":"stylemaster",
-        "widget":"Styler",
-        "overbox":true
-    },
-    {
-        "id":"details",
-        "widget":"RowViewer",
-        "overbox":true
-    }
-]
+    ]
+}

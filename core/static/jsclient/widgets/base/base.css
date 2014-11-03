@@ -1,0 +1,47 @@
+body {
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  margin-right: 1em;
+}
+
+.Overbox {
+  fill: lightgray;
+  color: white;
+  position: absolute;
+  background-color:rgba(0,0,0,0.5);
+  padding: 0.5em;
+  border-radius: 0.5em;
+  z-index: 5;
+}
+
+.Fullscreen {
+  fill: black;
+  color: white;
+  position: absolute;
+  background-color:rgba(0,0,0,0.2);
+  z-index: 500;
+}
+
+
+
+.Overbox.n_expando_outer {
+  padding: 0.5em;
+  border-radius: 0.5em;
+  position: absolute;
+}
+
+.Overbox:hover {
+  background-color:rgba(0,0,0,0.7);
+}
+
+.Container {
+  float: left;
+}
+
+
+body {
+    background-color: #ffffff;
+}
+
+

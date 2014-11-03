@@ -47,7 +47,7 @@ def create_view(schemaid,viewid,select,temporary=False,materialized=False):
           } 
     ) + select
 
-def alter_column_type(schemaid,tblid,colid,newtype,using=None):
+def alter_column_type(schemaid,tblid,colid,typesql,newtype,using=None):
     stub = """
                 ALTER TABLE %(qtn)s
                 ALTER COLUMN "%(colid)s"
@@ -58,12 +58,13 @@ def alter_column_type(schemaid,tblid,colid,newtype,using=None):
     elif newtype != 'Text':
         stub += """
                 USING
-                    "_adm-registries"."to_%(coltype)s"("%(colid)s")
+                    "_adm-registries"."to_%(conv)s"("%(colid)s")
            """
     return stub % {
         'qtn':get_tqn(schemaid,tblid),
         'colid':colid,
-        'coltype':newtype,
+        'conv':newtype,
+        'coltype':typesql,
         'fmt':'%(fmt)s'
      }
      
@@ -348,16 +349,27 @@ def select(schemaid, tblid,
 ### DQL for POSTGIS ###########################################################
 ###############################################################################   
 
-def select_geography(schemaid,tblid,colid,colname,bb=None,geotype=None,z=None):
+def select_geography(schemaid,tblid,colid,colname,bb=None,geotype=None,z=None,
+        magnitude=None,simple=False):
     z = int(z)
     stmt = """
             WITH data AS (
                 SELECT *
                 FROM "%(schemaid)s"."%(tblid)s"
-            )
-            SELECT "_adm-rowid" as rowid,
-           """
-    if z < 16:
+            )"""
+    if magnitude is not None:
+        stmt += """, minval as (
+                SELECT MIN("%(magid)s") as minval
+                FROM "%(schemaid)s"."%(tblid)s"
+            ), maxval as (
+                SELECT MAX("%(magid)s") as maxval
+                FROM "%(schemaid)s"."%(tblid)s"
+            ) """
+    
+    stmt += """
+        SELECT "_adm-rowid" as rowid,
+    """
+    if z < 16 and simple is False:
         stmt += """
             %(output_func)s(ST_simplify("%(colid)s"::geometry,%(tolerance)s))
            """
@@ -367,9 +379,17 @@ def select_geography(schemaid,tblid,colid,colname,bb=None,geotype=None,z=None):
            """
     stmt += """
                 as "%(colname)s"
-            FROM data
-            
+            """
+    if magnitude is not None:
+        stmt += """
+            , "%(magid)s"
         """
+        
+    stmt += """ FROM data """
+    
+    if magnitude is not None:
+        stmt += ", minval, maxval "
+    
     if bb is not None:
         stmt += """WHERE ST_Intersects(%(bb)s, "%(colid)s")"""
     
@@ -386,13 +406,15 @@ def select_geography(schemaid,tblid,colid,colname,bb=None,geotype=None,z=None):
         'colname':colname,
         'schemaid':schemaid,
         'tblid':tblid,
+        'magid':magnitude,
         'output_func':output_func,
-        'tolerance':1/(3**float(z))
+        'tolerance':5/(3**float(z))
     }
     
     return stmt
     
-def select_geography_poly(schemaid,tblid,colid,colname,bb=None,geotype=None,z=None):
+def select_geography_poly(schemaid,tblid,colid,colname,bb=None,geotype=None,
+        z=None,magnitude=None):
     z = int(z)
     stmt = """
             WITH data AS (

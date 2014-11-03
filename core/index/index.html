@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+    <title>Nimbodata Catalog</title>
+    
+    <link rel="stylesheet" href="/static/jsclient/nimbodata.css" />
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/c3/0.3.0/c3.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/ckeditor/4.4.1/ckeditor.js"></script>
+    
+    <script>
+        var GLOBAL = {}, module = {} // Sneaky sneaky NodeJS compat
+    </script>
+    <script src="/static/jsclient/nimbodata.js"></script>
+    <script src="/static/jsclient/widgets/menutree/d3.layout.indent.js"></script>
+    <script src="/static/jsclient/widgets/base/base.js"></script>
+    <script src="/static/jsclient/layout/layout.js"></script>
+    <script src="/static/jsclient/controls/controls.js"></script>
+    <script src="/static/jsclient/widgets/input/jsoneditor/jsoneditor.js"></script>
+    <script src="/static/jsclient/widgets/input/input.js"></script>
+    <script src="/static/jsclient/widgets/legend/legend.js"></script>
+    <script src="/static/jsclient/widgets/title/title.js"></script>
+    <script src="/static/lib/markdown.js"></script>
+    <script src="/static/jsclient/widgets/entitymenu/entitymenu.js"></script>
+    <script src="/static/jsclient/widgets/mustache/mustache.js"></script>
+    <script src="/static/jsclient/widgets/contentpane/contentpane.js"></script>
+    <script src="/static/jsclient/widgets/c3viewer/c3viewer.js"></script>
+    <script src="/static/jsclient/widgets/mastermenu/mastermenu.js"></script>
+    <script src="/static/jsclient/widgets/container/container.js"></script>
+    <script src="/static/jsclient/widgets/menutree/menutree.js"></script>
+    <script src="/static/jsclient/widgets/resultviewer/resultviewer.js"></script>
+    <script src="/static/jsclient/widgets/rowviewer/rowviewer.js"></script>
+    <script src="/static/jsclient/widgets/select/select.js"></script>
+    <script src="/static/jsclient/widgets/styler/styler.js"></script>
+    <script src="/static/jsclient/widgets/launcher/launcher.js"></script>
+    <script src="/static/jsclient/widgets/chart/chart.js"></script>
+    <script src="/static/jsclient/widgets/map/map.js"></script>
+    <script src="/static/jsclient/widgets/map/TileLayer.GeoJSON.js"></script>
+    
+    <script>
+
+		// This code is generally not necessary, but it is here to demonstrate
+		// how to customize specific editor instances on the fly. This fits well
+		// this demo because we have editable elements (like headers) that
+		// require less features.
+
+		// The "instanceCreated" event is fired for every editor instance created.
+		CKEDITOR.on( 'instanceCreated', function( event ) {
+			var editor = event.editor,
+				element = editor.element;
+
+			// Customize editors for headers and tag list.
+			// These editors don't need features like smileys, templates, iframes etc.
+			if ( element.is( 'h1', 'h2', 'h3' ) || element.getAttribute( 'id' ) == 'taglist' ) {
+				// Customize the editor configurations on "configLoaded" event,
+				// which is fired after the configuration file loading and
+				// execution. This makes it possible to change the
+				// configurations before the editor initialization takes place.
+				editor.on( 'configLoaded', function() {
+
+					// Remove unnecessary plugins to make the editor simpler.
+					editor.config.removePlugins = 'colorbutton,find,flash,font,' +
+						'forms,iframe,image,newpage,removeformat,' +
+						'smiley,specialchar,stylescombo,templates';
+
+					// Rearrange the layout of the toolbar.
+					editor.config.toolbarGroups = [
+						{ name: 'editing',		groups: [ 'basicstyles', 'links' ] },
+						{ name: 'undo' },
+						{ name: 'clipboard',	groups: [ 'selection', 'clipboard' ] },
+						{ name: 'about' }
+					];
+				});
+			}
+		});
+
+	</script>
+
+    
+</head>
+<body>
+    <script>
+        var app_spec = './app.json'
+    </script>
+    <script src="/static/jsclient/datamodel.js"></script>
+</body>

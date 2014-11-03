@@ -1,21 +1,24 @@
-[
-    {
-        "title":"Earth-MGMT Launcher",
-        "id":"topmenu",
-        "browserview":{
-            "width":"100%",
-            "height":"4%"
+{
+    "appname":"earth-mgmt",
+    "title":"Earth-MGMT Launcher",
+    "elements":[
+        {
+            "id":"topmenu",
+            "browserview":{
+                "width":"100%",
+                "height":"4%"
+            },
+            "widget":"MasterMenu"
         },
-        "widget":"MasterMenu"
-    },
-    {
-        "id":"launcher",
-        "widget":"Launcher",
-        "options":[
-            ["Water-Mgmt","./app-water.json"],
-            ["Atlas","./app-atlas.json",["databases","TigerLine","tree"]],
-            ["Catalog","./app-catalog.json",["tree"]],
-            ["Baseball Demo","./app-catalog.json",["databases","Baseball","tree"]]
-        ]
-    }
-]
+        {
+            "id":"launcher",
+            "widget":"Launcher",
+            "options":[
+                ["Water-Mgmt Explorer","../water-mgmt/"],
+                ["Water-Mgmt Explorer","../water-dash/"],
+                ["Catalog","../catalog/",["databases","WaterMgmt","tree"]],
+                ["Atlas","../atlas/",["databases","TigerLine","tree"]]
+            ]
+        }
+    ]
+}

@@ -26,9 +26,8 @@ class Cloud(object):
     def __init__(self,user):
         """Get a cloud instance for the user."""
         self.api = get_api()
-        pg.select.api = self.api
-        self.api.session = {'user':user}
-        self.get_byid = self.api.get_byid
+        pg.select.api = self.api # Inject the API into select.
+        self.api.session = {'user':user} # User is set from local config.
     
     def select(self,*args,**kwargs):
         return self.api.get_entity('Select')().select(*args,**kwargs)

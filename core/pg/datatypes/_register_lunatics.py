@@ -1,12 +1,15 @@
 """Module registers custom datatypes with psycopg2."""
 # Copyright (C) 2014  Bradley Alan Smith
 
+import psycogreen.gevent
 import psycopg2
 import psycopg2.extras
 import shapely.geometry as shp
 
 from . import *
 import common.datatypes.ranges as base_range
+
+#psycogreen.gevent.patch_psycopg()
 
 _RANGE = psycopg2.extensions.new_type((3904,), "INT4RANGE", IntegerRange)
 psycopg2.extensions.register_type(_RANGE)

@@ -24,5 +24,8 @@ class AS(GeneralFunction):
     def data(self):
         return self.info
 
+class Union(GeneralFunction):
+    """Combine two queries"""
+
 class count(GeneralFunction):
     """Return the number of values in the scalar."""

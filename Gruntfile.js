@@ -20,7 +20,7 @@ module.exports = function(grunt) {
      }
     },
     simplemocha: {
-      all: {src: ['client/jsclient/test/*.js'] }
+      all: {src: ['core/static/jsclient/test/*.js'] }
     }
   });
  

@@ -19,3 +19,5 @@ install/dumps/*
 core/lastaccess
 *.gdb/*
 */import-data/*
+apps/water-mgmt/updaters/loaded.sql
+core/static/jsclient/widgets/title/markdown.js

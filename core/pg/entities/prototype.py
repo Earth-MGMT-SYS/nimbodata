@@ -10,6 +10,12 @@ import common.entities.prototype as base_ent
 from .. import syntax
 
 from . import *
+
+class ReadOnlyDict(dict):
+    """This is a local cache for the Entity info."""
+    
+    def __setitem__(self,key,value):
+        raise TypeError("This here dict is read-only, pardner")
     
 class Entity(base_ent.Entity):
     """Base class for an entity in a PostgreSQL database (in PG terms)."""
@@ -42,7 +48,13 @@ class Entity(base_ent.Entity):
             raise errors.RelationDoesNotExist
     
     @property
-    def info(self):        
+    def info(self):
+        try:
+            if self._info:
+                return self._info
+        except AttributeError:
+            pass
+        
         objid = str(self.objid)
         
         stmt, params = syntax.select(self.schema,
@@ -62,7 +74,9 @@ class Entity(base_ent.Entity):
                     retVal['cols'] = self.columns()
         except errors.RelationDoesNotExist: # Likely during the creation stage
             pass
-        return retVal
+        
+        self._info = ReadOnlyDict(retVal)
+        return self._info
     
     def select(self):
         """Get all children of this entity."""
@@ -194,6 +208,8 @@ class Entity(base_ent.Entity):
         vals['entitytype'] = type(self).__name__
         if isinstance(vals['parent_objid'],Entity):
             vals['parent_objid'] = str(vals['parent_objid'].objid)
+        if isinstance(vals['parent_db'],Entity):
+            vals['parent_db'] = str(vals['parent_db'].objid)
         if vals['entitytype'] != 'Database':
             parent = self.api.get_byid(vals['parent_objid'])
             if parent['owner'] != self.session['user']:
@@ -243,6 +259,11 @@ class Entity(base_ent.Entity):
         info = self.info
         if self.session['user'] != info['owner']:
             raise errors.NotAuthorized
+        if 'dobj' in params:
+            try:
+                params['dobj'] = info['dobj'].update(params['dobj'])
+            except AttributeError:
+                pass
         info.update(params)
         self._registry_insert(info)
         return self.info
@@ -253,7 +274,7 @@ class Entity(base_ent.Entity):
         Should work for all implementations that use Entity.create()
         
         """
-        info = self.info
+        info = self.row_dict
         if self.session['user'] != info['owner']:
             raise errors.NotAuthorized
         info['name'] = newname

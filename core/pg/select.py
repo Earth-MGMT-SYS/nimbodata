@@ -3,6 +3,7 @@
 
 import string,random,copy
 from uuid import uuid4 as uuid
+from collections import OrderedDict
 
 import psycopg2
 
@@ -35,41 +36,35 @@ class Select(engine.Engine):
     
     def _qtn(self,viewinfo):
         """Given the info for a relation, return the qualified table name."""
+        parent_db = api.get_byid(viewinfo['parent_objid'])['parent_db']
         return '"%(dbid)s"."%(relationid)s"' % {
-            'dbid':viewinfo['parent_objid'],
+            'dbid':parent_db,
             'relationid':viewinfo['objid']
         }
-        
-    def _get_decoder(self,obj):
-        """Return a mapping of identifiers to canonical form.
-        
-        Given a view or table, collects all the possible identifers as keys to
-        a dict where the values are the valid objid.
-        
-        """
-        return expressions.get_decoder(obj)
-        
     
     def _target(self,objid,cols,join,alias=True,viewcreate=False):
         """Process the target columns into SQL and parameters."""
         # PREP
         stmt = """\nSELECT """
-        viewinfo = api.get_byid(objid)
+        viewinfo = self.viewinfo
+        colinfo = viewinfo['cols']
         viewname = viewinfo['name']
-        colinfo = viewinfo.columns()
-        colinfo_by_colname = dict((x['name'],x) for x in colinfo)
-        colinfo_by_colid = dict((x['objid'],x) for x in colinfo)
-        colname_by_colid = dict((x['objid'],x['name']) for x in colinfo)
+        def fqn(parent,info):
+            return (parent['objid'],info['objid'])
+        colinfo_by_colname = dict((x['name'],fqn(viewinfo,x)) for x in colinfo)
+        colinfo_by_colid = dict((fqn(viewinfo,x),x) for x in colinfo)
+        colname_by_colid = dict((fqn(viewinfo,x),x['name']) for x in colinfo)
         colalias_by_colid = dict(
-            (x['objid'],x['alias'] if x['alias'] else x['name'])
+            (fqn(viewinfo,x),x['alias'] if x['alias'] else x['name'])
                 for x in colinfo
         )
         
-        decoder = self._get_decoder(viewinfo)
+        decoder = expressions.get_decoder(viewinfo)
         j_decoder = {}
         
-        geocols = [x['name'] for x in viewinfo.geo_columns()]
-        geocolids = [x['objid'] for x in viewinfo.geo_columns()]
+        geo = viewinfo.geo_columns()
+        geocols = [x['name'] for x in geo]
+        geocolids = [x['objid'] for x in geo]
                 
         # JOIN
         join_stmt = ""
@@ -121,6 +116,19 @@ class Select(engine.Engine):
             if join is not None:
                 try:
                     dontcare,jcolinfo = join.join_cols(viewinfo)
+                    try:
+                        joininfo = api.get_byid(join[0])
+                    except TypeError:
+                        joininfo = api.get_byid(join.target)
+                    colinfo_by_colid.update(
+                        dict((fqn(joininfo,x),x) for x in jcolinfo)
+                    )
+                    colalias_by_colid.update(
+                        dict((fqn(joininfo,x),x['alias']) for x in jcolinfo)
+                    )
+                    colname_by_colid.update(
+                        dict((fqn(joininfo,x),x['name']) for x in jcolinfo)
+                    )
                 except AttributeError:
                     dontcare, jcolinfo = [],[]
                     for j in join:
@@ -129,16 +137,20 @@ class Select(engine.Engine):
                         jcols, jout = j.join_cols(viewinfo)
                         dontcare += jcols
                         jcolinfo += jout
-                colinfo_by_colid.update(
-                    dict((x['objid'],x) for x in jcolinfo)
-                )
-                colalias_by_colid.update(
-                    dict((x['objid'],x['alias']) for x in jcolinfo)
-                )
-                colname_by_colid.update(
-                    dict((x['objid'],x['name']) for x in jcolinfo)
-                )
-                
+                        try:
+                            joininfo = api.get_byid(j[0])
+                        except TypeError:
+                            joininfo = api.get_byid(j.target)
+                        colinfo_by_colid.update(
+                            dict((fqn(joininfo,x),x) for x in jcolinfo)
+                        )
+                        colalias_by_colid.update(
+                            dict((fqn(joininfo,x),x['alias']) for x in jcolinfo)
+                        )
+                        colname_by_colid.update(
+                            dict((fqn(joininfo,x),x['name']) for x in jcolinfo)
+                        )
+            
             for col in cols:
                 if col == '_adm-rowid':
                     if grouprowid is False:
@@ -186,6 +198,7 @@ class Select(engine.Engine):
                                     col_a = j_decoder[col['args'][1]]
                                 except KeyError:
                                     col_b = col['args'][1]
+                            
                             if col['fname'] in expressions.operators:
                                 inf = colinfo_by_colid[col_a]
                                 
@@ -195,8 +208,8 @@ class Select(engine.Engine):
                                     pass
                                 
                                 try:
-                                    b = colname_by_colid[col['args'][1]]
-                                    b_alias = colalias_by_colid[col['args'][1]]
+                                    b = colname_by_colid[col_b]
+                                    b_alias = colalias_by_colid[col_b]
                                 except KeyError:
                                     b_alias = b = col['args'][1]
                                     
@@ -212,7 +225,7 @@ class Select(engine.Engine):
                                     'op':col['fname']
                                 }
                             else:
-                                inf = api.get_entity('Column')(col_a,func=col)
+                                inf = api.get_entity('Column')(col_a[1],func=col)
                                 try:
                                     inf = inf.row_dict
                                 except AttributeError:
@@ -275,6 +288,7 @@ class Select(engine.Engine):
             elif colspec == '_adm-rowid' and aggregate is True:
                 continue
             elif isinstance(colspec,dict) and 'newname' in colspec:
+                # if the value is transformed in some way it becomes a new col.
                 colname = colspec['newname']
                 colid = decoder[col['col']]
             elif isinstance(colspec,dict):
@@ -288,7 +302,7 @@ class Select(engine.Engine):
                     dtype = getattr(datatypes,funcname)
             elif len(colspec) > 1 and colspec[1] in expressions.operators:
                 colStr = str(expressions.BinaryExpression(*colspec))
-            else:            
+            else:
                 try:
                     try:
                         colid = decoder[colspec]
@@ -343,7 +357,10 @@ class Select(engine.Engine):
             else:
                 colStr = datatypes.Datatype().sql_target(colid,colname,alias)
             
-            col_sub.append(colStr)        
+            col_sub.append(colStr)   
+            
+        orderedset = OrderedDict((x,None) for x in col_sub)
+        col_sub = orderedset.keys()
         
         stmt += ', '.join(col_sub) + "\n"
                 
@@ -360,76 +377,15 @@ class Select(engine.Engine):
         
     def _where(self,where,decoder,j_decoder):
         """Process the WHERE component of the select query."""
-        params = {}
-        w_params = {}
-        if where is not None and where != [] and where != {}:
-            
-            def process_clause(clause):
-                clause = expressions.BinaryExpression(clause)
-                print clause
-                clstr,c_params,cw_params = clause.sql_exp(decoder,j_decoder)
-                params.update(c_params)
-                w_params.update(cw_params)
-                
-                return clstr
-            
-            if isinstance(where,basestring) or isinstance(where,tuple):
-                where = [where]
-            elif isinstance(where,expressions.BinaryExpression):
-                if isinstance(where.data,dict):
-                    where = where.data
-                elif not isinstance(where,dict):
-                    where = [where.data]
-                else:
-                    where = where.data
-            elif isinstance(where,dict) and 'fname' in where:
-                where = [where]
-            
-            if isinstance(where,list):
-                if len(where) == 3 and where[1] in expressions.operators:
-                    where = [tuple(where)]
-                whereClauses = []
-                for whereClause in where:
-                    whereClauses.append(process_clause(whereClause))
-                stmt = "WHERE \n" + ' AND '.join(whereClauses) + "\n"
-                return stmt, params
-                        
-            try:
-                _all = ' AND '.join(process_clause(x) for x in where['all'])
-                if _all == '':
-                    _all = None
-            except (KeyError,TypeError):
-                _all = None
-                        
-            try:
-                _any = ' OR '.join(process_clause(x) for x in where['any'])
-                if _any == '':
-                    _any = None
-            except (KeyError,TypeError):
-                _any = None
-            
-            whereStmt = ''
-            if _all is not None and _any is None:
-                whereStmt += '(' + _all + ')'
-            elif _all is None and _any is not None:
-                whereStmt += '(' + _any + ')'
-            elif _all is not None and _any is not None:
-                whereStmt += '(' + _all + ') AND (' + _any + ')'
-            
-            if _all is not None or _any is not None:
-                where_sub = {'all':_all,'any':_any}
-                where_sub.update(w_params)
-                whereStmt = whereStmt % where_sub
-                stmt = "WHERE" + whereStmt
-                return stmt, params
-            
-        return "", params
+        return expressions.Where.sql(where,decoder,j_decoder)
         
     def _group_by(self,group_by,decoder,aggregate=False):
         """Process the GROUP BY component of a select query."""
         if group_by is not None:
             try:
-                stmt = '''GROUP BY "''' + '", "'.join(decoder[x] for x in group_by) + '"'
+                stmt = '''GROUP BY "''' + '", "'.join(
+                    '%s"."%s' % decoder[x] for x in group_by
+                ) + '"'
             except (KeyError,TypeError):
                 if aggregate:
                     gb = []
@@ -437,10 +393,10 @@ class Select(engine.Engine):
                     gb = ['"'+decoder['_adm-rowid']+'"']
                 for item in group_by:
                     if item == '_adm-rowid' and aggregate:
-                        gb.append('"'+decoder['_adm-rowid']+'"')
+                        gb.append('"%s"."%s"' % decoder['_adm-rowid'])
                         continue
                     try:
-                        gb.append('"'+decoder[item]+'"')
+                        gb.append('"%s"."%s"' % decoder[item])
                         continue
                     except (TypeError,KeyError):
                         pass
@@ -473,9 +429,11 @@ class Select(engine.Engine):
                     if len(split) == 2 and split[1].lower() not in ('asc','desc'):
                         raise ValueError("Invalid sort directive")
                     try:
-                        split[0] = '"' + decoder[split[0]] + '"'
+                        fqn = decoder[split[0]][0] + '"."' + decoder[split[0]][1]
+                        split[0] = '"' + fqn + '"'
                     except KeyError:
-                        split[0] = '"' + j_decoder[split[0]] + '"'
+                        fqn = j_decoder[split[0]][0] + '"."' + j_decoder[split[0]][1]
+                        split[0] = '"' + fqn + '"'
                     order_parts.append(' '.join(split))
                 except KeyError:
                     func = getattr(expressions,orderClause['fname'])
@@ -499,13 +457,14 @@ class Select(engine.Engine):
         """Takes all of the select parameters and returns SQL and sub params."""
         # First we get the prerequisite info to build the query
         viewinfo = api.get_byid(objid)
+        self.viewinfo = viewinfo
         if not viewinfo['parent_objid'].startswith('dbi'):
             parent = api.get_byid(viewinfo['parent_objid'])
             viewinfo = viewinfo.row_dict
             viewinfo['parent_objid'] = parent['parent_objid']
         dbid,viewname = viewinfo['parent_objid'],viewinfo['name']
         viewid = viewinfo['objid']
-        
+                
         colinfo = api.get_byid(objid=objid).columns()
         
         stmt, join_stmt, params, out_colinfo, decoder, j_decoder, aggregate = \
@@ -533,6 +492,8 @@ class Select(engine.Engine):
         stmt += limit_stmt
         params.update(limit_params)
         
+
+        
         return stmt,params,out_colinfo
     
     def get_array(self,objid=None,col=None,join=None,where=None,
@@ -555,7 +516,7 @@ class Select(engine.Engine):
     
     def get_byrowid(self,objid,ids,alias=False):
         """Returns a row from a specified relation."""
-        viewinfo = entities.Entity(str(objid))
+        viewinfo = api.get_byid(objid)
         if bool(alias) is False:
             label = lambda x: x['name']
         elif bool(alias) is True:
@@ -590,13 +551,29 @@ class Select(engine.Engine):
         return engine.Engine.execute(self,stmt,params)
 
     def select(self,objid=None,cols=None,join=None,where=None,
-               group_by=None,order_by=None,limit=None):
+               group_by=None,order_by=None,limit=None,fname=None,args=None):
         """Execute a select query."""
-        stmt,params,out_colinfo = self._prepare_select(
-            objid,cols,join,where,group_by,order_by,limit
-        )
-        
-        
+        if isinstance(objid,dict):
+            p, vname = objid['parent'], objid['_objid']
+            objid = api.get_byid(p).View(vname)['objid']
+        if fname is not None and args is not None:
+            objid = args[0]['objid']
+            stmts = []
+            params = {}
+            out_colinfo = None
+            for arg in args:
+                stmt_a,params_a,out_colinfo_a = self._prepare_select(**arg)
+                params.update(params_a)
+                stmts.append(stmt_a)
+                if out_colinfo is None:
+                    out_colinfo = out_colinfo_a
+            stmt = "\n UNION \n".join(stmts)
+            
+        else:
+            stmt,params,out_colinfo = self._prepare_select(
+                objid,cols,join,where,group_by,order_by,limit
+            )
+            
         if stmt is None and out_colinfo is None:
             return results.Results([],[])
         
@@ -607,11 +584,11 @@ class Select(engine.Engine):
                 print self.mogrify(stmt,params)
             except:
                 print stmt
-            raise e
+            raise
         
         view = api.get_byid(objid)
         expressions.inject_api(api)
-        viewinfo = view.info
+        viewinfo = view.row_dict
         viewinfo['cols'] = view.columns()
         
         return results.Results(out_colinfo,list(r),viewinfo)

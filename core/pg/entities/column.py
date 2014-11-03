@@ -49,7 +49,7 @@ class Column(base_column.Column,Entity):
         if weight is None:
             weight = self._start_weight(parent)
         
-        dbid,tblname = tblinfo['parent_objid'],tblinfo['name']
+        dbid,tblname = tblinfo['parent_db'],tblinfo['name']
         tblowner = tblinfo['owner']
         
         colid = self._new_id()
@@ -64,6 +64,7 @@ class Column(base_column.Column,Entity):
         
         regVals = {
             'parent_objid':parent,
+            'parent_db':dbid,
             'weight':weight,
             'name':name,
             'alias':alias,
@@ -135,7 +136,8 @@ class Column(base_column.Column,Entity):
                 newtype = newtype.replace('datatype:','')
             if newtype not in datatypes.valid:
                 raise TypeError("Invalid type: " + newtype)
-            colinfo = self.info
+            typesql = getattr(datatypes,newtype).sql_create()
+            colinfo = self.row_dict
             tblinfo = self.api.get_byid(colinfo['parent_objid'])
             
             if 'exp' not in params:
@@ -143,6 +145,7 @@ class Column(base_column.Column,Entity):
                     tblinfo['parent_objid'],
                     tblinfo['objid'],
                     colinfo['objid'],
+                    typesql,
                     newtype
                 )
                 u_params = None
@@ -157,6 +160,7 @@ class Column(base_column.Column,Entity):
                     tblinfo['parent_objid'],
                     tblinfo['objid'],
                     colinfo['objid'],
+                    typesql,
                     newtype,
                     u_stmt
                 )

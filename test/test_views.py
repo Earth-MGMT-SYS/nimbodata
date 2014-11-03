@@ -300,6 +300,19 @@ class TestViews(unittest.TestCase):
             self.assertEquals(2*row[1],row[2])
     
     #@unittest.skip('skip')
+    def test_nested_views(self):
+        cols = [{'name':'a','datatype':Integer}]
+        
+        self.table = self.db.create_table('GettinNesty',cols)
+        sel = {'objid':self.table}
+        v1 = self.table.create_view('n1',sel)
+        v2 = v1.create_view('n2',sel)
+        v3 = v2.create_view('n3',sel)
+        sel = {'objid':v3}
+        v4 = v3.create_view('n4',sel)
+        v4.select()
+    
+    #@unittest.skip('skip')
     def test_view_twodate(self):
         """Can we use an expression when creating a view?"""
         cols = [
