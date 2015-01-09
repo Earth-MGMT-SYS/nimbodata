@@ -4,7 +4,10 @@
 from . import *
 from . import PG_Datatype as Datatype
 
-import common.datatypes.time as base_time
+try:
+    import common.datatypes.time as base_time
+except ImportError:
+    import nimbodata.common.datatypes.time as base_time
 
 class Date(base_time.Date,Datatype):
     

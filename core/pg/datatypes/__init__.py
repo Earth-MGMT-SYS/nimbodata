@@ -9,10 +9,11 @@ the datatypes).
 
 import inspect
 
-from common.datatypes.prototype import Datatype
+try:
+    from common.datatypes.prototype import Datatype
+except ImportError:
+    from nimbodata.common.datatypes.prototype import Datatype
 from pg_prototype import PG_Datatype
-
-import common.datatypes.geographic
 
 from geographic import *
 from numeric import *

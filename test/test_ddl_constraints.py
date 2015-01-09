@@ -18,7 +18,6 @@ elif target == 'rest':
     import pyclient as cc
     cloud = cc.connect("http://localhost:5000",cfg.user)
 
-#@unittest.skip('skip')
 class TestConstraints(unittest.TestCase):
     """Test column restraint creation and enforcement."""
     
@@ -40,6 +39,30 @@ class TestConstraints(unittest.TestCase):
         """Drop the database."""
         self.db.drop()
     
+    #@unittest.skip('skip')
+    def test_multiprimary(self):
+        """Can we do a check constraint with text datatype?"""
+        constraint = {
+            'tblid':self.table,
+            'contype':'primary',
+            'cols':['pk','a']
+        }
+        constraint = cloud.create_constraint(constraint)
+        values = [
+            {'pk':'frank','a':2,'b':'apple'},
+            {'pk':'frank','a':2,'b':'apple'},
+            {'pk':'jerry','a':5,'b':'orange'},
+            {'pk':'ann','a':7,'b':'fig'},
+            {'pk':'francine','a':9,'b':'tomato'}
+        ]
+        with self.assertRaises(cc.IntegrityError):
+            self.table.insert(values)
+        constraint.drop()
+        values = [
+            {'pk':'francine','a':9,'b':'tomato'}
+        ]
+        self.table.insert(values)
+        
     #@unittest.skip('skip')
     def test_check_str(self):
         """Can we do a check constraint with text datatype?"""

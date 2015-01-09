@@ -41,7 +41,11 @@ extend(Container, function () {
         },
         
         maximize: function () {
+            history.pushState({'maximize':this._spec.id}, 'also', './')
+            history.pushState({'maximize':this._spec.id}, '', './?fullscreen')
+            // Yeah, it is stupid.
             var node = this._node
+            this._node.style('display','block')
             var maxim = node.select('#'+this.relid('maximize'))
             maxim.style('display','none')
             var maxdiv = d3.select('body').append('div').attr('id','maximized')
@@ -53,15 +57,17 @@ extend(Container, function () {
                 .attr('id','unmaximize')
             
             var thiswidget = this
-            controls.button('unmaximize',{
-                "label":"Unmaximize",
-                'icon':'compress',
-                "on":{
-                    "click":function () {
-                        thiswidget.unmaximize()
+            if (Model.viewmode == 'browser') {
+                controls.button('unmaximize',{
+                    "label":"Unmaximize",
+                    'icon':'compress',
+                    "on":{
+                        "click":function () {
+                            thiswidget.unmaximize()
+                        }
                     }
-                }
-            })
+                })
+            }
                 
             d3.select('#main').style('display','none')
             var width = $(window).innerWidth(),
@@ -75,12 +81,20 @@ extend(Container, function () {
             
             if (this._spec.children) {
                 this._spec.children.forEach(function (d) {
-                    if (d.created.maximize) d.created.maximize()
+                    if (d.created && d.created.maximize) d.created.maximize()
                 })
             }
         },
         
         unmaximize: function () {
+            
+            var viewspec = this.viewspec
+            
+            if (viewspec && viewspec.page && viewspec.page != 'root') {
+                this.active = false
+                this._node.style('display','none')
+            }
+            
             var node = this._node
             var maxim = node.select('#'+this.relid('maximize'))
             var maxdiv = d3.select('#maximized')
@@ -98,6 +112,8 @@ extend(Container, function () {
                     if (d.created.unmaximize) d.created.unmaximize()
                 })
             }
+            
+            Layout.refresh()
         },
         
         update: function (e,d) {

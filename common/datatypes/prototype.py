@@ -3,8 +3,12 @@
 
 import psycopg2.extensions
 
-from common.entities.prototype import Entity
-from common.expressions import UnaryExpression, TwoValExpression
+try:
+    from common.entities.prototype import Entity
+    from common.expressions import UnaryExpression, TwoValExpression
+except ImportError:
+    from nimbodata.common.entities.prototype import Entity
+    from nimbodata.common.expressions import UnaryExpression, TwoValExpression
 
 class Datatype(object):
     """The base class for a PostgreSQL datatype in Nimbodata.

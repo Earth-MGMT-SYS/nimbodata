@@ -20,7 +20,6 @@ elif target == 'rest':
     import pyclient as cc
     cloud = cc.connect("http://localhost:5000",cfg.user)
 
-#@unittest.skip('skip')
 class TestOperators(unittest.TestCase):
     
     def setUp(self):
@@ -91,6 +90,16 @@ class TestOperators(unittest.TestCase):
         self.assertEquals(len(result),2)
         self.assertEquals(result.rows[0][0],'A')
         self.assertEquals(result.rows[1][0],'B')
+        
+    #@unittest.skip('skip')
+    def test_distancebetween(self):
+        """Can we order by distance from a point?"""
+        label,geom = self.table.columns()
+        result = self.table.select(
+            order_by=[geom.distance_between(Point(0,0))]
+        )
+        labels = [x['label'] for x in result]
+        self.assertEquals(labels,['A','B','C','D','E'])
     
     #@unittest.skip('skip')
     def test_samebbox(self):

@@ -4,7 +4,10 @@
 import psycopg2
 import psycopg2.extras
 
-import common.errors as errors
+try:
+    import common.errors as errors
+except ImportError:
+    import nimbodata.common.errors as errors
 import datatypes
 
 _mode = 'debug'        

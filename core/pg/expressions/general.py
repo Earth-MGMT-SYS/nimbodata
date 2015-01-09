@@ -39,3 +39,21 @@ class Union(GeneralFunction):
         
     def sql_target(self,a,b):
         return " %s \n UNION\n  %s " % [a,b]
+
+class generate_series(GeneralFunction):
+    """Start to finish"""
+    
+    def sql_from(self,colid):
+        colinfo = {
+            'name':'date',
+            'datatype':'Date',
+            'alias':'date',
+            'objid':colid,
+            'create':True
+        }
+        return '''
+            generate_series(%(start)s::timestamp, %(end)s::timestamp, '1 day')
+            AS s("''' + colid + '")', {
+            'start':self.fargs[0],
+            'end':self.fargs[1]
+        }, [colinfo]

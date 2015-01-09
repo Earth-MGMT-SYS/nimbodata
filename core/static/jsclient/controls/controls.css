@@ -240,6 +240,16 @@ div.n_modal {
     z-index: 600;
 }
 
+@media only screen and (min-device-width: 320px) and (max-device-width: 700px) {
+    div.n_modal {
+        top: 10%;
+        bottom: 10%;
+        left: 5%;
+        right: 5%;
+        overflow: auto;
+    }
+}
+
 div.n_modal a {
     color: lightgray;
     font-style: italic;

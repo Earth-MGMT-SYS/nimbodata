@@ -1,8 +1,12 @@
 """Module implements the PostgreSQL table column."""
 # Copyright (C) 2014  Bradley Alan Smith
 
-import common.entities.column as base_column
-import common.errors as errors
+try:
+    import common.entities.column as base_column
+    import common.errors as errors
+except ImportError:
+    import nimbodata.common.entities.column as base_column
+    import nimbodata.common.errors as errors
 
 from .. import syntax
 from .. import datatypes
@@ -38,12 +42,9 @@ class Column(base_column.Column,Entity):
                 tblinfo = parent.info
             except AttributeError:
                 objid = str(parent)
-        
-                stmt, params = syntax.select(self.schema,
-                                             self.ent_info,
-                                             where = ('objid','=',objid))
-                
-                controllers['ddl'].conn.commit()
+                stmt, params = syntax.select(
+                    self.schema,self.ent_info,where = ('objid','=',objid)
+                )
                 tblinfo = dict(controllers['ddl']._get_first(stmt, params))
                 
         if weight is None:
@@ -73,7 +74,6 @@ class Column(base_column.Column,Entity):
             'objid':colid,
             'dobj':func
         }
-        
         
         regVals['qtn'] = str(dbid)+'"."'+str(parent)
         

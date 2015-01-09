@@ -1,7 +1,10 @@
 
 import string,random
 
-import common.errors
+try:
+    import common.errors as errors
+except ImportError:
+    import nimbodata.common.errors as errors
 
 from .. import datatypes
 from . import *
@@ -81,7 +84,7 @@ class BinaryExpression(base.BinaryExpression):
                     whereCondCol = api.get_byid(whereCond)
                     repl = (whereCondCol['parent_objid'],whereCondCol['objid'])
                     whereCond = '"%s"."%s"' % repl
-                except common.errors.RelationDoesNotExist:
+                except errors.RelationDoesNotExist:
                     sub = subid()
                     fmtstring = '%(' + sub + ')s'
                     col_type = api.get_byid(colid[1])['datatype']

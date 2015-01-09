@@ -4,3 +4,10 @@ div.n_maptitle {
     font-weight: bold;
     cursor: pointer;
 }
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 700px) {
+    div.n_maptitle {
+        font-size: 100%;
+        overflow: hidden;
+    }
+}

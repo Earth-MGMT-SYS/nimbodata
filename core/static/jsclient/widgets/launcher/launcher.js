@@ -24,23 +24,18 @@ return {
         self = this
         this._classes = "n_launcher_box Container"
         Widget.prototype.init.call(this, root, spec)
-               
-        d3.select(window).on('popstate',function (d) {
-            location.reload()
-        })
-                    
+        
         this._node
             .append('div')
+            
             .selectAll('h1')
             .data(spec.options)
             .enter().append('h1')
                 .text(function(d) { return d[0] })
                 .classed('n_launch_item',true)
                 .on('click',function(d) {
-                    history.pushState({foo:"bar" }, d[0], d[1]);
-                    Model.getmodel(d[1],d[2])
+                    Model.getmodel.apply(Model,d)
                 })
-        
     },
     
     event_filter: function(source,event,details) {

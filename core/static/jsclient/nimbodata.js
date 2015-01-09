@@ -44,7 +44,8 @@ Entity.prototype = {
     
     get objid () {
         if (this._objid) return this._objid
-        else return this._info.objid
+        else if (this._info) return this._info.objid
+        else return null
     },
     
     entity_type: 'Entity',

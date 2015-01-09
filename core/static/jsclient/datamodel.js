@@ -26,8 +26,24 @@ Model.prototype = function () {
         
         init: function() {
             self = this
+            if (navigator.userAgent.indexOf('Android') > -1) {
+                this.viewmode = 'mobile'
+            } else if (navigator.userAgent.indexOf('iPad') > -1) {
+                this.viewmode = 'mobile'
+            } else if (navigator.userAgent.indexOf('iPhone') > -1) {
+                this.viewmode = 'mobile'
+            } else {
+                this.viewmode = 'browser'
+            }
         },
         
+        get_current_location: function (success,failure) {
+            navigator.geolocation.getCurrentPosition(success,failure)
+        },
+        basestate: null,
+        laststate: null,
+        loaded: false,
+        currenturl: null,
         register: function(widget) {
             responders[widget._spec.id] = widget
             if (widget._spec.datasource) {
@@ -45,10 +61,18 @@ Model.prototype = function () {
                 var inforesponders = []
                 var subresponders = []
                 var info = details._info ? details._info : details
+                if (source._spec) {
+                    var src = source._spec.id
+                    var url = '?'+info.objid
+                    history.pushState({respond:[src,event,details]}, name, url)
+                } else {
+                    var source = responders[source]
+                }
                 
                 d3.values(responders).forEach(function(sink) {
                     // If the widget does not define event_filter, it gets
                     // only layout events.
+                    if (sink.created === false) return false
                     var fresult = false
                     if (sink.event_filter) {
                         fresult = sink.event_filter(source,event,details)
@@ -64,7 +88,7 @@ Model.prototype = function () {
                     } else if (fresult === true) {
                         basicresponders.push(sink)
                         if (sink.clear) sink.clear()
-                    } else if (fresult == 'refresh') {
+                    } else if (fresult == 'refresh' && source._spec) {
                         sink.reload()
                     } else if (fresult == 'info') {
                         inforesponders.push(sink)
@@ -228,22 +252,34 @@ Model.prototype = function () {
             }
         },
         
-        getmodel: function (url,datasource) {
+        getmodel: function (name,url,datasource) {
+            
+            this.currenturl = url
+            
             if (environment == 'mobile') return
             if (datasource) override_datasource = datasource
             if (!url) url = './app.json'
             else url += 'app.json'
-            d3.json(url,self.loadmodel)
+            var thiswidget = this
+            d3.json(url,function (e,d) { thiswidget.loadmodel(e,d) })
         },
         
-        loadmodel: function (e, doc) {
+        loadmodel: function (e, doc, nostatechange) {
+            d3.select('#cover').style('display','block')
             responders = {}
             loadevents = []
+                        
+            if (this.laststate && !nostatechange) {
+                console.log(this.currenturl)
+                history.pushState({doc:doc}, name, this.currenturl)
+            }
+            else this.basestate = this.laststate
+            
+            this.laststate = doc
             
             var app, css;
             
             doc.rows.forEach(function(d) {
-                
                 if (d[0] == 'app.json') {
                     app = JSON.parse(d[1])
                 } else if (d[0] == 'app.css') {
@@ -251,14 +287,7 @@ Model.prototype = function () {
                 }
             })
             
-            d3.select('style#appcss').remove()
-            
-            var style = document.createElement("style")
-            style.id = "appcss"
-            style.appendChild(document.createTextNode(css))
-            document.head.appendChild(style)
-            
-            Layout.init(app) // Populates loadevents
+            Layout.init(app,this.viewmode) // Populates loadevents
             loadevents.forEach(function (sink) {
                 var src = sink._spec.datasource
                 if (src instanceof Array) {
@@ -284,10 +313,42 @@ Model.prototype = function () {
                 }
             })
             Layout.refresh()
+            
+            var thiswidget = this;
+            
+            if (!this.loaded) {
+                window.addEventListener('popstate', function (event) {
+                    if (event.state && event.state.doc) {
+                        thiswidget.loadmodel(null,event.state.doc,'nostate')
+                    } else if (event.state && event.state.respond) {
+                        thiswidget.respond.apply(thiswidget,event.state.respond)
+                    } else if (event.state && event.state.maximize) {
+                        responders[event.state.maximize].unmaximize()
+                    } else {
+                        thiswidget.loadmodel(null,thiswidget.basestate,'nostate')
+                    }
+                })
+                this.loaded = true
+                this.basestate = doc
+            }
+                        
+            d3.selectAll('style').remove()
+            
+            //alert('farnsworth')
+            
+            var style = document.createElement("style")
+            style.id = "appcss"
+            style.appendChild(document.createTextNode(css))
+            
+            setTimeout(function () {
+                document.head.appendChild(style)
+                $('#cover').fadeOut(150)
+            },1) // Chrome doesn't style properly if we just do this in line.
+                        
         },
                 
         on_load: function () {
-            self.getmodel()
+            this.getmodel()
         },
     }
 }()
@@ -301,8 +362,10 @@ if (!server) {
 var cloud = connect(
     server,
     'usr-67141db0-1c1d-4f51-9a8a-5a6a9f7917f7',
-    Model.on_load
+    function () { Model.on_load() }
 )
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ////// Over the line, Smokey //////////////////////////////////////////////////

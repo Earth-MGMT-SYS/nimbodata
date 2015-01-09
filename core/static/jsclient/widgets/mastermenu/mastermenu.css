@@ -1,8 +1,13 @@
 
+#top {
+    background: rgba(0,0,0,0.5);
+    position: relative;
+    font-size: 1.5vh;
+}
+
 div.n_master_control_container {
     background: rgba(0,0,0,0.5);
     width: 100%;
-    background: rgba(0,0,0,0.5);
     position: relative;
     font-size: 1.5vh;
     padding: 0;
@@ -37,6 +42,12 @@ span.n_mastermenu_company {
     font-size: 2.0em;
     font-weight: 300;
     margin-left: 0.3em;
+}
+
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+    div.n_master_control_container {
+        font-size: 1.3vh;
+    }
 }
 
 span.n_mastermenu_company > a {

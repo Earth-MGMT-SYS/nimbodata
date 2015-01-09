@@ -77,7 +77,12 @@ class Cloud(object):
             group_by=None,order_by=None,limit=None,union=None):
     
         if objid is not None and not isinstance(objid,common.expressions.Union):
-            req_url = server + "/select/%(objid)s/" % { 'objid' : objid.objid }
+            if hasattr(objid,'objid'):
+                req_url = server + "/select/%(objid)s/" % {
+                    'objid' : objid.objid
+                }
+            else:
+                req_url = server + "/select/"
         
             kwargs = {
                 'objid':objid,

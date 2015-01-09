@@ -3,7 +3,11 @@ nimbodata
 
 Python/Javascript Data Platform.
 
-With the powers of PostgreSQL, Python and Javascript combined, we are captain data platform!
+With the powers of PostgreSQL, Python and Javascript combined, we are 
+captain data platform!
+
+For complete documentation, see 
+[Nimbodata at Read the Docs](http://nimbodata.readthedocs.org/en/latest/).
 
 ## Installation ##
 

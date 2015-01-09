@@ -12,7 +12,7 @@ sys.path.append('../')
 
 import config_cloud as cfg
 from core.pg.datatypes import Text,Integer, Float, Date
-from common.expressions import extract, MAX
+from common.expressions import extract, MAX, generate_series
 
 target = 'rest'
 
@@ -131,6 +131,16 @@ class TestViews(unittest.TestCase):
         self.assertEquals(viewcols[1]['name'],'a')
         self.assertEquals(viewcols[2]['name'],'b')
         view.select()
+        
+    #@unittest.skip('skip')
+    def test_from_function(self):
+        """Can we select from a function instead of a relation? """
+        view = self.db.create_view('sssrrrsly',
+            {'objid':generate_series(Date(2010,1,1),Date(2013,1,1))}
+        )
+        result = view.select()
+        self.assertEquals(len(result),1097)
+        self.assertEquals(type(result[0][0]).__name__,'date')
     
     #@unittest.skip('skip')
     def test_view_insert_select(self):

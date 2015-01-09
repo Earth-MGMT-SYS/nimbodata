@@ -14,7 +14,7 @@ extend(MasterMenu, function () {
     return {
         init: function (root, spec) {
             self = this
-            this._classes = 'n_master_control_container Container'
+            this._classes = 'n_master_control_container '
             Widget.prototype.init.call(this, root, spec)
             
             var container = this._node
@@ -197,7 +197,7 @@ extend(MasterMenu, function () {
                             .classed('n_entity_control',true)
                     }
                     
-                    
+                    Widget.prototype.update.call(this)
                 }
             }
             

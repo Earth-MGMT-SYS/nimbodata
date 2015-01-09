@@ -7,8 +7,6 @@ import psycopg2.extensions
 
 from . import *
 
-import common.expressions as expressions
-
 expressions.operators += ['@>','<@','?','?|','?&']
 
 class DataObject(Datatype):

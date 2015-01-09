@@ -5,7 +5,17 @@ body {
   margin-right: 1em;
 }
 
-.Overbox {
+#cover {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    z-index: 999999999999;
+    background: gray;
+}
+
+div.Container.Overbox {
   fill: lightgray;
   color: white;
   position: absolute;
@@ -13,6 +23,8 @@ body {
   padding: 0.5em;
   border-radius: 0.5em;
   z-index: 5;
+  overflow: visible;
+  max-width: 40%;
 }
 
 .Fullscreen {
@@ -24,20 +36,19 @@ body {
 }
 
 
-
-.Overbox.n_expando_outer {
+div.Overbox.n_expando_outer {
   padding: 0.5em;
   border-radius: 0.5em;
   position: absolute;
+  color: white;
+  fill: lightgray;
+  background-color:rgba(0,0,0,0.5);
 }
 
-.Overbox:hover {
+div.Container.Overbox:hover {
   background-color:rgba(0,0,0,0.7);
 }
 
-.Container {
-  float: left;
-}
 
 
 body {
@@ -45,3 +56,22 @@ body {
 }
 
 
+@media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
+    body {
+        font-size: 300%;
+    }
+    
+    svg {
+        font-size: initial;
+    }
+}
+
+@media only screen and (min-device-width: 481px) and (max-device-width: 700px) {
+    body {
+        font-size: 125%;
+    }
+    
+    svg {
+        font-size: initial;
+    }
+}

@@ -7,7 +7,6 @@ import shapely.geometry as shp
 
 from . import *
 
-import common.expressions as expressions
 
 expressions.operators += [
     '~','@','=','&<','&<|','&>','|&>','<<','>>','<<|','|>>','<->'

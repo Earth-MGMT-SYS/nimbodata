@@ -6,11 +6,7 @@
 Welcome to Nimbodata's documentation!
 =====================================
 
-UNDER SERIOUS CONSTRUCTION!
-
-Welcome to the documentation for the Nimbodata platform.  This documentation
-provides tutorials, guidance for usage, an API reference and documentation
-about the implementation itself.
+Welcome to the documentation for the Nimbodata platform.
 
 
 Contents:
@@ -21,7 +17,8 @@ Contents:
    
    intro.rst
    architecture.rst
-   entities.rst
+   mvc.rst
+   datamodel.rst
    select.rst
    api.rst
    apps.rst

@@ -25,17 +25,6 @@ The server logic and the client access patterns are both oriented around the
 API structure, which in turn, is structured on the relational model.
 
 
-Nimbodata Application Server
-==============================
-
-Currently half-exists.  The existing Python client will provide the core API
-to all manner of apps, ranging from analysis engines to front-end apps.  Uses
-the Nimbodata API generation capabilities to generate a REST API from user code
-which follows a reasonable convention and serves front-end assets such as the
-`app.json` and `app.css`.  The Nimbodata API generation needs to step up its
-parameter handling game (query string support), but this is not too far off.
-
-
 Nimbodata Clients
 ==================
 

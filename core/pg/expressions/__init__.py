@@ -1,5 +1,8 @@
 
-import common.expressions as base
+try:
+    import common.expressions as base
+except ImportError:
+    import nimbodata.common.expressions as base
 
 _expressions_modules = []
 def getexp(name):

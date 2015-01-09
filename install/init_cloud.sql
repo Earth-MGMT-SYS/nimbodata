@@ -133,6 +133,20 @@ AS $$
         return retVal
 $$ LANGUAGE plpython2u;
 
+CREATE OR REPLACE FUNCTION "to_WaterYear" (val date)
+    RETURNS integer
+AS $$
+    if 'dateparser' in GD:
+        dateparser = GD['dateparser']
+    else:
+        from dateutil import parser as dateparser
+        GD['dateparser'] = dateparser
+    value = dateparser.parse(val)
+    if value.month >= 10:
+        return value.year + 1
+    else:
+        return value.year
+$$ LANGUAGE plpython2u;
 
 CREATE TABLE "_adm-entityregistry" (
     name text,

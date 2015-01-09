@@ -12,9 +12,9 @@ div.n_launcher_box {
     margin-top: auto;
     margin-bottom: auto;
     margin-right: auto;
-    float: none;
     text-align: center;
     position: relative;
+    float: initial;
     top: 30%;
     color: white;
     background-color:rgba(0,0,0,0.5);
@@ -22,3 +22,5 @@ div.n_launcher_box {
     border-radius: 0.5em;
     z-index: 5;
 }
+
+

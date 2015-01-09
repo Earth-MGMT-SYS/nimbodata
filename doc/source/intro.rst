@@ -16,25 +16,11 @@ by SharePoint; aimed at producing a cross-platform, standards-based approach
 to developing and deploying applications that exist beyond a particular device
 or machine.
 
-We will:
-
--  Enable truly distributed, data-driven applications with an approach influenced
-   by github.  By encapsulating the data and code into a single, self-hosting
-   data platform that provides revision control and cloning capabilities.
--  Provide quick and easy access to the world's free data, enabling users to
-   develop and share applications to evaluate and act upon the mountains of data
-   that are available.
--  Enable people ranging from analysts to developers to create domain-specific
-   and cross-domain management systems that are easy to deploy, maintain and
-   customize.
--  Provide a cloud platform to store and share data and applications, which
-   is masterless and decentralized.
 
 Functional Description
 ========================
 
-Nimbodata is a platform for the full life cycle of collection, management 
-and analysis of structured data.  Nimbodata makes a relational data store 
+Nimbodata makes a relational, spatially and temporally aware data store 
 available via a REST interface, which enables a rich, Pythonic client as 
 well as a Python/JavaScript MVC framework for developing data-driven 
 applications.
@@ -52,12 +38,11 @@ Currently implemented in Nimbodata:
     operators a-la SQLAlchemy but without chaining.
 -   Javascript MVC client including 10+ widgets, a layout manager and data 
     model for navigating and viewing data. Apps are composed primarily of a css
-    file and a JSON structure, however, the architecture allows for simple
+    file and a JSON file, however, the architecture allows for simple
     extensibility in Javascript.
--   Update tool which can ingest web services, csv, geodatabases and shapefiles.
+-   ETL framework which can ingest web services, csv, geodatabases and
+    shapefiles.
 -   Owner-based permissions model.
--   Data input forms automatically generated from a database table, leveraging
-    database constraints and a JSON schema for validation.
 
 Rudiments in place, More Dev Planned:
 
@@ -65,45 +50,11 @@ Rudiments in place, More Dev Planned:
     as append-only and presented via a current-view.  Query engine support for
     querying the state as of a particular date needs integration.  Waiting on
     integration with ZFS for cloning and schema-change checkpointing.
--   Nimbodata analysis engine.  A set of tools and datatypes which enable the
-    same capabilities across the datastore and analysis layer.  Mostly in place,
-    just needs to be exposed properly.
-    
-Longer term goals:
-
--   Workflows and global event manager.
--   Conflict manager for managing merges in structural context.
 
 
 Vision
 ========
-
-We reject the notion of domain-specific platforms, the challenges of the 21st
-century are not specific to any given specialty or domain, instead, they
-require cooperation amongst a variety of fields to acheive successful outcomes.
-
-The Python ecosystem provides the ability to effectively interact with nearly 
-any form of digital information with an idiom that encourages easy-to-read
-code.  Platforms such as a GIS or CMS provide domain-specific implementations
-on top of basically the same core functionality - a relational data store.
-
-While there have been many platforms with similar core concepts since the days
-of the earliest mainframes, technology has developed to enable a few key
-features previously infeasible:
-
-*   Provide reasonable performance and a high-level interface.
-*   Take advantage of the maturation of web standards to the point where client
-    platform independence is feasible using simple techniques.
-*   A distributed cloud architecture will allow users to take advantage of
-    public data sources as well as private-cloud and private-local data in
-    a seamless manner.
-*   Encapsulate the application logic, design, structure, documentation and
-    data into a single distributed, revision-managed platform built on simple
-    rudiments.
     
-Other aspects of the vision which aren't really enabled by technology, but
-don't seem to have been picked up by others:
-
 *   Enable cooperation amongst groups with different interests and policies for
     sharing data while providing a decentralized platform to manage the flow of
     data.
@@ -113,6 +64,9 @@ don't seem to have been picked up by others:
 *   Python is great for programmers, but the spirit is wholly applicable to
     data analysis tools.  By providing a powerful platform for users to levarage
     Python, we hope to expand the power and reach of the Python ecosystem.
+*   Enable meta-programming approaches for relational data stores - such as
+    tools for applying a specific aggretation pattern to different sets of
+    views.
 
 
 What's Unique
@@ -129,16 +83,13 @@ Currently the key unique concepts fully implemented in Nimbodata are:
     *   Metadata-mediated queries which reduce the risk of allowing ad hoc
         queries to untrusted users (all database input is either parameterized,
         or for identifiers, fulfilled via catalog not user input).
-    *   Full functionality via REST/JSON
+    *   Full functionality via REST/JSON.
     *   Tiling, simplifying GeoJSON query functionality integrated with
-        view-of-view and full relational query capabilities.
-    *   All relationships are by ID not name, allowing side-effect-free renames
-    *   Python (geo)data analysis engine with Catalog and Atlas GUI which is
-        completely FOSS.
-    *   Automatically ingest Shapefiles from URL of a zip archive.
-    *   Widget-based Javascript MVC which directly fits the core data model
-        with over 10 widgets including forms automatically generated from
-        table schema, a slippy map, and more (more added regularly).
+        full relational query capabilities.
+    *   All relationships are by ID not name, allowing side-effect-free
+        renames.
+    *   Widget-based Javascript MVC which directly integrates with the core 
+        data model.
 
 Ongoing development is aimed at the following unique capabilities:
 

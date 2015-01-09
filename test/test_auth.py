@@ -14,7 +14,7 @@ import common.api as api
 target = 'local'
 
 if target == 'local':
-    import core.cloud as cc
+    import cloud as cc
     cloud = cc.Cloud(cfg.user)
 elif target == 'rest':
     sys.path.append('../client')
@@ -31,6 +31,7 @@ class TestAuth(unittest.TestCase):
         except cc.IntegrityError:
             db = cloud.Database('selectdb').drop()
             self.db = cloud.create_database('selectdb')
+        
     def tearDown(self):
         """Drop the database."""
         

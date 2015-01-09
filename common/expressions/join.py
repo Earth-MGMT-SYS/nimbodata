@@ -27,3 +27,12 @@ class Join(object):
             self.on = None
         
         self.data = (self.target,self.on)
+
+class LeftOuterJoin(Join):
+    """Left Outer Join"""
+    
+class RightOuterJoin(Join):
+    """Right Outer Join"""
+    
+class FullOuterJoin(Join):
+    """Full Outer Jacket"""

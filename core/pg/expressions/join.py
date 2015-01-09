@@ -5,10 +5,14 @@ from . import *
 from prototype import TwoValExpression
 from where import Where
 
-from common import errors
+try:
+    from common import errors
+except ImportError:
+    from nimbodata.common import errors
 
 class Join(base.Join):
     """Represent a nimbodata query join expression."""
+    jtype = ""
 
     def join_cols(self,src,cols=None):
         
@@ -60,7 +64,7 @@ class Join(base.Join):
         for jcol in j_colinfo:
             decoder[jcol['objid']] = (joininfo['objid'],jcol['objid'])
         
-        join_stmt = """JOIN  "%(joinview)s"\nON """
+        join_stmt = self.jtype + """ JOIN  "%(joinview)s"\nON """
         
         strSub = {}
         strSub['joinshort'] = joininfo['name']
@@ -124,3 +128,15 @@ class Join(base.Join):
             }, j_decoder
         else:
             return join_stmt + ' '.join((whereCol,whereCmp,whereCond)),j_decoder
+
+class LeftOuterJoin(Join):
+    """Left Outer Join"""
+    jtype = "LEFT OUTER"
+    
+class RightOuterJoin(Join):
+    """Right Outer Join"""
+    jtype = "RIGHT OUTERr"
+    
+class FullOuterJoin(Join):
+    """Full Outer Join"""
+    jtype = "FULL OUTER"

@@ -3,8 +3,12 @@
 
 from psycopg2 import ProgrammingError
 
-import common.errors as errors
-import common.entities.database as base_db
+try:
+    import common.errors as errors
+    import common.entities.database as base_db
+except ImportError:
+    import nimbodata.common.errors as errors
+    import nimbodata.common.entities.database as base_db
 
 from .. import syntax
 

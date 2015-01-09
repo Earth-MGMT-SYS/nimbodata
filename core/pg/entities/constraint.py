@@ -1,7 +1,10 @@
 """Module implements PostgreSQL constraints."""
 # Copyright (C) 2014  Bradley Alan Smith
 
-import common.entities.constraint as base_constraint
+try:
+    import common.entities.constraint as base_constraint
+except ImportError:
+    import nimbodata.common.entities.constraint as base_constraint
 
 from .. import syntax
 from . import *
@@ -20,29 +23,29 @@ class Constraint(base_constraint.Constraint,Entity):
         
         conid = self._new_id()
         
-        col = [x['objid'] for x in cols if x['name'] == const['col']][0]
+        if 'cols' in const:
+            cols = [x['objid'] for x in cols if x['name'] in const['cols']]
+        else:
+            cols = [x['objid'] for x in cols if x['name'] == const['col']]
         
         try:
             contype = const['contype']
         except KeyError:
             contype = None
+            
+        try:
+            conname = const['conname']
+        except KeyError:
+            conname = const['contype']
         
-        Entity.create(self,{
-            'objid':conid,
-            'cols':[col],
-            'name':const['conname'],
-            'datatype':contype,
-            'parent_objid':const['tblid'],
-            'parent_db':const['tblid'],
-            'owner':self.session['user']
-        })
+        
         
         if const['contype'] == 'check':
             stmt = syntax.add_constraint_check(
                 tblinfo['parent_objid'],
                 tblinfo['objid'],
                 conid,
-                (col,const['op'],const['compval'])
+                (cols[0],const['op'],const['compval'])
             )
             controllers['ddl'].execute(stmt,{'compval':const['compval']})
         
@@ -50,7 +53,7 @@ class Constraint(base_constraint.Constraint,Entity):
             stmt = syntax.add_constraint_notnull(
                 tblinfo['parent_objid'],
                 tblinfo['objid'],
-                col
+                cols[0]
             )
             controllers['ddl'].execute(stmt)
         
@@ -59,9 +62,28 @@ class Constraint(base_constraint.Constraint,Entity):
                 tblinfo['parent_objid'],
                 tblinfo['objid'],
                 conid,
-                col
+                cols[0]
             )
             controllers['ddl'].execute(stmt)
+            
+        elif const['contype'] == 'primary':
+            stmt = syntax.add_primarykey(
+                tblinfo['parent_objid'],
+                tblinfo['objid'],
+                conid,
+                cols
+            )
+            controllers['ddl'].execute(stmt)
+        
+        Entity.create(self,{
+            'objid':conid,
+            'cols':cols,
+            'name':conname,
+            'datatype':contype,
+            'parent_objid':const['tblid'],
+            'parent_db':const['tblid'],
+            'owner':self.session['user']
+        })
         
         controllers['ddl'].conn.commit()
         

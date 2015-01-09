@@ -7,7 +7,10 @@ import psycopg2.extras
 import shapely.geometry as shp
 
 from . import *
-import common.datatypes.ranges as base_range
+try:
+    import common.datatypes.ranges as base_range
+except ImportError:
+    import nimbodata.common.datatypes.ranges as base_range
 
 #psycogreen.gevent.patch_psycopg()
 

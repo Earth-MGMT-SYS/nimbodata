@@ -104,6 +104,17 @@ def add_column(schemaid,tblid,colid,dtype,pk=None):
         """
     return stmt % subStr
     
+def add_primarykey(schemaid,tblid,conid,colids):
+    return """
+        ALTER TABLE %(tqn)s
+        ADD CONSTRAINT "%(conid)s"
+        PRIMARY KEY ( %(colids)s )
+    """ % {
+        'tqn':_get_tqn(schemaid,tblid),
+        'colids': ', '.join('"'+x+'"' for x in colids),
+        'conid':conid
+    }
+    
 def update_as(schemaid,tblid,colid,exp):
     subStr = {
         'tqn':_get_tqn(schemaid,tblid),

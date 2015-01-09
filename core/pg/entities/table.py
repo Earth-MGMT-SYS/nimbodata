@@ -12,11 +12,17 @@ import shapely.wkt as wkt
 import jsonpickle
 import psycopg2
 
-import common.entities.table as base_table
+try:
+    from common import tilecalc
+    import common.entities.table as base_table
+except ImportError:
+    from nimbodata.common import tilecalc
+    import nimbodata.common.entities.table as base_table
+    
 
 from .. import syntax, datatypes
 from . import *
-from common import tilecalc
+
 
 class Table(base_table.Table,View):
     """PostgreSQL table as Nimbodata Entity."""
@@ -49,10 +55,7 @@ class Table(base_table.Table,View):
         }
         
         Entity.create(self,ent_args)
-        
-        controllers['ddl'].conn.commit()
         controllers['ddl'].execute(syntax.create_managed_table(parent_objid,tblid))
-        controllers['ddl'].conn.commit()
         self.objid = tblid
         if cols:
             self.add_columns(cols)

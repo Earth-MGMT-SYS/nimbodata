@@ -4,7 +4,10 @@
 from . import *
 from . import PG_Datatype as Datatype
 
-import common.datatypes.array as arr
+try:
+    import common.datatypes.array as arr
+except ImportError:
+    import nimbodata.common.datatypes.array as arr
 
 class BooleanArray(arr.BooleanArray,Datatype):
     

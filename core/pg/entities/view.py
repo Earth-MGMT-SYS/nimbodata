@@ -5,9 +5,13 @@ from pprint import pprint
 
 from .. import syntax, select
 from . import *
-from common import tilecalc
 
-import common.entities.view as base_view
+try:
+    from common import tilecalc
+    import common.entities.view as base_view
+except ImportError:
+    from nimbodata.common import tilecalc
+    import nimbodata.common.entities.view as base_view
 
 _s = select.Select()
 
@@ -61,7 +65,8 @@ class View(base_view.View,Entity):
         else:
             sel_stmt,sel_params,out_colinfo = process_statement(select)
         
-        Entity.create(self.api.get_entity('Column')(),{
+        Column = self.api.get_entity('Column')
+        Entity.create(Column(),{
             'parent_objid':viewid,
             'parent_db':parent['parent_db'],
             'weight':0,
@@ -72,6 +77,20 @@ class View(base_view.View,Entity):
             'objid':"_adm-rowid",
             'alias':'Row ID',
         })
+        
+        for i,col in enumerate(out_colinfo):
+            if 'create' in col:
+                Entity.create(Column(),{
+                    'parent_objid':viewid,
+                    'parent_db':parent['parent_db'],
+                    'weight':i,
+                    'name':col['name'],
+                    'datatype':col['datatype'],
+                    'entitytype':'Column',
+                    'owner':self.session['user'],
+                    'objid':col['objid'],
+                    'alias':col['alias'],
+                })
         
         for i,col in enumerate(out_colinfo):            
             try:
@@ -110,7 +129,7 @@ class View(base_view.View,Entity):
         view_stmt = syntax.create_view(parent_db,viewid,sel_stmt,
             materialized = materialized)
         
-        #print view_stmt
+        print view_stmt % sel_params
                         
         controllers['ddl'].execute(view_stmt, sel_params)
         controllers['ddl'].conn.commit()

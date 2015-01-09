@@ -44,6 +44,7 @@ return {
             d3.select('body').selectAll('div.n_modal').remove()
             d3.select('body').selectAll('div.n_modal_back').remove()
         }
+        Model.closemodal = close
         d3.select('body').append('div')
             .classed('n_modal_back',true)
             .on('click',close)

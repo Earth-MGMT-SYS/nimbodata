@@ -6,7 +6,10 @@ import json
 from . import *
 from . import PG_Datatype as Datatype
 
-import common.datatypes.text as txt
+try:
+    import common.datatypes.text as txt
+except ImportError:
+    import nimbodata.common.datatypes.text as txt
 
 def fallback_json(obj):
     return obj.objid

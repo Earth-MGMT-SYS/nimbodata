@@ -16,7 +16,7 @@
     "grunt-cli":"~0.1.13",
     "better-assert":"~1.0.1",
     "xhr2":"~0.1.0",
-    "d3","~3.4.11"
+    "d3":"~3.4.11"
   },
   "devDependencies": {},
   "scripts": {

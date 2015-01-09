@@ -1,9 +1,13 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <head>
-    <title>Nimbodata Catalog</title>
+    <title>Nimbodata</title>
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
     
     <link rel="stylesheet" href="/static/jsclient/nimbodata.css" />
+    <link rel="shortcut icon" href="/favicon.png" />
 
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.4.13/d3.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
@@ -40,6 +44,17 @@
     <script src="/static/jsclient/widgets/chart/chart.js"></script>
     <script src="/static/jsclient/widgets/map/map.js"></script>
     <script src="/static/jsclient/widgets/map/TileLayer.GeoJSON.js"></script>
+    
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-56400337-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
     
     <script>
 
@@ -83,6 +98,7 @@
     
 </head>
 <body>
+    <div id="cover"></div>
     <script>
         var app_spec = './app.json'
     </script>

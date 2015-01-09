@@ -3,7 +3,11 @@
 
 from . import *
 from . import PG_Datatype as Datatype
-import common.datatypes.function as func
+
+try:
+    import common.datatypes.function as func
+except ImportError:
+    import nimbodata.common.datatypes.function as func
 
 class Function(func.Function,Datatype):
     """A Nimbodata function is an abstraction of a database function."""

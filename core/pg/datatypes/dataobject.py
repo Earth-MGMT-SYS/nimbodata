@@ -6,7 +6,10 @@ import json
 from . import *
 from . import PG_Datatype as Datatype
 
-import common.datatypes.dataobject as obj
+try:
+    import common.datatypes.dataobject as obj
+except ImportError:
+    import nimbodata.common.datatypes.dataobject as obj
         
 class DataObject(obj.DataObject,Datatype):
     

@@ -7,8 +7,13 @@ import json
 
 import psycopg2
 
-from common import results
-import common.errors as errors
+try:
+    from common import results
+    import common.errors as errors
+except ImportError:
+    from nimbodata.common import results
+    import nimbodata.common.errors as errors
+
 
 from .. import engine
 from .. import select

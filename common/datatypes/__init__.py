@@ -9,6 +9,11 @@ the datatypes).
 
 import inspect
 
+try:
+    import common.expressions as expressions
+except ImportError:
+    import nimbodata.common.expressions as expressions
+
 from prototype import *
 
 from geographic import *

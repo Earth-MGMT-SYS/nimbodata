@@ -12,6 +12,7 @@ Widget.prototype = {
     init: function (root,spec) {
         this._root = root
         this._spec = spec
+        
         if (spec.collapsible === true) {
             this._node = controls.expando(root,{
                 id: spec.id,
@@ -34,8 +35,29 @@ Widget.prototype = {
                 .on('click',function () { thiswidget.reload() })
         }
         
+        if (Model.viewmode == 'browser') {
+            var viewspec = this._spec.browserview
+        } else if (Model.viewmode == 'mobile') {
+            if (this._spec.mobileview) {
+                var viewspec = this._spec.mobileview
+            } else {
+                var viewspec = this._spec.browserview
+            }
+        }
+        
+        if (viewspec && viewspec.page && viewspec.page != 'root') {
+            this.active = false
+            this._node.style('display','none')
+        }
+        
+        if (!viewspec) viewspec = null
+        this.viewspec = viewspec
+        
         this._node.classed(this._classes, true)
     },
+    
+    active: true,
+    viewspec: null,
     
     node: function () {
         return this._node
@@ -51,16 +73,17 @@ Widget.prototype = {
     
     reload: function () {
         var src = this._spec.datasource
+        var thiswidget = this
         if (src.slice(0,4) == 'http' || src.slice(0,1) == '.') {
             d3.json(src,function (e,d) {
-                this.update(e,d)
+                thiswidget.update(e,d)
             })
         } else {
             if (src instanceof Array) {
-                n_get(src,this.update)
+                n_get(src,thiswidget.update)
             } else {
                 cloud[src](function (e,d) {
-                    this.update(e,d)
+                    thiswidget.update(e,d)
                 })
             }
         }
@@ -68,30 +91,37 @@ Widget.prototype = {
     
     update: function() {
         
-        if (this._spec.browserview && this._spec.browserview.height == 'natural') {
+        var viewspec = this.viewspec
+        
+        if (!this.active) {
+            this._node.style('display','none')
+            return
+        }
+        
+        if (viewspec && viewspec.height == 'natural') {
             this._node.style('width','initial').style('height','initial')
             return
         }
         
-        if (this._spec.browserview && this._spec.browserview.height) {
+        if (viewspec && viewspec.height) {
             Layout.set_height_pct(
                 this._node,
-                this._spec.browserview.height
+                viewspec.height
             )
             Layout.set_width_pct(
                 this._node,
-                this._spec.browserview.width
+                viewspec.width
             )
-        } else if (this._spec.browserview && this._spec.browserview.containermode) {
+        } else if (viewspec && viewspec.containermode) {
             var width = $(this._node.node()).innerWidth()
             var height = $(this._node.node()).innerHeight()
             Layout.set_height_pct(
                 this._node,
-                this._spec.browserview.height
+                viewspec.height
             )
             Layout.set_width_pct(
                 this._node,
-                this._spec.browserview.width
+                viewspec.width
             )
             var tabheight = $(this._node.select('div.n_tabs').node()).outerHeight()
             var shownheight = height - tabheight
@@ -102,7 +132,7 @@ Widget.prototype = {
         
         if (this._spec.children) {
             if (this._spec.children[0].browserview) {}
-            else if (this._spec.browserview && this._spec.browserview.containermode) {}
+            else if (viewspec && viewspec.containermode) {}
             else {
                 var heights = []
                 this._spec.children.forEach(function (d) {

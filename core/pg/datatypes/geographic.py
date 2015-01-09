@@ -5,7 +5,10 @@ import shapely.geometry as shp
 
 from . import *
 from . import PG_Datatype as Datatype
-import common.datatypes.geographic as geo
+try:
+    import common.datatypes.geographic as geo
+except ImportError:
+    import nimbodata.common.datatypes.geographic as geo
 
 class Geographic(Datatype):
     """Generic geographic type."""

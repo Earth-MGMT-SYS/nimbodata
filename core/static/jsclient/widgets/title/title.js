@@ -42,6 +42,10 @@ return {
             return false
         }
     },
+    
+    unmaximize: function(e, d) {
+        Model.closemodal()
+    },
 
     update: function(e, d) {
         
@@ -60,9 +64,16 @@ return {
             .text(d.alias ? d.alias : d.name)
             .classed('n_maptitle',true)
             .on('click',function () {
+                
+                history.pushState({'maximize':closeself._spec.id}, 'also', '')
+                history.pushState({'maximize':closeself._spec.id}, '', './?fullscreen')
+                
                 var modalnode = controls.modal()
+                if (d.dobj && d.dobj.info) var content = d.dobj.info
+                else var content = "<h2>Nothing to see here</h2>"
+                
                 modalnode.append('div')
-                    .html(d.dobj.info)
+                    .html(content)
                     .selectAll('a')
                     .attr('target','_blank')
             })

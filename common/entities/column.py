@@ -1,8 +1,12 @@
 """Module implements the table column."""
 # Copyright (C) 2014  Bradley Alan Smith
 
-import common.expressions.comparable as comparable
-import common.datatypes as datatypes
+try:
+    import common.expressions.comparable as comparable
+    import common.datatypes as datatypes
+except ImportError:
+    import nimbodata.common.expressions.comparable as comparable
+    import nimbodata.common.datatypes as datatypes
 
 from . import * 
 

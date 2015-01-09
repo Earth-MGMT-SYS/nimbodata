@@ -29,3 +29,9 @@ class Union(GeneralFunction):
 
 class count(GeneralFunction):
     """Return the number of values in the scalar."""
+
+class generate_series(GeneralFunction):
+    """Return a series from start value to end value."""
+    
+    def __init__(self,start,end):
+        self.fargs = [start,end]

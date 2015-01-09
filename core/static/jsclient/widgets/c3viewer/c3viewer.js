@@ -91,8 +91,13 @@ return {
         }
         
         var hnode = this._node.node()
-        var cont_height = $(hnode).outerHeight()
-        var cont_width = $(hnode).outerWidth()
+        if (Model.viewmode == 'mobile') {
+            var cont_height = $(window).innerHeight() * 0.8
+            var cont_width = $(window).innerWidth() * 0.95
+        } else {
+            var cont_height = null,
+                cont_width = null
+        }
         
         var colors = {}
         colors[drows[0][1]] = 'blue'
@@ -102,6 +107,10 @@ return {
         
         try {
             this.chart = c3.generate({
+                size: {
+                    height: cont_height,
+                    width: cont_width
+                },
                 bindto: '#'+this._spec.id,
                 data: {
                     x: 'x',
@@ -246,8 +255,13 @@ return {
     },
     
     maximize: function () {
-        var width = $(window).innerWidth() - 100,
-            height = $(window).innerHeight() - 100
+        if (Model.viewmode == 'browser') {
+            var width = $(window).innerWidth() - 100,
+                height = $(window).innerHeight() - 100
+        } else {
+            var width = $(window).innerWidth(),
+                height = $(window).innerHeight()
+        }
         if (this.chart) {
             this.chart.resize({width: width, height: height})
         }
@@ -265,6 +279,11 @@ return {
         else {
             Widget.prototype.update.call(this)
             return
+        }
+        
+        if (this._root.viewspec.page && this._root.viewspec.page == 'eventrespond') {
+            this._root.active = true
+            this._root.maximize()
         }
         
         var chartheight = $(window).innerHeight() / 4

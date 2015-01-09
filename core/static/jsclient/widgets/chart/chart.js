@@ -28,11 +28,11 @@ var yData = [];
 
 var data;
 
-function line_height (d) { return yScale(d[yCol]) }
-function bar_height (d) { return height - yScale(d[yCol]) }
+//function line_height (d) { return yScale(d[yCol]) }
+//function bar_height (d) { return height - yScale(d[yCol]) }
 
 function draw_ui_control (datasource) {
-    var box = self._node.insert('div', ':first-child');
+    var box = self._node.insert('div', '#chart');
     box.attr('class', 'pure-form');
 
     var opts = [];
@@ -40,32 +40,33 @@ function draw_ui_control (datasource) {
     datasource.header.forEach(function(d){
         opts.push(
             {
-	        text: d.alias ? d.alias : d.name,
-	        index: d.weight,
-		type: d.datatype
-	    }
+                text: d.alias ? d.alias : d.name,
+                index: d.weight,
+                type: d.datatype
+            }
         )
     })
-    console.log( opts);
+
     box.append('label')
             .text('X Source:')
     
     var xSelect = box.append('select') 
 
     xSelect.on('change', function(d) {
-		xCol = this.value;
-		xType= getDataType(datasource.header, xCol);
-		console.log('Xcol= '+xCol + ' xType= ' + xType);
-		self.redraw()
+        xCol = this.value;
+        xType= getDataType(datasource.header, xCol);
+        console.log('Xcol= '+xCol + ' xType= ' + xType);
+        self._spec.xindex = xCol;  
+        self.redraw()
     })
 
     xSelect.selectAll('option')
-	    .data(opts)
-	    .enter()
-	    .append('option')
-	        .text(function(d) {return d.text;})
-      		.attr('value',function(d) {return d.index;})
-		.attr('datatype', function(d) {return d.type;})
+        .data(opts)
+        .enter()
+        .append('option')
+            .text(function(d) {return d.text;})
+            .attr('value',function(d) {return d.index;})
+            .attr('datatype', function(d) {return d.type;})
    
     box.append('label')
             .text('Y Source:')
@@ -75,20 +76,21 @@ function draw_ui_control (datasource) {
 
 
     ySelect.on('change', function(d) {
-		yCol = this.value;
-		yType = getDataType(datasource.header, yCol);
-		console.log('Ycol= '+yCol + 'yType= ' + yType);
-		self.redraw()
+        yCol = this.value;
+        yType = getDataType(datasource.header, yCol);
+        console.log('Ycol= '+yCol + 'yType= ' + yType);
+        self._spec.xindex = xCol;  
+        self.redraw()
     })
 
     ySelect.selectAll('option')
-	    .classed('bleh', true)
-	    .data(opts)
-	    .enter()
-	    .append('option')
-	        .text(function(d) {return d.text;})
-      		.attr('value',function(d) {return d.index;})
-		.attr('datatype', function(d) {return d.type;})
+        .classed('bleh', true)
+        .data(opts)
+        .enter()
+        .append('option')
+            .text(function(d) {return d.text;})
+            .attr('value',function(d) {return d.index;})
+        .attr('datatype', function(d) {return d.type;})
 
     if( self._spec.draw_y2_axis) {   
     box.append('label')
@@ -97,20 +99,20 @@ function draw_ui_control (datasource) {
     var y2Select = box.append('select') 
 
     y2Select.on('change', function(d) {
-		y2Col = this.value;
-		y2Type = this.datatype;
-		console.log('yCol ' + y2Col)
-		self.redraw()
+        y2Col = this.value;
+        y2Type = this.datatype;
+        console.log('yCol ' + y2Col)
+        self.redraw()
 
     })
 
     y2Select.selectAll('option')
-	    .data(opts)
-	    .enter()
-	    .append('option')
-	        .text(function(d) {return d.text;})
-      		.attr('value',function(d) {return d.index;})
-    		.attr('datatype', function(d) {return d.type;})
+        .data(opts)
+        .enter()
+        .append('option')
+            .text(function(d) {return d.text;})
+            .attr('value',function(d) {return d.index;})
+            .attr('datatype', function(d) {return d.type;})
       y2Select[0][0].value = y2Col
     }
 
@@ -118,9 +120,11 @@ function draw_ui_control (datasource) {
             draw_type_control()
      }
 
-    xSelect[0][0].value = xCol
-    ySelect[0][0].value = yCol
+    xSelect.property( "value", xCol );
+    ySelect.property( "value", yCol );
 }
+
+
 
 function draw_type_control () {
     var box = self._node.insert('div', 'g')
@@ -191,43 +195,43 @@ function point_on_click (d) {
 }
 
 function getDataType(header, index) {
-	var type;	
-	header.forEach(function(obj) {
-		if(obj.weight === parseInt(index)){
-			type = obj.datatype;
-		}
-	});
-	return type;
+    var type;   
+    header.forEach(function(obj) {
+        if(obj.weight === parseInt(index)){
+            type = obj.datatype;
+        }
+    });
+    return type;
 }
 
 function normalizeType(type, data){
-	console.log(data);	
+    console.log(data);  
 
-	if(type === 'Integer' || type === 'real') {
-		return parseInt(data);
-	}
-	else if (type === 'Float') {
-		return parseFloat(data);
-	}
-	else if (type === 'Date' || type === 'date') {
-		data = data.toString();	
-		if(data.length === 4){
-			var d = new Date()
-			d.setYear(data + '');
-			return d;
-		}	
-		return Date(data);
-	}
-	else if (type === 'Timestamp') {
-		return Date(data);
-	}
-	else if (type === 'Text') {
-		return data;
-	}
-	else {
-		return new Date(data);	
+    if(type === 'Integer' || type === 'real') {
+        return parseInt(data);
+    }
+    else if (type === 'Float') {
+        return parseFloat(data);
+    }
+    else if (type === 'Date' || type === 'date') {
+        data = data.toString(); 
+        if(data.length === 4){
+            var d = new Date()
+            d.setYear(data + '');
+            return d;
+        }   
+        return Date(data);
+    }
+    else if (type === 'Timestamp') {
+        return Date(data);
+    }
+    else if (type === 'Text') {
+        return data;
+    }
+    else {
+        return new Date(data);  
 
-	}
+    }
 }
 
 function update_line (svg) {        
@@ -275,17 +279,17 @@ function update_bar (svg) {
             return "rgb(0, 0, 256)";
         })
         .on('click',point_on_click)
-	.sort()
+    .sort()
         
 }
 
 function getData(rows, colIndex) {
-	var data = [];
-	for(var i = 0; i < rows.length; i++){
-		data[i] = rows[i][colIndex];
-	}
-	console.log('data = ' + data);
-	return data;
+    var data = [];
+    for(var i = 0; i < rows.length; i++){
+        data[i] = rows[i][colIndex];
+    }
+    console.log('data = ' + data);
+    return data;
 }
 
 
@@ -297,7 +301,7 @@ return {
         this._classes = " Container "
         Widget.prototype.init.call(this, root, spec)
         
-        margins = {top: 10, right: 10, bottom: 50, left: 60};
+        margins = {top: 10, right: 10, bottom: 100, left: 60};
         width = spec.width - margins.left - margins.right;
         height = spec.height - margins.top - margins.bottom;
         
@@ -344,13 +348,228 @@ return {
         }
     },
     
-    event_filter: function(title) {
-        true
+    event_filter: function(source,event,details) {
+        
+        if (self._spec.respondTo == 'select' && event == 'select') {
+            var info = details.info ? details.info : details
+            if (info.objid) {
+                if (info.entitytype == 'Table' || info.entitytype == 'View') {
+                    return true
+                }
+            }
+        } else if (details.rowid) {
+            if (self._spec.subview) {
+                return [self.objid,details.rowid]
+            } else if (self._spec.subselect) {
+                return {
+                    'objid':this.objid,
+                    'where':['_adm-rowid','=',details.rowid],
+                    'limit':500
+                }
+            } else {
+                return true
+            }
+        } else if (event == 'selectrow') {
+            return true
+        } else {
+            var info = details.info ? details.info : details
+            this.objid = info.objid
+            var closeself = this
+            if (self._spec.subview) {
+                Nimbodata.View(info.objid).View(self._spec.subview)
+                    .info(function(e,d) {
+                        closeself.objid = d.objid
+                    })
+            } else if (self._spec.subselect) {
+                Nimbodata.View(info.objid).View(self._spec.subselect)
+                    .info(function(e,d) {
+                        closeself.objid = d.objid
+                    })
+            }
+            return false
+        }
+        
+        if (details.entitytype) {
+            if (details.entitytype == 'View' || details.entitytype == 'Table') {
+                return true
+            }
+        } else if (details._info) {
+            if (details._info.entitytype == 'View' || details._info.entitytype == 'Table') {
+                return true
+            }
+        } else if (details.viewid) {
+            return true
+        } else if (event == 'refresh') {
+            return ['select',{'viewid':this.objid}]
+        } else if (event == 'select') {
+            return ['select',{'viewid':this.objid}]
+        }
+        return false
+    },
+    
+    update_timeseries_line: function(drows) {
+        
+        if (!drows) return
+        
+        for (var i = 0; i < drows.length; i++) {
+            if (drows[i][1] === null) {
+                drows[i][1] = 0
+            }
+        }
+        
+        var hnode = this._node.node()
+        var cont_height = $(hnode).outerHeight()
+        var cont_width = $(hnode).outerWidth()
+        
+        var colors = {}
+        
+        colors[drows[0][1]] = '#ff0000'
+        
+        var chart = c3.generate({
+            bindto: '#'+this._spec.id,
+            data: {
+                x: 'x',
+                rows: drows,
+                type: 'area-step',
+                colors: colors
+            },
+            padding: {
+                top: 20,
+                bottom: 30,
+                right: 40,
+                left: 60
+            },
+            axis: {
+                x: {
+                    type: 'timeseries',
+                    tick: {
+                        format: '%Y-%m-%d',
+                        count: 6
+                    }
+                }
+            }
+        })
+    },
+    
+    update_line: function(drows) {
+        
+        if (!drows) return
+        
+        var hnode = this._node.node()
+        var cont_height = $(hnode).outerHeight()
+        var cont_width = $(hnode).outerWidth()
+        
+        var chart = c3.generate({
+            bindto: '#'+this._spec.id,
+            data: {
+                x: 'x',
+                rows: drows
+            },
+            padding: {
+                top: 20,
+                bottom: 5,
+                right: 20,
+                left: 40
+            }
+        })
+    },
+    
+    update_bar: function(drows) {
+        
+        if (!drows) return
+        
+        var hnode = this._node.node()
+        var cont_height = $(hnode).outerHeight()
+        var cont_width = $(hnode).outerWidth()
+        
+        var chart = c3.generate({
+            bindto: '#'+this._spec.id,
+            data: {
+                x: 'x',
+                rows: drows,
+                type: 'bar'
+            },
+            bar: {
+                width: {
+                    ratio: 0.8
+                }
+            },
+            padding: {
+                top: 20,
+                bottom: 20,
+                right: 20,
+                left: 40
+            }
+        })
+    },
+    
+    update_gauge: function(drows) {
+        
+        if (!drows) return
+        
+        var hnode = this._node.node()
+        var cont_height = $(hnode).outerHeight()
+        var cont_width = $(hnode).outerWidth()
+        
+        if (drows[0][1] === null) {
+            this._node.append('div')
+                .classed('n_chart_nodata',true)
+                .text('No data')
+            return
+        }
+        
+        try {
+            var pct = (drows[0][1] / drows[1][1]) * 100
+        } catch (e) {
+            this._node.append('div')
+                .classed('n_chart_nodata',true)
+                .text('No data')
+            return
+        }
+        
+        var height = $(window).innerHeight() / 3
+        
+        this._node.append('div')
+            .attr('id',this.relid('chartbox'))
+        
+        var chart = c3.generate({
+            bindto: '#'+this.relid('chartbox'),
+            data: {
+                columns: [
+                    ['Value', drows[0][1]]
+                ],
+                type: 'gauge'
+                /*
+                onclick: function (d, i) { console.log("onclick", d, i); },
+                onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+                onmouseout: function (d, i) { console.log("onmouseout", d, i); }
+                */
+            },
+            gauge: {
+                width: 50,
+                max: drows[1][1]
+            },
+            size: {
+                height: 250
+            }
+        })
+        //this.refresh()
+    },
+    
+    refresh: function () {
+        if (this.objid === null) {
+            this._node.style('height','0px')
+            this._node.style('width','0px')
+        } else if (this.objid) {
+            this._node.style('height',this.last_height+'px')
+            this._node.style('width',this.last_width+'px')
+        }
     },
             
     update: function (e, dataset) {
-    	xData = [];
-	yData= [];    
+        xData = [];
+        yData= [];    
+        
         if (dataset) {
             data = dataset
         }
@@ -363,130 +582,76 @@ return {
             return
         }
     
-        rows = dataset.rows
-        header = dataset.header
+        if (self._spec.xindex) {
+            var xindex = this._spec.xindex
+        } else {
+            var xindex;
+            if (dataset.header) {
+                dataset.header.forEach(function(d) {
+                    if (xindex) return
+                    else {
+                        if (d.datatype == 'Date') {
+                            xindex = d.weight
+                        }
+                    }
+                })
+            } else {
+                var xindex = 0;
+            }
+        }
+        
+        if (self._spec.yindex) {
+            var yindex = self._spec.yindex
+        } else {
+            var yindex;
+            if (dataset.header) {
+                dataset.header.forEach(function(d) {
+                    if (yindex) return
+                    else {
+                        if (d.datatype == 'Integer' || d.datatype == 'Float') {
+                            yindex = d.weight
+                        }
+                    }
+                })
+            } else {
+                var yindex = 1;
+            }
+        }
+        
+        try {
+            var a = dataset.header[xindex].name, b = dataset.header[yindex].name
+            var drows = [['x',b]]
+            dataset.rows.forEach(function(d) {
+                drows.push([d[xindex],d[yindex]])
+            })
+        } catch (e) {
+            /* eeeee */
+        }
         
         self._node.selectAll('*').remove()
-	try {
-	    console.log('rows = ' + rows);
-//j/           var upper_bound = normalizeType(xType, data[rows.length-1] || rows[rows.length - 1][xCol]);
+        
+        
+        if (!self._spec.chart_type || self._spec.chart_type == 'line') {
+            self.update_line(drows)
+        } else if (self._spec.chart_type == 'bar') {
+            self.update_bar(drows)
+        } else if (self._spec.chart_type == 'gauge') {
+            self.update_gauge(dataset)
+        } else if (self._spec.chart_type == 'timeseries-line') {
+            self.update_timeseries_line(drows)
         }
-        catch (e) {
-            self._node.append('h2')
-                .text('SORRY, NO DATA!')
+
+        if (self._spec.chart_title) {
             self._node.append('div')
-                .text('Still bushleague.')
-            return;
+                .attr('id',this.relid('chart_title'))
+                .classed('n_chart_title',true)
+                .text(this._spec.chart_title)
         }
-        self._node.append('div').text(self._spec.title)
-        self._node.append('div').text(self._spec.subtitle)
-        
-	try {
-            rows.forEach(function(d) {
-		if(xType === 'Date' || xType === 'date') {
-			var date  = normalizeType(xType, d[xCol]);
-			d[xCol] = date	
-			console.log(d[xCol] + '!!!!!!!!!')	
-			xData.push(date)
-		}
-		else {
-		        xData.push( normalizeType(xType, d[xCol]));
-		}
 
-                 yData.push(normalizeType(yType, d[yCol]))
-            });
-        }
-        catch (e) {
-            // This is hack - need proper input handling via query object
-       		console.log(e); 
-	}
- 	console.log('xData= ' + xData);
-	console.log('yData= ' + yData);
 
-       
-        var svg = self._node.append("svg")
-                .attr("class","datachart")
-                .attr("width", width + margins.left + margins.right )
-                .attr("height", height + margins.top + margins.bottom )
-            .append('g')
-                .attr("transform", "translate(" + margins.left + "," + margins.top + ")");
-           
-	if(xType === 'Timestamp' || xType === 'Date') {
-        	var lower_bound = d3.min(xData);
-		var upper_bound = d3.max(xData);
-		xScale = d3.time.scale()
-            	    .domain([lower_bound, upper_bound])
-            	    .range([0,width])
-	}
-	else if(xType === 'Text'){
-		xScale = d3.scale.ordinal()
-			.domain(xData)
-			.rangeRoundBands([0, width], .9)
-	}
-	else {
-		xScale = d3.scale.linear()
-		    .domain(d3.extent(xData, function(d){ return d}))		    		    .range([0, width])
-	}
-	
-	if(yType === 'Timestamp' || yType === 'Date') {
-        	var lower_bound = d3.min(yData);
-		var upper_bound = d3.max(yData);	
-		yScale = d3.time.scale()
-            	    .domain([lower_bound, upper_bound])
-            	    .range([height,0])
-	}
-	else if(yType === 'Text'){
-		yScale = d3.scale.ordinal()
-			.domain(yData.sort())
-			.rangeRoundBands([height, 0], .1)
-	}
-	else {
-	var yMax= d3.max(yData, function(d) { return d});	
-        yScale = d3.scale.linear()
-            .domain([0,yMax])
-            .range([height, 0]);
-	}
-       console.log('yScale' + yScale) 
-        if (self._spec.draw_x_axis) {
-        
-            xAxis = d3.svg.axis()
-                .scale(xScale)
-                .orient("bottom")
-	    if(xType === 'Date'){
-                xAxis.ticks(d3.time.years, 5);
-	    }
-            svg.append('g')
-                .attr('class', 'x axis')
-                .attr('transform', 'translate(0, ' + height + ')')
-                .call(xAxis)
-		.selectAll("text")
-		    .style("text-anchor", "end")
-		    .attr("dx", "-.8em")
-		    .attr("dy", ".15em")
-		    .attr("transform", function(d) {
-				return "rotate(-65)"
-			});
-        
-        }
-        
-        if (self._spec.draw_y_axis) {
-            
-            yAxis = d3.svg.axis()
-                .scale(yScale)
-                .orient("left");
-                            
-            svg.append('g')
-                .attr('class', 'y axis')
-                .call(yAxis);    
-        
-        }
-        
-        if (self._spec.chart_type == 'bar') {
-            update_bar(svg);
-        }
-        else if (self._spec.chart_type == 'line') {
-            update_line(svg);
-        }
+        if (self._spec.ui_control) {
+            draw_ui_control(dataset)
+        } 
                         
         if (self._spec.resize_control) { 
             draw_resize_control()
@@ -494,10 +659,7 @@ return {
             self._node.select(".charty")[0][0].value = height;
         }
         
-       	
-	if (self._spec.ui_control) {
-	    draw_ui_control(dataset)
-	}
+
     }
     
 }} () );

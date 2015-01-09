@@ -8,7 +8,8 @@ sys.path.append('../')
 
 import config_cloud as cfg
 from core.pg.datatypes import Text,Integer,Float,Date,Timestamp
-from common.expressions import MAX, MIN, AVG, AS, Join, Union, extract
+from common.expressions import MAX, MIN, AVG, AS, Join, Union, extract, \
+        generate_series
 
 target = 'rest'
 
@@ -213,6 +214,13 @@ class TestSelect(unittest.TestCase):
         self.assertEqual(len(result.header),2)
         colnames = [x['name'] for x in result.header]
         self.assertEqual(['pk','b'],colnames)
+        
+    #@unittest.skip('skip')
+    def test_from_function(self):
+        """Can we select from a function instead of a relation? """
+        result = cloud.select(generate_series(Date(2010,1,1),Date(2013,1,1)))
+        self.assertEquals(len(result),1097)
+        self.assertEquals(type(result[0][0]).__name__,'date')
         
     #@unittest.skip('skip')
     def test_target_as(self):

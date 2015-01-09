@@ -101,20 +101,26 @@ extend(MenuTree,function () {
     return {
     
         init: function (root, spec) {
-            this._classes = ' Container n_menu_container '
+            if (Model.viewmode == 'browser') {
+                this._classes = ' Container n_menu_container '
+            } else {
+                this._classes = ' Container n_mobile_list_outer'
+            }
             Widget.prototype.init.call(this, root, spec)
             
             self = this;
             
-            svg = this._node.append("svg")
-                .attr({
-                    id:spec.id+'_svg',
-                    width: width,
-                    height: height
-                })
-                
-            g = svg.append("g")
-                .attr("transform", "translate(10,10)");
+            if (Model.viewmode == 'browser') {
+                svg = this._node.append("svg")
+                    .attr({
+                        id:spec.id+'_svg',
+                        width: width,
+                        height: height
+                    })
+                    
+                g = svg.append("g")
+                    .attr("transform", "translate(10,10)");
+            }
         },
         
         event_filter: function (source, event, details) {
@@ -133,11 +139,33 @@ extend(MenuTree,function () {
             }
         },
         
+        draw_mobile: function(source) {
+            var nodes = tree.nodes(data)
+            
+            var gonodes = []
+            nodes.forEach(function (d) {
+                if (d.path || d.name) gonodes.push(d)
+            })
+                        
+            var text = function (d) {
+                return d.key ? d.key : d.alias ? d.alias : d.name
+            }
+            
+            this._node.selectAll('div.n_mobile_list')
+                .data(gonodes)
+                .enter().append('div')
+                    .classed('n_mobile_list',true)
+                    .text(text)
+                    .on('click',self.on_click)
+        },
+        
         draw: function(source) {
           
           var nodes = tree.nodes(data);
 
           var height = nodes.length * barHeight
+
+          svg.attr('viewBox','0 0 200 ' + height)
 
           svg.transition()
               .duration(duration)
@@ -215,6 +243,13 @@ extend(MenuTree,function () {
           
           self._node.style('height',height)
           
+          if (Model.viewmode == 'mobile') {
+              this._node.style('height','100%')
+              this._node.style('width','100%')
+              svg.style('height','100%')
+              svg.style('width','100%')
+          }
+          
         },
         
         update: function (e, d) {
@@ -245,8 +280,7 @@ extend(MenuTree,function () {
                     key: "Nimbodata",
                     values: nestDatabase.entries(d)
                 }
-            }
-            else if (d && d.key) {
+            } else if (d && d.key) {
                 convpath = function (node) {
                     if (node.path) {
                         Nimbodata.get_bypath(node.path,function (e,d) {
@@ -273,7 +307,11 @@ extend(MenuTree,function () {
             data.x0 = 0;
             data.y0 = 0;
             
-            self.draw(data)
+            if (Model.viewmode == 'mobile') {
+                self.draw_mobile(data)
+            } else {
+                self.draw(data)
+            }
             
         },
             
@@ -287,7 +325,11 @@ extend(MenuTree,function () {
                 d._values = null;
             }
             
-            self.draw(data); 
+            if (Model.viewmode == 'mobile') {
+                self._node.style('display','none')
+            } else {
+                self.draw(data)
+            }
             
             if (d.key) {
                 if (d.key.split(' ').length > 1 || d.key == 'Nimbodata') {

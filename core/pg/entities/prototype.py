@@ -5,8 +5,12 @@ from uuid import uuid4 as uuid
 
 import psycopg2
 
-import common.errors as errors
-import common.entities.prototype as base_ent
+try:
+    import common.errors as errors
+    import common.entities.prototype as base_ent
+except ImportError:
+    import nimbodata.common.errors as errors
+    import nimbodata.common.entities.prototype as base_ent
 from .. import syntax
 
 from . import *
@@ -220,7 +224,6 @@ class Entity(base_ent.Entity):
         stmt = syntax.insert(self.schema,registry,colnames=cols)
         try:
             controllers['ddl'].execute(stmt,vals)
-            controllers['ddl'].conn.commit()
         except psycopg2.IntegrityError as e:
             if e.pgcode == '23502':
                 # Integrity Error null value in column ...

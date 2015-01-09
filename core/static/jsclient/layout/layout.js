@@ -7,9 +7,11 @@ return {
     containers: {},
     widgets: {},
     model: null,
+    viewmode: null,
             
-    init: function (model) {
+    init: function (model,viewmode) {
         this.loadmodel(model)
+        this.viewmode = viewmode
     },
     
     loadmodel: function(app) {
@@ -24,6 +26,9 @@ return {
         
         body.selectAll('div').remove()
         
+        var cover = body.append('div')
+            .attr('id','cover')
+        
         var main = body.append('div')
             .attr('id','main')
             
@@ -32,7 +37,11 @@ return {
         // Recursively walk the doc_structure and create the nodes
         this.model.forEach(function(node) {
             // Closure required for the main parameter
-            node.created = this._add_node(main,node);
+            if (node.mobileview && node.mobileview.show === false && Model.viewmode == 'mobile') {
+                node.created = false
+            } else {
+                node.created = this._add_node(main,node);
+            }
         }, this)
     },
     
@@ -84,8 +93,10 @@ return {
         
         if (arguments.length == 0) {
             this.model.forEach(function(item) {
-                item.created.refresh()
-                if (item.children) this.refresh(item.children)
+                if (item.created) {
+                    item.created.refresh()
+                    if (item.children) this.refresh(item.children)
+                }
             }, this)
         } else {
             model.forEach(function(item) {

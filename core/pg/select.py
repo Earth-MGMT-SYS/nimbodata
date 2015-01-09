@@ -7,13 +7,19 @@ from collections import OrderedDict
 
 import psycopg2
 
+try:
+    import common.errors as errors
+    import common.results as results
+except ImportError:
+    import nimbodata.common.errors as errors
+    import nimbodata.common.results as results
+
 import engine
-import common.errors as errors
-import common.results as results
 import entities
 import syntax
 import datatypes
 import expressions
+
 
 def subid():
     return ''.join(
@@ -414,8 +420,10 @@ class Select(engine.Engine):
         
     def _order_by(self,order_by,decoder,j_decoder):
         stmt = ""
+        params = {}
         if order_by is not None and order_by != []:
             order_parts = []
+            
             
             if isinstance(order_by,basestring):
                 order_by = [order_by]
@@ -436,14 +444,18 @@ class Select(engine.Engine):
                         split[0] = '"' + fqn + '"'
                     order_parts.append(' '.join(split))
                 except KeyError:
-                    func = getattr(expressions,orderClause['fname'])
-                    colStr = func().sql_cast(*orderClause['args'])
+                    try:
+                        func = getattr(expressions,orderClause['fname'])
+                        colStr = func().sql_cast(*orderClause['args'])
+                    except AttributeError:
+                        func = expressions.BinaryExpression(orderClause)
+                        colStr, params, w_params = func.sql_exp(decoder,j_decoder)
                     order_parts.append(colStr)
                 
             
             stmt = "ORDER BY " + ' , '.join(order_parts) + '\n'
             
-        return stmt, {}
+        return stmt, params
     
     def _limit(self,limit):
         """Process the LIMIT component of a select query."""
@@ -456,30 +468,44 @@ class Select(engine.Engine):
             group_by=None,order_by=None,limit=None,alias=True,viewcreate=False):
         """Takes all of the select parameters and returns SQL and sub params."""
         # First we get the prerequisite info to build the query
-        viewinfo = api.get_byid(objid)
+        try:
+            if 'fname' in objid:
+                viewinfo = None
+            else:
+                viewinfo = api.get_byid(objid)
+        except KeyError:
+            viewinfo = api.get_byid(objid)
         self.viewinfo = viewinfo
-        if not viewinfo['parent_objid'].startswith('dbi'):
-            parent = api.get_byid(viewinfo['parent_objid'])
-            viewinfo = viewinfo.row_dict
-            viewinfo['parent_objid'] = parent['parent_objid']
-        dbid,viewname = viewinfo['parent_objid'],viewinfo['name']
-        viewid = viewinfo['objid']
-                
-        colinfo = api.get_byid(objid=objid).columns()
+        if viewinfo is not None:
+            if not viewinfo['parent_objid'].startswith('dbi'):
+                parent = api.get_byid(viewinfo['parent_objid'])
+                viewinfo = viewinfo.row_dict
+                viewinfo['parent_objid'] = parent['parent_objid']
+            
+            dbid,viewname = viewinfo['parent_objid'],viewinfo['name']
+            viewid = viewinfo['objid']
+                    
+            colinfo = api.get_byid(objid=objid).columns()
+            
+            stmt, join_stmt, params, out_colinfo, decoder, j_decoder, aggregate = \
+                self._target(objid,cols,join,alias,viewcreate)
         
-        stmt, join_stmt, params, out_colinfo, decoder, j_decoder, aggregate = \
-            self._target(objid,cols,join,alias,viewcreate)
-        
-        from_stmt,from_params = self._from(viewinfo)
-        stmt += from_stmt + "\n"
-        params.update(from_params)
-        
-        stmt += join_stmt + "\n"
+            from_stmt,from_params = self._from(viewinfo)
+            stmt += from_stmt + "\n"
+            stmt += join_stmt + "\n"
+            params.update(from_params)
+        else:
+            colid = api.get_entity('Column')()._new_id()
+            from_func = getattr(expressions,objid['fname'])
+            from_stmt,params,out_colinfo = from_func(*objid['args']).sql_from(colid)
+            stmt = ' SELECT * FROM ' + from_stmt
+            decoder, j_decoder = {}, {}
+            aggregate = False
         
         where_stmt, where_params = self._where(where,decoder,j_decoder)
         stmt += where_stmt + "\n"
         params.update(where_params)
-                        
+                
         group_stmt, group_params = self._group_by(group_by,decoder,aggregate)
         stmt += group_stmt + "\n"
         params.update(group_params)
@@ -491,9 +517,7 @@ class Select(engine.Engine):
         limit_stmt, limit_params = self._limit(limit)
         stmt += limit_stmt
         params.update(limit_params)
-        
-
-        
+                        
         return stmt,params,out_colinfo
     
     def get_array(self,objid=None,col=None,join=None,where=None,
@@ -553,7 +577,7 @@ class Select(engine.Engine):
     def select(self,objid=None,cols=None,join=None,where=None,
                group_by=None,order_by=None,limit=None,fname=None,args=None):
         """Execute a select query."""
-        if isinstance(objid,dict):
+        if isinstance(objid,dict) and 'fname' not in objid:
             p, vname = objid['parent'], objid['_objid']
             objid = api.get_byid(p).View(vname)['objid']
         if fname is not None and args is not None:
@@ -576,7 +600,7 @@ class Select(engine.Engine):
             
         if stmt is None and out_colinfo is None:
             return results.Results([],[])
-        
+                
         try:
             r = self.execute(stmt,params)
         except psycopg2.ProgrammingError as e:
@@ -586,9 +610,12 @@ class Select(engine.Engine):
                 print stmt
             raise
         
-        view = api.get_byid(objid)
-        expressions.inject_api(api)
-        viewinfo = view.row_dict
-        viewinfo['cols'] = view.columns()
+        try:
+            view = api.get_byid(objid)
+            expressions.inject_api(api)
+            viewinfo = view.row_dict
+            viewinfo['cols'] = view.columns()
+        except errors.RelationDoesNotExist:
+            viewinfo = {}
         
         return results.Results(out_colinfo,list(r),viewinfo)

@@ -4,7 +4,10 @@
 from . import *
 from . import PG_Datatype as Datatype
 
-import common.datatypes.ranges as base_range
+try:
+    import common.datatypes.ranges as base_range
+except ImportError:
+    import nimbodata.common.datatypes.ranges as base_range
 
 class IntegerRange(base_range.IntegerRange,Datatype):
     

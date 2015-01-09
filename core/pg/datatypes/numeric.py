@@ -4,7 +4,10 @@
 from . import *
 from . import PG_Datatype as Datatype
 
-import common.datatypes.numeric as num
+try:
+    import common.datatypes.numeric as num
+except ImportError:
+    import nimbodata.common.datatypes.numeric as num
 
 class Boolean(num.Boolean,Datatype):
     

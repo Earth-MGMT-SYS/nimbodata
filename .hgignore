@@ -1,4 +1,7 @@
 syntax: glob
+*.npz
+*.npy
+*.p
 *.pyc
 .csv
 *.txt
@@ -19,5 +22,15 @@ install/dumps/*
 core/lastaccess
 *.gdb/*
 */import-data/*
+*/output-data/*
+*/scratch-data/*
+*/tiles/*
+*/overlays/*
 apps/water-mgmt/updaters/loaded.sql
 core/static/jsclient/widgets/title/markdown.js
+*.npz
+*.tiff
+*.png
+*.gtiff
+*.pck
+./lastaccess

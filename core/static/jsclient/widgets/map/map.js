@@ -139,10 +139,17 @@ return {
         var cont = this._node.append('div')
             .attr('id',this.relid("container"))
             .attr('class','resizable_map')
-        if (spec.browserview && spec.browserview.height) {
+        
+        if (spec.mobileview && Model.viewmode == 'mobile') {
+            var viewspec = spec.mobileview
+        } else {
+            var viewspec = spec.browserview
+        }
+                
+        if (viewspec && viewspec.height) {
             cont
-                .style('width',spec.browserview.width)
-                .style('height',spec.browserview.height)
+                .style('width',viewspec.width)
+                .style('height',viewspec.height)
         } else {
             cont
                 .style('width','100%')
@@ -172,7 +179,18 @@ return {
             zoomControl: false
         })
         
-        L.control.zoom({position: 'topright'}).addTo(_map,true)
+        Model.get_current_location(function (position) {
+            L.marker([position.coords.latitude,position.coords.longitude])
+                .addTo(_map)
+                .on('click',function () {
+                    _map.setView(
+                        [position.coords.latitude,position.coords.longitude],
+                        8
+                    )
+                })
+        })
+        
+        //L.control.zoom({position: 'topright'}).addTo(_map,true)
             
         _add_base_layer('https://otile2-s.mqcdn.com/tiles/1.0.0/map/{z}/{x}/{y}.png')
                     
@@ -406,6 +424,8 @@ return {
     
     add_tiled_geojson: function (info,geocol) {
         
+        
+        
         var objid = info.objid
         var etype = info.entitytype
         
@@ -431,10 +451,16 @@ return {
             "fillOpacity": 0.5
         };
         
-        var geojsonURL = '/'+ etype + '/' + objid + '/tile/{x}/{y}/{z}/'
+        var geojsonURL = '/'+ etype + '/' + objid + '/tile/{x}/{y}/{z}/tile.geo.json'
+        
+        if (Model.viewmode == 'mobile') {
+            var radius = 24
+        } else {
+            var radius = 6
+        }
         
         var geojsonMarkerOptions = {
-            radius: 6,
+            radius: radius,
             fillColor: "#1B1BC7",
             color: "#000",
             weight: 1,
