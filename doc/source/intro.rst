@@ -62,7 +62,7 @@ Vision
     data as possible in a consistent format (i.e. follow naming standards
     and establish extensive foreign key relationships).
 *   Python is great for programmers, but the spirit is wholly applicable to
-    data analysis tools.  By providing a powerful platform for users to levarage
+    data analysis tools.  By providing a powerful platform for users to leverage
     Python, we hope to expand the power and reach of the Python ecosystem.
 *   Enable meta-programming approaches for relational data stores - such as
     tools for applying a specific aggretation pattern to different sets of
