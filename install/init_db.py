@@ -11,11 +11,8 @@ command = 'psql -U cloud_admin -d cloud_admin -f init_cloud.sql'
 
 subprocess.call(command, shell=True)
 
-import sys
-sys.path.append('..')
-
 import psycopg2
-import core.cloud as cc
+import nimbodata.cloud as cc
 
 cloud = cc.Cloud('bozo')
 

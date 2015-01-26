@@ -26,19 +26,9 @@ For node and the remaining Python requirements, pip install and npm install shou
 These instructions will assume Ubuntu 14.04, you Archers are an industrious bunch
 and I'm sure you can manage.
 
-First, you'll need PostgreSQL 9.4.  For now, since it is beta, you'll need to
-go about it the "hard" way, add this you your /etc/apt/sources.list
-
-    deb http://apt.postgresql.org/pub/repos/apt/ trusty-pgdg main 9.4
-    
-Then execute (to update the apt-key):
-
-    $ wget --quiet -O - http://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | sudo apt-key add -
-
-Then add ppas:
+Add ppas:
 
     $ sudo apt-add-repository ppa:ubuntugis/ubuntugis-unstable
-    $ sudo apt-add-repository ppa:zfs-native/stable
 
 Then:
     
@@ -50,7 +40,7 @@ Now you'll need a few packages:
 
 Now you'll need some pip deliciousness:
 
-    $ sudo pip install flask Shapely jsonpickle requests flask-security flask-cors
+    $ sudo pip install flask Shapely jsonpickle requests flask-security flask-cors psycopg2
     
 Now you need to configure PostgreSQL, which is always a blast:
 

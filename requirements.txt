@@ -1,0 +1,14 @@
+flask
+psycopg2
+Shapely
+jsonpickle
+requests
+flask-security
+flask-cors
+rednose
+gdal
+python-dateutil
+BeautifulSoup4
+gevent
+psycogreen
+xlrd
